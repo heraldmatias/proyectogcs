@@ -4,35 +4,8 @@ Instalación
 - sudo apt-get install python-dev
 - python bootstrap.py -d
 - bin/buildout -vvv
-- bin/wvb collectstatic
-- mkdir media/alumno
-- mkdir media/curriculum
+- bin/ogcs collectstatic
 - Recuerda que usamos grappelli
 	http://readthedocs.org/docs/django-grappelli/en/latest/quickstart.html#installation
 
 ------------------------
-Tareas
-------------------------
-Implementar un trigger que cuando anulen una boleta si por curso o pension estas vuelvan a cero
-El sistema debe emitir si el pago de pension procede o no, no procede cuando el alumno ya pago sus cinco pensiones de ciclo
-validar campus si el alumno es seleccionado de un aula se debe matricular en un ciclo mayor a su actual
-cuando se ingresen todas las notas del ciclo el alumno cambia de estatus confirmado =  true en alumnocampus model
-crear un ciclo q diga egresado?
-historial de pago
-historial de notas
-crear una rutina q verifique si un alumno tiene todas las notas del ciclo agregadas y cambiar su confirmado a true
-personalizar el admin readthedocs.org/docs/django-grappelli/en/latest/quickstart.html
-
-------------------------
-Lunes
-------------------------
-Un servidor
-
-------------------------
-VIEW
-------------------------
-create VIEW "BOLETA_ALUMNO" AS select bb.valido, bb.serie,bb.saldo,bb.numero,bb.fecha_emision, bb.importe,bc.concepto,a.apellido,a.nombre,a.codigo,
-au.first_name,au.last_name from boleta_boleta bb inner join concepto_concepto bc on bb.concepto_id = bc.id 
-inner join campus_alumnocampus ac on bb.alumno_id = ac.id
-inner join alumno_alumno a on ac.alumno_id = a.id 
-inner join auth_user au on au.id = bb.emisor_id
