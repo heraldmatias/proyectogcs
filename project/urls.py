@@ -16,8 +16,7 @@ urlpatterns = patterns('',
     (r'^admin/', include(admin.site.urls)),
     
     # grapelli admin urls
-    (r'^grappelli/', include('grappelli.urls')),    
-    (r'^$', 'home.views.index'),
+    (r'^grappelli/', include('grappelli.urls')), 
 )
 
 #if settings.DEBUG:
