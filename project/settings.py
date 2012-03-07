@@ -9,7 +9,7 @@ ADMINS = (
 )
 
 MANAGERS = ADMINS
-
+DEBUG = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
@@ -132,7 +132,7 @@ INSTALLED_APPS = (
 
 GRAPPELLI_ADMIN_TITLE = 'Sitio Administrativo OGCS'
 
-#LOGIN_URL = '/ogcs/login'
+LOGIN_URL = '/login/'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.conf.urls.defaults import patterns, include, url
 from django.conf import settings
 
@@ -15,9 +16,9 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     (r'^admin/', include(admin.site.urls)),    
     # grapelli admin urls
-    (r'^grappelli/', include('grappelli.urls')), 
+    (r'^grappelli/', include('grappelli.urls')),
     # urls
-    (r'^$', 'home.views.index'),
+    (r'^login/', 'home.views.index'),
 )
 
 #if settings.DEBUG:
