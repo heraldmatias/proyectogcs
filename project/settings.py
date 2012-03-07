@@ -107,7 +107,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    realpath('template'),
+    realpath('templates'),
 )
 
 INSTALLED_APPS = (
@@ -126,12 +126,13 @@ INSTALLED_APPS = (
     # apps installed
     'south',    
     # apps  
-    'usuario',  
+    'usuario',
+    'home',  
 )
 
 GRAPPELLI_ADMIN_TITLE = 'Sitio Administrativo OGCS'
 
-LOGIN_URL = '/ogcs/login'
+#LOGIN_URL = '/ogcs/login'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
