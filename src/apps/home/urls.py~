@@ -2,6 +2,6 @@
 from django.conf.urls.defaults import patterns, url
 
 urlpatterns = patterns('home.views',
-    url(r'^$','main', name='ogcs-index'),
+    url(r'^$','index', name='ogcs-index'),
     url(r'^login/$','login', name='ogcs-login'),    
 )

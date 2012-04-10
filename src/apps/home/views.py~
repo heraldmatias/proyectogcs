@@ -10,9 +10,9 @@ def login(request):
     #if request.method == 'POST': 
     form = LoginForm(request.POST) 
     if form.is_valid():
-        return redirect('/home/')
+        return redirect('home/')
     else:
-        return redirect('/home/')
+        return redirect('home/')
     #else:
 	#form = LoginForm() # An unbound form
 

@@ -20,7 +20,7 @@
 						<div class="span3">{{ form.clave }}</div>
 					</div><br>
 					<div class="row">
-						<div class="span2 offset1"><a class="btn btn-primary" href="home/login/"><i class="icon-user icon-white"></i>Iniciar Sesi&oacute;n </a> </div>						
+						<div class="span2 offset1"><a class="btn btn-primary" href="login/"><i class="icon-user icon-white"></i>Iniciar Sesi&oacute;n </a> </div>						
 					</div>
 				</div></div>
 			</form>

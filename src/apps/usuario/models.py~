@@ -44,7 +44,7 @@ class Usuario(models.Model):
     codigo = models.AutoField(verbose_name='Codigo Autogenerado', primary_key=True)
     numero = models.IntegerField(verbose_name='Codigo' ,unique=True)
     nivel = models.ForeignKey(Nivel, verbose_name='nivel', blank=True, null=True)
-    organismo = models.ForeignKey(Organismo, verbose_name='Organismo')
+    organismo = models.ForeignKey(Organismo)
     dependencia = models.IntegerField(verbose_name='Dependencia', blank=True, null=True)
     nombres = models.CharField(verbose_name='Nombres', max_length=125, blank=True, null=True)
     sexo = models.CharField(verbose_name='sexo', max_length=2,choices = SEXO, default='MA')

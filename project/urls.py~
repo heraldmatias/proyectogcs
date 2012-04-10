@@ -19,7 +19,7 @@ urlpatterns = patterns('',
     (r'^grappelli/', include('grappelli.urls')),
     # urls
     (r'^$', 'home.views.index'),
-    (r'^home/', include('home.urls')),
+    (r'^home/', 'home.urls'),
 )
 
 #if settings.DEBUG:
