@@ -3,6 +3,7 @@ from django.shortcuts import render, render_to_response, redirect
 from forms import LoginForm
 from ubigeo.forms import RegionForm, ProvinciaForm
 from dependencia.forms import MinisterioForm, OdpForm, GobernacionForm
+from redessociales.forms import InformacionForm, TwitterForm, FacebookForm, TwitterDiarioForm, FacebookDiarioForm
 #from dependencia.forms import ProvinciaForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -32,5 +33,13 @@ def main(request):
     frmministerio = MinisterioForm()
     frmgobernacion = GobernacionForm()
     frmodp = OdpForm()
+    frminformacion = InformacionForm() 
+    frmtwitter = TwitterForm()
+    frmfacebook = FacebookForm
+    frmtwitterdiario = TwitterDiarioForm()
+    frmfacebookdiario = FacebookDiarioForm()
     return render_to_response('home/home.html', {'frmregion': frmregion,'frmprovincia':frmprovincia,
-    'frmministerio': frmministerio, 'frmgobernacion':frmgobernacion, 'frmodp': frmodp,})
+    'frmministerio': frmministerio, 'frmgobernacion':frmgobernacion, 'frmodp': frmodp,
+    'frminformacion': frminformacion, 'frmtwitter':frmtwitter, 'frmfacebook': frmfacebook,
+    'frmtwitterdiario': frmtwitterdiario, 'frmfacebookdiario':frmfacebookdiario,})
+
