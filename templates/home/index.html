@@ -7,10 +7,12 @@
 		<h2>Plataforma Intersectorial de Comunicaci&oacute;n OGCS</h2></header>
 	<div class="row "> <!--show-grid -->
 		<div class="span4 offset4">			
-			<form class="form-inline well" name="login" method="post" >
+		    <form class="form-inline well" name="login" method="post" action="/home/login/">
+                                {% csrf_token %}                                
 				<div class="row">
 				<div class="span4">
 					<h3>Iniciar Sesion:</h3><br>
+					{{ error_message }}
 					<div class="row">
 						<div class="span1">{{ form.usuario.label_tag }}</div>
 						<div class="span3">{{ form.usuario }}</div><!--<input maxlength="25" name="usuario" id="usuario"> <input maxlength="25" name="clave" id="clave">-->
@@ -20,7 +22,7 @@
 						<div class="span3">{{ form.clave }}</div>
 					</div><br>
 					<div class="row">
-						<div class="span2 offset1"><a class="btn btn-primary" href="home/login/"><i class="icon-user icon-white"></i>Iniciar Sesi&oacute;n </a> </div>						
+					<div class="span2 offset1"><a class="btn btn-primary" href="javascript: document.login.submit();"><i class="icon-user icon-white"></i>Iniciar Sesi&oacute;n </a> </div>						
 					</div>
 				</div></div>
 			</form>

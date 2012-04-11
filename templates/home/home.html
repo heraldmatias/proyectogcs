@@ -1,62 +1,11 @@
   {% extends 'base.html' %}
   {% block title %} Plataforma Intersectorial de Comunicaci&oacute;n OGCS {% endblock %}
   {% block content %}
-   <div class="container">
-<section id="navbar">
-  <div class="page-header">
-<div class="navbar">
-    <div class="navbar-inner">
-      <div class="container">
-        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </a>
-        <a class="brand" href=""><h1>OGCS</h1>Plataforma Intersectorial de Redes Sociales</a>
-  <div class="subnav">
-		<ul class="nav nav-pills">
-	      <li class="dropdown">
-		<a class="dropdown-toggle" data-toggle="dropdown" href="">Mantenimiento<b class="caret"></b></a>
-		<ul class="dropdown-menu">
-		  <li><a href="">Regi&oacute;n</a></li>
-		  <li><a href="">Provincia</a></li>
-		  <li><a href="">ODP</a></li>
-		  <li><a href="">Ministerio</a></li>
-		  <li><a href="">Nivel de Usuario</a></li>
-		</ul>
-	      </li>
-	      <li class="dropdown">
-		<a class="dropdown-toggle" data-toggle="dropdown" href="#">Información General<b class="caret"></b></a>
-		<ul class="dropdown-menu">
-		  <li><a href="">Nuevo Información General</a></li>
-		  <li><a href="">Consultar Información General</a></li>
-		</ul>
-	      </li>
-	      <li class="dropdown">
-		<a class="dropdown-toggle" data-toggle="dropdown" href="#">Twitter<b class="caret"></b></a>
-		<ul class="dropdown-menu">
-		  <li><a href="">Nuevo Información General Twitter</a></li>
-		  <li><a href="">Consultar Información General Twitter</a></li>
-		  <li><a href="">Nuevo Twitter Diario</a></li>
-		  <li><a href="">Consultar Twitter Diario</a></li>
-		</ul>
-	      </li>
-	      <li class="dropdown">
-		<a class="dropdown-toggle" data-toggle="dropdown" href="#">Facebook<b class="caret"></b></a>
-		<ul class="dropdown-menu">
-		  <li><a href="">Nuevo Información General Facebook</a></li>
-		  <li><a href="">Consultar Información General Facebook</a></li>
-		  <li><a href="">Nuevo Facebook Diario</a></li>
-		  <li><a href="">Consultar Facebook Diario</a></li>
-		</ul>
-	      </li>
-	      <li><a href="">Chat Privado</a></li>
-	      <li><a href="">Documentos Compartidos</a></li>
-	      <li><a href="">Calendario de Actividades</a></li>	      
-	    </ul> </div>       
-        </div>
-      </div>
-    </div>
-  </div> </div></section> </div>
-{% endblock %}
+  {% include 'include/header.html' %}
+  {% include 'ubigeo/region.html' %}
+  {% include 'ubigeo/provincia.html' %}
+  {% include 'dependencia/ministerio.html' %}
+  {% include 'dependencia/gobernacion.html' %}
+  {% include 'dependencia/odp.html' %}
+  {% endblock %}
 

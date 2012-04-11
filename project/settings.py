@@ -4,7 +4,7 @@
 from os.path import realpath
 
 ADMINS = (
-    ('Herald Olivares', 'heraldmatias.oz@gmail.com'),    
+    ('Herald Olivares', 'heraldmatias.oz@gmail.com'),
     # ('Your Name', 'your_email@example.com'),
 )
 
@@ -17,10 +17,7 @@ DATABASES = {
         'USER': 'root',                      # Not used with sqlite3.
         'PASSWORD': 'ollanta2011',                  # Not used with sqlite3.
         'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '3306',                      # Set to empty string for default. Not used with sqlite3.
-	'OPTIONS': {
-	    'init_command': 'SET storage_engine=INNODB',
-	}
+        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
 
@@ -119,26 +116,42 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
-    'django.contrib.staticfiles',    
+    'django.contrib.staticfiles',
+    
     # grapelli app
+    'grappelli.dashboard',
     'grappelli',
     # Uncomment the next line to enable the admin:
-    'django.contrib.admin',    
+    'django.contrib.admin',
+    
     # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',    
+    # 'django.contrib.admindocs',
+    
     # apps installed
-    'south',    
-    # apps  
-    'usuario',
+    'south',
+    
+    # apps
     'home',
+    'redessociales',
     'ubigeo',
-    'dependencia', 
-    'redessociales', 
+    'usuario',
 )
 
-GRAPPELLI_ADMIN_TITLE = 'Sitio Administrativo OGCS'
+GRAPPELLI_ADMIN_TITLE = 'Sitio Administrativo de la Plataforma de Redes Sociales'
 
-LOGIN_URL = '/login/'
+LOGIN_URL = '/'
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.request",
+    "django.core.context_processors.static",
+    "django.core.context_processors.csrf",
+)
+
+AUTH_PROFILE_MODULE = 'usuario.Usuario'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -162,3 +175,4 @@ LOGGING = {
         },
     }
 }
+
