@@ -1,0 +1,17 @@
+<div id="frmodp" class="modal hide fade">
+    <div class="modal-header">
+      <a class="close" data-dismiss="modal" >&times;</a>
+      <h3>Matenimiento de ODP</h3>
+    </div>
+    <div class="modal-body">
+      <form name='odp' method='post' action="#">              
+      {% csrf_token %}
+      {{ frmodp.as_p }}
+      </form>
+    </div>
+    <div class="modal-footer">
+      <a href="#" class="btn" data-dismiss="modal" >Cerrar</a>
+      <a href="javascript: document.odp.submit();" class="btn btn-primary">Guardar Cambios</a>
+    </div>
+</div>
+
