@@ -9,7 +9,7 @@ SEXO = (
 
 class Estado(models.Model):
     codigo = models.AutoField(verbose_name='Codigo', primary_key=True)
-    nombre = models.CharField(verbose_name='Nombre', unique=True, blank=True, null=True, max_length=45)
+    nombre = models.CharField(verbose_name='Nombre', unique=True, max_length=45)
     class Meta:
         db_table = u'estado'
         verbose_name = u'Estado'
@@ -20,7 +20,7 @@ class Estado(models.Model):
 
 class Nivel(models.Model):
     codigo = models.AutoField(verbose_name='Codigo', primary_key=True)
-    nombre = models.CharField(verbose_name='Nombre', unique=True, blank=True, null=True, max_length=45)
+    nombre = models.CharField(verbose_name='Nombre', unique=True, max_length=45)
     class Meta:
         db_table = u'nivel'
         verbose_name = u'Nivel'
@@ -31,7 +31,7 @@ class Nivel(models.Model):
 
 class Organismo(models.Model):
     codigo = models.AutoField(verbose_name='Codigo', primary_key=True)
-    nombre = models.CharField(verbose_name='Nombre', unique=True, blank=True, null=True, max_length=105)
+    nombre = models.CharField(verbose_name='Nombre', unique=True, max_length=105)
     class Meta:
         db_table = u'organismo'
         verbose_name = u'Organismo'
@@ -45,16 +45,16 @@ class Usuario(models.Model):
     numero = models.IntegerField(verbose_name='Codigo' ,unique=True)
     nivel = models.ForeignKey(Nivel, verbose_name='nivel', blank=True, null=True)
     organismo = models.ForeignKey(Organismo, verbose_name='Organismo')
-    dependencia = models.IntegerField(verbose_name='Dependencia', blank=True, null=True)
-    nombres = models.CharField(verbose_name='Nombres', max_length=125, blank=True, null=True)
+    dependencia = models.IntegerField(verbose_name='Dependencia',)
+    nombres = models.CharField(verbose_name='Nombres', max_length=125,)
     sexo = models.CharField(verbose_name='sexo', max_length=2,choices = SEXO, default='MA')
     usuario = models.CharField(verbose_name='usuario', max_length=45, blank=True, null=True)
     email = models.EmailField(verbose_name='email', max_length=135)
     contrasena = models.CharField(verbose_name='contraseña', max_length=32)
     emailalt = models.EmailField(verbose_name='Email Alta', max_length=135)
-    fono = models.CharField(verbose_name='Telefono', max_length=25, blank=True)
-    anexo = models.CharField(verbose_name='Anexo', max_length=10, blank=True)
-    celular = models.CharField(verbose_name='Celular', max_length=25, blank=True)
+    fono = models.CharField(verbose_name='Telefono', max_length=25,)
+    anexo = models.CharField(verbose_name='Anexo', max_length=10, blank=True, null=True)
+    celular = models.CharField(verbose_name='Celular', max_length=25, blank=True, null=True)
     estado = models.ForeignKey(Estado, verbose_name='Estado del Usuario',related_name='+')
     idusuario_mod = models.IntegerField(null=True, blank=True)
     fec_mod = models.DateTimeField(null=True, blank=True)

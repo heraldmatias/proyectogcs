@@ -12,7 +12,10 @@
 				<div class="row">
 				<div class="span4">
 					<h3>Iniciar Sesion:</h3><br>
-					{{ error_message }}
+					    {% if error_message %}<div class="span3"><div class="alert alert-error">
+					    <a class="close" data-dismiss="alert">×</a>
+					    <strong>Error!</strong> {{ error_message }}
+					    </div></div>{% endif %}
 					<div class="row">
 						<div class="span1">{{ form.usuario.label_tag }}</div>
 						<div class="span3">{{ form.usuario }}</div><!--<input maxlength="25" name="usuario" id="usuario"> <input maxlength="25" name="clave" id="clave">-->

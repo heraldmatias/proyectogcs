@@ -7,14 +7,15 @@ from redessociales.forms import InformacionForm, TwitterForm, FacebookForm, Twit
 #from dependencia.forms import ProvinciaForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.template import RequestContext
 
 def index(request):
     form = LoginForm()
-    return render_to_response('home/index.html', {'form': form,})
+    return render_to_response('home/index.html', {'form': form,}, context_instance=RequestContext(request),)
 
-def login(request):
-    username = request.POST['id_usuario']
-    password = request.POST['id_clave']
+def singin(request):
+    username = request.POST['usuario']
+    password = request.POST['clave']
     user = authenticate(username=username, password=password)
     if user is not None:
         if user.is_active:
@@ -41,5 +42,5 @@ def main(request):
     return render_to_response('home/home.html', {'frmregion': frmregion,'frmprovincia':frmprovincia,
     'frmministerio': frmministerio, 'frmgobernacion':frmgobernacion, 'frmodp': frmodp,
     'frminformacion': frminformacion, 'frmtwitter':frmtwitter, 'frmfacebook': frmfacebook,
-    'frmtwitterdiario': frmtwitterdiario, 'frmfacebookdiario':frmfacebookdiario,})
+    'frmtwitterdiario': frmtwitterdiario, 'frmfacebookdiario':frmfacebookdiario,}, context_instance=RequestContext(request),)
 

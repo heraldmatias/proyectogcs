@@ -10,8 +10,8 @@ class Region(models.Model):
     estado = models.ForeignKey(Estado, verbose_name='Estado')
     idusuario_creac = models.IntegerField(verbose_name='Numero del Usuario de creación')
     fec_creac = models.DateTimeField(verbose_name='Fecha de creación del registro', auto_now_add=True)
-    idusuario_mod = models.IntegerField(verbose_name='Numero del Usuario de modificación',)
-    fec_mod = models.DateTimeField(verbose_name='Fecha de modificación del registro', auto_now=True)
+    idusuario_mod = models.IntegerField(verbose_name='Numero del Usuario de modificación', blank=True, null=True)
+    fec_mod = models.DateTimeField(verbose_name='Fecha de modificación del registro', auto_now=True, blank=True, null=True)
     
     class Meta:
         db_table = u'region'
@@ -27,10 +27,10 @@ class Provincia(models.Model):
     region = models.ForeignKey(Region, verbose_name='Nombre de la región', max_length=70, blank=True, null=True)
     provincia = models.CharField(verbose_name='Nombre de la provincia', max_length=70, blank=True, null=True)
     estado = models.ForeignKey(Estado, verbose_name='Estado')
-    idusuario_creac = models.IntegerField(verbose_name='Numero del Usuario de creación')
-    fec_creac = models.DateTimeField(verbose_name='Fecha de creación del registro', auto_now_add=True)
-    idusuario_mod = models.IntegerField(verbose_name='Numero del Usuario de modificación',)
-    fec_mod = models.DateTimeField(verbose_name='Fecha de modificación del registro', auto_now=True)
+    idusuario_creac = models.IntegerField(verbose_name='Numero del Usuario de creación', blank=True, null=True)
+    fec_creac = models.DateTimeField(verbose_name='Fecha de creación del registro', auto_now_add=True, blank=True, null=True)
+    idusuario_mod = models.IntegerField(verbose_name='Numero del Usuario de modificación', blank=True, null=True)
+    fec_mod = models.DateTimeField(verbose_name='Fecha de modificación del registro', auto_now=True, blank=True, null=True)
     
     class Meta:
         db_table = u'provincia'
