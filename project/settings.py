@@ -135,6 +135,7 @@ INSTALLED_APPS = (
     'redessociales',
     'ubigeo',
     'usuario',
+    'dependencia',
 )
 
 GRAPPELLI_ADMIN_TITLE = 'Sitio Administrativo de la Plataforma de Redes Sociales'
