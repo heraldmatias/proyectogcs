@@ -20,7 +20,7 @@ urlpatterns = patterns('',
     # urls
     (r'^$', 'home.views.index'),
     (r'^home/', include('home.urls')),
-    #(r'^mantenimiento/', include('dependencia.urls')),
+    (r'^mantenimiento/', include('ubigeo.urls')),
 )
 
 #if settings.DEBUG:

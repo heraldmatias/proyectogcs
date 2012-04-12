@@ -3,7 +3,7 @@ from models import Estado, Nivel, Organismo, Usuario
 
 class ModelUsuario(admin.ModelAdmin):    
     list_display = ('codigo','numero','nombres','fono','email',)
-    list_display_links = ('codigo','nombres',)
+    list_display_links = ('codigo','numero','nombres',)
     list_filter = ('nombres',)
     search_fields = ['^nombres',]
     list_per_page= 25
@@ -12,7 +12,7 @@ class ModelUsuario(admin.ModelAdmin):
         ('Datos Personales', {
             'classes': ('collapse',),
             'description':'Rellene los campos con la informacion personal del Alumno',
-            'fields': ('numero',('nombres',), ('sexo',),('nivel',),)
+            'fields': ('user','numero',('nombres',), ('sexo',),('nivel',),)
         }),
         ('Datos Adicionales', {
             'classes': ('collapse',),

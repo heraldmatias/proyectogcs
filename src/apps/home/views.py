@@ -4,7 +4,6 @@ from forms import LoginForm
 from ubigeo.forms import RegionForm, ProvinciaForm
 from dependencia.forms import MinisterioForm, OdpForm, GobernacionForm
 from redessociales.forms import InformacionForm, TwitterForm, FacebookForm, TwitterDiarioForm, FacebookDiarioForm
-#from dependencia.forms import ProvinciaForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext

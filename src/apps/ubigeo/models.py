@@ -24,7 +24,7 @@ class Region(models.Model):
 class Provincia(models.Model):
     codigo = models.AutoField(verbose_name='Codigo', primary_key=True)
     numpro = models.IntegerField(verbose_name='Numero de la provincia', unique=True)
-    region = models.ForeignKey(Region, verbose_name='Nombre de la región', max_length=70, blank=True, null=True)
+    region = models.ForeignKey(Region, verbose_name='Nombre de la región', max_length=70, to_field='numreg')
     provincia = models.CharField(verbose_name='Nombre de la provincia', max_length=70, blank=True, null=True)
     estado = models.ForeignKey(Estado, verbose_name='Estado')
     idusuario_creac = models.IntegerField(verbose_name='Numero del Usuario de creación', blank=True, null=True)

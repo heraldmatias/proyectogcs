@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
+from django.contrib.auth.models import User
 
 SEXO = (
         ('FE','Femenino'),
@@ -41,6 +42,7 @@ class Organismo(models.Model):
         return self.nombre
 
 class Usuario(models.Model):
+    user = models.OneToOneField(User)
     codigo = models.AutoField(verbose_name='Codigo Autogenerado', primary_key=True)
     numero = models.IntegerField(verbose_name='Codigo' ,unique=True)
     nivel = models.ForeignKey(Nivel, verbose_name='nivel', blank=True, null=True)
@@ -56,8 +58,8 @@ class Usuario(models.Model):
     anexo = models.CharField(verbose_name='Anexo', max_length=10, blank=True, null=True)
     celular = models.CharField(verbose_name='Celular', max_length=25, blank=True, null=True)
     estado = models.ForeignKey(Estado, verbose_name='Estado del Usuario',related_name='+')
-    idusuario_mod = models.IntegerField(null=True, blank=True)
-    fec_mod = models.DateTimeField(null=True, blank=True)
+    idusuario_mod = models.IntegerField(verbose_name='Usuario modifico', null=True, blank=True)
+    fec_mod = models.DateTimeField(verbose_name='Fecha modifico', null=True, blank=True)
     class Meta:
         db_table = u'usuario'
         verbose_name = u'Usuario'

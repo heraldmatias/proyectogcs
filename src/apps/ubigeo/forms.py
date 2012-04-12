@@ -6,7 +6,7 @@ from models import Region, Provincia
 class RegionForm(forms.ModelForm):
     class Meta:
         model = Region
-        exclude = ('numreg','estado','idusuario_creac','idusuario_mod',)
+        #exclude = ('numreg','estado','idusuario_creac','idusuario_mod',)
 
 class ProvinciaForm(forms.ModelForm):
     class Meta:

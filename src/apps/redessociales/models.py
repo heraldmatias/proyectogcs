@@ -133,7 +133,7 @@ class Facebook(models.Model):
     numfb = models.IntegerField(verbose_name='Codigo' ,unique=True)    
     organismo = models.ForeignKey(Organismo, verbose_name='Organismo')
     dependencia = models.IntegerField(verbose_name='Dependencia', blank=True, null=True)
-    fechacreac = models.DateTimeField(verbose_name='Fecha de creación del twitter',)
+    fechacreac = models.DateTimeField(verbose_name='Fecha de creación del Facebook',)
     cuentafb = models.CharField(verbose_name='Cuenta Oficial', max_length=100,)
     urlfb = models.CharField(verbose_name='URL Oficial', max_length=150,)
     idusuario_creac = models.IntegerField(verbose_name='Numero del Usuario de creación')
