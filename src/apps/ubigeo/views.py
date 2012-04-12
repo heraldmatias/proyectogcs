@@ -9,13 +9,13 @@ from models import Region
 
 def region(request):
     if request.method == 'POST': # If the form has been submitted...
-        form = RegionForm(request.POST) # A form bound to the POST data
+        frmregion = RegionForm(request.POST) # A form bound to the POST data
         #profile = Usuario.objects.get(user = request.user)
         #region = Region.objects.create(
         #region.save()
-        if form.is_valid():
+        if frmregion.is_valid():
             return HttpResponseRedirect('/thanks/') # Redirect after POST        
-    frmregion = RegionForm()
+    #frmregion = RegionForm()
     frmprovincia = ProvinciaForm()
     frmministerio = MinisterioForm()
     frmgobernacion = GobernacionForm()
