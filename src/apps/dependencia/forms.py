@@ -6,14 +6,14 @@ from models import Ministerio, Odp, Gobernacion
 class MinisterioForm(forms.ModelForm):
     class Meta:
         model = Ministerio
-        #exclude = ('numreg','estado','idusuario_creac','idusuario_mod',)
+        fields = ('ministerio','iniciales',)
 
 class OdpForm(forms.ModelForm):
     class Meta:
         model = Odp
-        #exclude = ('numreg','estado','idusuario_creac','idusuario_mod',)
+        fields = ('nummin','odp','iniciales',)
 
 class GobernacionForm(forms.ModelForm):
     class Meta:
         model = Gobernacion
-        #exclude = ('numreg','estado','idusuario_creac','idusuario_mod',)
+        fields = ('region','provincia','gobernacion','iniciales',)

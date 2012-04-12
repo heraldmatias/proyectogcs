@@ -1,4 +1,10 @@
-<div id="frmgobernacion" class="modal hide fade">
+  {% extends 'base.html' %}
+  {% load static %}
+  {% block title %} Plataforma Intersectorial de Comunicaci&oacute;n OGCS {% endblock %}
+  {% block content %}
+  {% include 'include/header.html' %}
+<form class="form-inline" name="frmgob" method="post" action="/mantenimiento/gobernacion/" onSubmit="return confirmar('¿Desea grabar el registro?'); "><!--data-toggle="modal"-->
+<div id="frmgobernacion" class="modal" style="position: relative; top: auto; left: auto; margin: 0 auto; z-index: 1"><!--class="modal hide fade">-->
     <div class="modal-header">
       <a class="close" data-dismiss="modal" >&times;</a>
       <h3>Matenimiento de Gobernacion</h3>
@@ -8,7 +14,16 @@
       {{ frmgobernacion.as_p }}
     </div>
     <div class="modal-footer">
-      <a href="#" class="btn" data-dismiss="modal" >Cerrar</a>
-      <a href="" class="btn btn-primary">Guardar Cambios</a>
+     <input class="btn" name="grabar" value="Cerrar" type="button" onclick="javascript: $('#frmregion').modal('hide')">
+      <input class="btn-primary" name="grabar" value="Guardar Cambios" type="submit">
     </div>
 </div>
+</form>
+  {% endblock %}
+  {% block scriptjs %}    
+<script>
+$(document).ready(function() {
+ //$('#frmregion').modal({show: true,});  
+});
+</script>
+  {% endblock %}

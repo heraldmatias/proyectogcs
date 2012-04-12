@@ -21,6 +21,8 @@ urlpatterns = patterns('',
     (r'^$', 'home.views.index'),
     (r'^home/', include('home.urls')),
     (r'^mantenimiento/', include('ubigeo.urls')),
+    (r'^mantenimiento/', include('dependencia.urls')),
+    (r'^mantenimiento/', include('usuario.urls')),
 )
 
 #if settings.DEBUG:

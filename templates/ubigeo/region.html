@@ -4,7 +4,7 @@
   {% block content %}
   {% include 'include/header.html' %}
 <form class="form-inline" name="frmreg" method="post" action="/mantenimiento/region/" onSubmit="return confirmar('¿Desea grabar el registro?'); "><!--data-toggle="modal"-->
-<div id="frmregion" class="modal" style="position: relative; top: auto; left: auto; margin: 0 auto; z-index: 1"><!-- class="well modal-example">--><!--class="modal hide fade">-->
+<div id="frmregion" class="modal" style="position: relative; top: auto; left: auto; margin: 0 auto; z-index: 1"><!--class="modal hide fade">-->
     <div class="modal-header">
       <a class="close" data-dismiss="modal" >&times;</a>
       <h3>Matenimiento de Región</h3>
@@ -14,8 +14,6 @@
       {{ frmregion.as_p }}
     </div>
     <div class="modal-footer">
-           <!--<a href="#" class="btn" data-dismiss="modal" >Cerrar</a>
-          <a href="javascript: document.frmreg.submit();" class="btn btn-primary">Guardar Cambios</a> data-toggle="modal"-->
      <input class="btn" name="grabar" value="Cerrar" type="button" onclick="javascript: $('#frmregion').modal('hide')">
       <input class="btn-primary" name="grabar" value="Guardar Cambios" type="submit">
     </div>
