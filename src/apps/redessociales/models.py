@@ -15,7 +15,7 @@ class Informacion(models.Model):
     emailenc1 = models.EmailField(verbose_name='Email Coorporativo', max_length=135)
     emailenc2 = models.EmailField(verbose_name='Email Personal', max_length=135)
     areaenc = models.CharField(verbose_name='Area del encargado', max_length=40)
-    nombresjefe = models.EmailField(verbose_name='Nombres del jefe', max_length=125)
+    nombresjefe = models.CharField(verbose_name='Nombres del jefe', max_length=125)
     fonojefe = models.CharField(verbose_name='Telefono jefe', max_length=15,)
     anexojefe = models.CharField(verbose_name='Anexo', max_length=5, blank=True, null=True)
     celularjefe = models.CharField(verbose_name='Celular Jefe', max_length=15,)

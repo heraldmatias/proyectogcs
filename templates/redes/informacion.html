@@ -22,8 +22,8 @@
 	      <h4>Jefe directo del Encargado</h4>
 	    </div><br>
 	{% endif %}
-        {{ field.errors }}
-        <p>{{ field.label_tag }} {{ field }}</p>
+	{{ field.errors }}	         
+        <p><strong>{{ field.label_tag }}:</strong> {{ field }}</p>
 	{% endfor %}
     </div>
     <div class="modal-footer">
@@ -36,7 +36,8 @@
   {% block scriptjs %}    
 <script>
 $(document).ready(function() {
- //$('#frmregion').modal({show: true,});  
+ //$('#frmregion').modal({show: true,});
+  dependencias();  
 });
 </script>
   {% endblock %}

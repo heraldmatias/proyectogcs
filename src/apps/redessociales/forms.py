@@ -7,6 +7,10 @@ class InformacionForm(forms.ModelForm):
     class Meta:
         model = Informacion
         exclude = ('numinf','idusuario_creac','fec_creac','idusuario_mod','fec_mod',)
+        widgets = {
+            'dependencia': forms.Select(),
+            'organismo': forms.Select(attrs={'onChange':'dependencias();',}),
+        }
 
 class TwitterForm(forms.ModelForm):
     class Meta:

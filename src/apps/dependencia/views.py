@@ -5,6 +5,8 @@ from django.template import RequestContext
 from usuario.models import Usuario, Estado
 from models import Ministerio, Odp, Gobernacion
 from django.contrib.auth.decorators import login_required
+from django.core import serializers
+from django.http import HttpResponse
 
 @login_required(login_url='/')
 def ministerio(request):
@@ -50,4 +52,15 @@ def gobernacion(request):
     else:        
         frmgobernacion = GobernacionForm()
     return render_to_response('dependencia/gobernacion.html', {'frmgobernacion': frmgobernacion,}, context_instance=RequestContext(request),)
+
+@login_required(login_url='/')
+def jsondependencia(request):
+    if int(request.GET['r'])==1:
+        dependencia = Ministerio.objects.all().order_by('ministerio')
+    elif int(request.GET['r'])==2:
+        dependencia = Odp.objects.all().order_by('odp')
+    elif int(request.GET['r'])==3:
+        dependencia = Gobernacion.objects.all().order_by('gobernacion')
+    return HttpResponse(serializers.serialize("json", dependencia, ensure_ascii=False),mimetype='application/json')
+
 

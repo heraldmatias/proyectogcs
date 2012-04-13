@@ -21,7 +21,7 @@ urlpatterns = patterns('',
     (r'^$', 'home.views.index'),
     (r'^home/', include('home.urls')),
     (r'^ubigeo/', include('ubigeo.urls')),
-    (r'^mantenimiento/', include('dependencia.urls')),
+    (r'^dependencia/', include('dependencia.urls')),
     (r'^mantenimiento/', include('usuario.urls')),
     (r'^redessociales/', include('redessociales.urls')),
 )
