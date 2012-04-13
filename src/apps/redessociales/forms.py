@@ -15,9 +15,20 @@ class InformacionForm(forms.ModelForm):
 class TwitterForm(forms.ModelForm):
     class Meta:
         model = Twitter
-        #exclude = ('numreg','estado','idusuario_creac','idusuario_mod',)
+        exclude = ('numtw','idusuario_creac','fec_creac','idusuario_mod','fec_mod','idadministrador_mod','fec_modadm')
         widgets = {
-            'fechacreac': forms.TextInput(attrs={'id':'id_fechacreac_tw',}),
+            'fechacreac': forms.TextInput(attrs={'id':'id_fechacreac_tw','readonly':'readonly'}),
+        }
+
+class TwitterDetalleForm(forms.ModelForm):
+    class Meta:
+        model = TwitterDetalle
+        exclude = ('numtw','item','auditoria',)        
+        widgets = {
+            'tweets': forms.TextInput(attrs={'class':'span1'}),
+            'siguiendo': forms.TextInput(attrs={'class':'span1'}),
+            'seguidores': forms.TextInput(attrs={'class':'span1'}),
+            'fechadettw': forms.TextInput(attrs={'class':'span1'}),
         }
 
 class FacebookForm(forms.ModelForm):
