@@ -20,9 +20,10 @@ urlpatterns = patterns('',
     # urls
     (r'^$', 'home.views.index'),
     (r'^home/', include('home.urls')),
-    (r'^mantenimiento/', include('ubigeo.urls')),
+    (r'^ubigeo/', include('ubigeo.urls')),
     (r'^mantenimiento/', include('dependencia.urls')),
     (r'^mantenimiento/', include('usuario.urls')),
+    (r'^redessociales/', include('redessociales.urls')),
 )
 
 #if settings.DEBUG:

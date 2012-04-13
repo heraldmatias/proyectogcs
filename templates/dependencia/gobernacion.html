@@ -23,7 +23,9 @@
   {% block scriptjs %}    
 <script>
 $(document).ready(function() {
- //$('#frmregion').modal({show: true,});  
+var provincia = $("#id_provincia");
+provincia.find('option').remove();
+provincia.append("<option value='' selected>---------</option>");
 });
 </script>
   {% endblock %}

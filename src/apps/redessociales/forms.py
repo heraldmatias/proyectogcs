@@ -6,7 +6,7 @@ from models import Informacion, Twitter, TwitterDetalle, TwitterDiario, Facebook
 class InformacionForm(forms.ModelForm):
     class Meta:
         model = Informacion
-        #exclude = ('numreg','estado','idusuario_creac','idusuario_mod',)
+        exclude = ('numinf','idusuario_creac','fec_creac','idusuario_mod','fec_mod',)
 
 class TwitterForm(forms.ModelForm):
     class Meta:

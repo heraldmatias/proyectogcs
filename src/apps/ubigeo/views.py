@@ -5,6 +5,8 @@ from django.template import RequestContext
 from usuario.models import Usuario, Estado
 from models import Region, Provincia
 from django.contrib.auth.decorators import login_required
+from django.core import serializers
+from django.http import HttpResponse
 
 @login_required(login_url='/')
 def region(request):
@@ -35,3 +37,8 @@ def provincia(request):
     else:        
         frmprovincia = ProvinciaForm()
     return render_to_response('ubigeo/provincia.html', {'frmprovincia': frmprovincia,}, context_instance=RequestContext(request),)
+
+@login_required(login_url='/')
+def jsonprovincia(request):
+    provincias = Provincia.objects.filter(region = Region.objects.get(numreg = request.GET['r'])).order_by('provincia')
+    return HttpResponse(serializers.serialize("json", provincias, ensure_ascii=False),mimetype='application/json')

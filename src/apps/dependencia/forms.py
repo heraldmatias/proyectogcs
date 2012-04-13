@@ -17,3 +17,6 @@ class GobernacionForm(forms.ModelForm):
     class Meta:
         model = Gobernacion
         fields = ('region','provincia','gobernacion','iniciales',)
+        widgets = {
+            'region': forms.Select(attrs={'onChange':'provincias();',}),
+        }

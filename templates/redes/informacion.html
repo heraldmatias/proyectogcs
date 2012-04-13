@@ -1,14 +1,42 @@
-<div id="frminformacion" class="modal hide fade">
+ {% extends 'base.html' %}
+  {% load static %}
+  {% block title %} Plataforma Intersectorial de Comunicaci&oacute;n OGCS {% endblock %}
+  {% block content %}
+  {% include 'include/header.html' %}
+<form class="form-inline" name="frminfo" method="post" action="/redessociales/informacion/" onSubmit="return confirmar('¿Desea grabar el registro?'); "><!--data-toggle="modal"-->
+<div id="frminformacion" class="modal" style="position: relative; top: auto; left: auto; margin: 0 auto; z-index: 1"><!--class="modal hide fade">-->
     <div class="modal-header">
       <a class="close" data-dismiss="modal" >&times;</a>
       <h3>Informacion General</h3>
     </div>
     <div class="modal-body">
       {% csrf_token %}              
-      {{ frminformacion.as_p }}
+	{% for field in frminformacion %}
+	{% if field.label == "Nombres del encargado" %}
+	     <div class="modal-header">	      
+	      <h4>Encargado de Facebook y Twitter</h4>
+	    </div><br>    
+	{% endif %}
+        {% if field.label == "Nombres del jefe" %}
+	     <div class="modal-header">	      
+	      <h4>Jefe directo del Encargado</h4>
+	    </div><br>
+	{% endif %}
+        {{ field.errors }}
+        <p>{{ field.label_tag }} {{ field }}</p>
+	{% endfor %}
     </div>
     <div class="modal-footer">
-      <a href="#" class="btn" data-dismiss="modal" >Cerrar</a>
-      <a href="" class="btn btn-primary">Guardar Cambios</a>
+     <input class="btn" name="grabar" value="Cerrar" type="button" onclick="javascript: $('#frmregion').modal('hide')">
+      <input class="btn-primary" name="grabar" value="Guardar Cambios" type="submit">
     </div>
 </div>
+</form>
+  {% endblock %}
+  {% block scriptjs %}    
+<script>
+$(document).ready(function() {
+ //$('#frmregion').modal({show: true,});  
+});
+</script>
+  {% endblock %}
