@@ -1,4 +1,10 @@
-<div id="frmtwitter" class="modal hide fade">
+  {% extends 'base.html' %}
+  {% load static %}
+  {% block title %} Plataforma Intersectorial de Comunicaci&oacute;n OGCS {% endblock %}
+  {% block content %}
+  {% include 'include/header.html' %}
+<form class="form-inline span5" name="frmtw" method="post" action="/redessociales/twitter/" onSubmit="return confirmar('¿Desea grabar el registro?'); "><!--data-toggle="modal"-->
+<div id="frmtwitter" class="modal span7" style="position: relative; top: auto; left: absolute; margin: 0 auto; z-index: 1"><!--class="modal hide fade">-->
     <div class="modal-header">
       <a class="close" data-dismiss="modal" >&times;</a>
       <h3>Informacion General De Twitter</h3>
@@ -6,10 +12,40 @@
     <div class="modal-body">
       {% csrf_token %}              
       {{ frmtwitter.as_p }}
+      <div class="modal-header"> <h4>Tweets y Seguir</h4> </div><br>
+      <div class="inline">
+      {{ frmtwitterdetalle }}
+      </div>
+      <br>
+      <table class="table table-bordered table-condensed" id="twdetalle">
+      <thead><tr>
+      <th>Item</th><th>Fecha</th><th>Tweets</th><th>Siguiendo</th><th>Seguidores</th><th>Eliminar</th>
+      </tr></thead>
+      <tbody></tbody>
+      </table>
     </div>
     <div class="modal-footer">
-      <a href="#" class="btn" data-dismiss="modal" >Cerrar</a>
-      <a href="" class="btn btn-primary">Guardar Cambios</a>
+     <input class="btn" name="grabar" value="Cerrar" type="button" onclick="javascript: $('#frmregion').modal('hide')">
+      <input class="btn-primary" name="grabar" value="Guardar Cambios" type="submit">
     </div>
 </div>
-
+</form>
+  {% endblock %}
+  {% block scriptjs %}    
+<script>
+$(document).ready(function() {
+ //$('#frmregion').modal({show: true,});
+  dependencias();  
+});
+$('#id_fechacreac_tw').datepicker({
+    format: 'dd/mm/yyyy',
+    language: 'es',
+    autoclose: true
+});
+$('#id_fechadettw').datepicker({
+    format: 'dd/mm/yy',
+    language: 'es',
+    autoclose: true
+});
+</script>
+  {% endblock %}
