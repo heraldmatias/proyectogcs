@@ -3,7 +3,7 @@
   {% block title %} Plataforma Intersectorial de Comunicaci&oacute;n OGCS {% endblock %}
   {% block content %}
   {% include 'include/header.html' %}
-<form class="form-inline span5" name="frmtw" method="post" action="/redessociales/twitter/" onSubmit="return confirmar('¿Desea grabar el registro?'); "><!--data-toggle="modal"-->
+<form class="form-inline span5" name="frmtw" id="frmtw" method="post" action="/redessociales/twitter/" ><!--data-toggle="modal"-->
 <div id="frmtwitter" class="modal span7" style="position: relative; top: auto; left: absolute; margin: 0 auto; z-index: 1"><!--class="modal hide fade">-->
     <div class="modal-header">
       <a class="close" data-dismiss="modal" >&times;</a>
@@ -14,10 +14,10 @@
       {{ frmtwitter.as_p }}
       <div class="modal-header"> <h4>Tweets y Seguir</h4> </div><br>
       <div class="inline">
-      {{ frmtwitterdetalle }}
+      {{ frmtwitterdetalle }} <input class="btn" type="button" value="Agregar" onClick="agregardetalle();">
       </div>
       <br>
-      <table class="table table-bordered table-condensed" id="twdetalle">
+      <table class="table table-bordered table-condensed" id="tbldetalle">
       <thead><tr>
       <th>Item</th><th>Fecha</th><th>Tweets</th><th>Siguiendo</th><th>Seguidores</th><th>Eliminar</th>
       </tr></thead>
@@ -33,19 +33,63 @@
   {% endblock %}
   {% block scriptjs %}    
 <script>
+$('#frmtw').submit(function() {
+if ($('#tbldetalle').find("tbody tr").length==0) {
+alert('Debe ingresar por lo menos una informacion acerca de tweets y seguir.'); return false;}
+else{
+return confirmar('¿Desea grabar el registro?');}});
 $(document).ready(function() {
  //$('#frmregion').modal({show: true,});
-  dependencias();  
+  dependencias();validanumber('id_tweets');validanumber('id_siguiendo');validanumber('id_seguidores');
 });
 $('#id_fechacreac_tw').datepicker({
     format: 'dd/mm/yyyy',
     language: 'es',
-    autoclose: true
+    autoclose: true,
 });
 $('#id_fechadettw').datepicker({
     format: 'dd/mm/yy',
     language: 'es',
-    autoclose: true
+    autoclose: true,    
 });
+function validanumber(campo){
+ $('#'+campo).keyup(function () {
+  this.value = this.value.replace(/[^0-9]/g,'');
+});
+}
+function agregardetalle(){
+var fecha=$('#id_fechadettw');
+var tweets=$('#id_tweets');
+var siguiendo=$('#id_siguiendo');
+var seguidores=$('#id_seguidores');
+if ($.trim(fecha.val())==''){
+alert("Escriba la fecha");fecha.focus();return false;
+}
+if ($.trim(tweets.val())==''){
+alert("Escriba el numero de tweets");tweets.focus();return false;
+}
+if ($.trim(siguiendo.val())==''){
+alert("Escriba el numero de siguiendo");siguiendo.focus();return false;
+}
+if ($.trim(seguidores.val())==''){
+alert("Escriba el numero de seguidores");seguidores.focus();return false;
+}
+var tdetalle= $('#tbldetalle').find("tbody");
+var n= $('#tbldetalle').find("tbody tr").length+1;
+fila="<tr id='fila"+n+"'><td>"+n+'</td><td><input type="hidden" name="fechas" value='+fecha.val()+'>'+fecha.val()+'</td><td><input type="hidden" name="tweets" value='+tweets.val()+'>'+tweets.val()+'</td><td>'
++siguiendo.val()+'</td><td>'+seguidores.val()+'</td><td><center><input type="button" class="btn" onclick="removedetalle('+n+')" ></center></td></tr>'
+tdetalle.append(fila);
+fecha.val('');tweets.val('');siguiendo.val('');seguidores.val('');
+//fecha.focus();
+}
+function removedetalle(fila){
+$("#fila"+fila).remove();
+var n=1;
+var tdetalle= $('#tbldetalle');
+$.each(tdetalle.find("tbody tr"),function(){
+    this.cells[0].innerHTML=n;
+    n+=1;
+});
+}
 </script>
   {% endblock %}

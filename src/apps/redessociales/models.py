@@ -62,11 +62,11 @@ class Twitter(models.Model):
 class TwitterDetalle(models.Model):
     codigo = models.AutoField(verbose_name='Codigo Autogenerado', primary_key=True)
     numtw = models.ForeignKey(Twitter, verbose_name='Numero del twitter',to_field='numtw')
-    item = models.IntegerField(verbose_name='Numero de items')
+    item = models.IntegerField(verbose_name='Item')
     fechadettw = models.DateTimeField(verbose_name='Fecha',)
-    tweets = models.IntegerField(verbose_name='tweets',)
-    siguiendo = models.IntegerField(verbose_name='siguiendo', blank=True, null=True)
-    seguidores = models.IntegerField(verbose_name='seguidores',)
+    tweets = models.IntegerField(verbose_name='Tweets',)
+    siguiendo = models.IntegerField(verbose_name='Siguiendo', blank=True, null=True)
+    seguidores = models.IntegerField(verbose_name='Seguidores',)
     auditoria = models.ForeignKey(Estado, verbose_name='Estado', blank=True, null=True)
     class Meta:
         db_table = u'twitterdetalle'

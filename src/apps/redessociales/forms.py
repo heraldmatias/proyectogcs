@@ -2,6 +2,7 @@
 
 from django import forms
 from models import Informacion, Twitter, TwitterDetalle, TwitterDiario, Facebook, FacebookDetalle, FacebookDiario
+import django_tables2 as tables 
 
 class InformacionForm(forms.ModelForm):
     class Meta:

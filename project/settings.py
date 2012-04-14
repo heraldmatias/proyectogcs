@@ -132,7 +132,7 @@ INSTALLED_APPS = (
     
     # apps installed
     'south',
-    
+    'django_tables2',
     # apps
     'home',
     'redessociales',
