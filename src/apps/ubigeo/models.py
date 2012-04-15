@@ -34,8 +34,9 @@ class Provincia(models.Model):
     
     class Meta:
         db_table = u'provincia'
-        verbose_name = u'Región'
-        verbose_name_plural = u'Regiones'
-
+        verbose_name = u'Provincia'
+        verbose_name_plural = u'Provincias'
+        unique_together = ('region','provincia',)
+  
     def __unicode__(self):
         return self.provincia
