@@ -30,7 +30,6 @@ def twitter(request):
         fechas = request.POST.getlist('det')
         for det in fechas:
             a=det
-
         itwittwer = Twitter(numtw=num,idusuario_creac=profile.numero)
         frmtwitter = TwitterForm(request.POST, instance=itwittwer) # A form bound to the POST data
         if frmtwitter.is_valid():

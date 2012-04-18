@@ -77,7 +77,7 @@ alert("Escriba el numero de seguidores");seguidores.focus();return false;
 var tdetalle= $('#tbldetalle').find("tbody");
 var n= $('#tbldetalle').find("tbody tr").length+1;
 fila="<tr id='fila"+n+"'><td>"+n+'</td><td><input type="hidden" name="fechas" value='+fecha.val()+'>'+fecha.val()+'</td><td><input type="hidden" name="tweets" value='+tweets.val()+'>'+tweets.val()+'</td><td>'
-+siguiendo.val()+'</td><td>'+seguidores.val()+'</td><td><center><input type="button" class="btn" onclick="removedetalle('+n+')" ></center></td></tr>'
++siguiendo.val()+'</td><td>'+seguidores.val()+"</td><td> <a class='close' href='javascript: removedetalle("+n+")'>&times;</a></td></tr>"
 tdetalle.append(fila);
 fecha.val('');tweets.val('');siguiendo.val('');seguidores.val('');
 //fecha.focus();

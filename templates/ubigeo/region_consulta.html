@@ -3,25 +3,21 @@
   {% block title %} Plataforma Intersectorial de Comunicaci&oacute;n OGCS {% endblock %}
   {% block content %}
   {% include 'include/header.html' %}
-<form class="form-inline" name="frmreg" method="post" action="/ubigeo/region/{{ opcion }}/{% if codigo %}{{ codigo }}/{% endif %}" onSubmit="return confirmar('¿Desea grabar el registro?'); "><!--data-toggle="modal"-->
+  {% load render_table from django_tables2 %}
+<form class="form-inline" name="frmreg" method="post" action="/ubigeo/region/consulta/"><!--data-toggle="modal"-->
 <div id="frmregion" class="modal" style="position: relative; top: auto; left: auto; margin: 0 auto; z-index: 1"><!--class="modal hide fade">-->
     <div class="modal-header">
       <a class="close" data-dismiss="modal" >&times;</a>
-      <h3>Matenimiento de Región</h3>
+      <h3>Consulta de Región</h3>
     </div>
     <div class="modal-body">
       {% csrf_token %}
-      {% if opcion == "add" %}
-      {{ frmregion.region.errors }}
-      {{ frmregion.region.label_tag }}: {{ frmregion.region }}
-      <input type="hidden" name="estado" id="id_estado" value="1">
-      {% else %}
-      {{ frmregion.as_p }}      
-      {% endif %}	
+      {{ consultaregionform.as_p }}
+      {% render_table tblregiones %}
     </div>
     <div class="modal-footer">
      <input class="btn" name="grabar" value="Cerrar" type="button" onclick="javascript: $('#frmregion').modal('hide')">
-      <input class="btn-primary" name="grabar" value="Guardar Cambios" type="submit">
+      <input class="btn-primary" name="grabar" value="Consultar Regiones" type="submit">
     </div>
 </div>
 </form>
@@ -29,7 +25,7 @@
   {% block scriptjs %}    
 <script>
 $(document).ready(function() {
- //$('#frmregion').modal({show: true,});  
+
 });
 </script>
   {% endblock %}
