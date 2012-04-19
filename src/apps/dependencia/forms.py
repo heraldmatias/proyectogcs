@@ -2,6 +2,7 @@
 
 from django import forms
 from models import Ministerio, Odp, Gobernacion
+from ubigeo.models import Region, Provincia
 import django_tables2 as tables
 from django_tables2.utils import A
 
@@ -33,10 +34,12 @@ class OdpForm(forms.ModelForm):
         model = Odp
         fields = ('nummin','odp','iniciales','estado')
 
-class ConsultaOdpForm(forms.ModelForm):
-    class Meta:
-        model = Odp
-        fields = ('nummin','odp',)
+class ConsultaOdpForm(forms.Form):#CORREGIR
+    nummin = forms.ModelChoiceField(queryset=Ministerio.objects.all(),label='Ministerio',required=False)#.values_list('ministerio','ministerio',)
+    odp = forms.CharField(label='Nombre de Odp', max_length=70,required=False)
+    #class Meta:
+    #    model = Odp
+    #    fields = ('nummin','odp',)
 
 class OdpTable(tables.Table):
     item = tables.Column()
@@ -63,6 +66,8 @@ class GobernacionForm(forms.ModelForm):
         }
 
 class ConsultaGobernacionForm(forms.ModelForm):
+#    region = forms.ModelChoiceField(queryset=Region.objects.all(),label='Region',required=False,widget=forms.Select(attrs={'onChange':'provincias();',}))
+ #   provincia = forms.ModelChoiceField(queryset=Provincia.objects.filter(region=0),label='Provincia',required=False)
     class Meta:
         model = Gobernacion
         fields = ('region','provincia',)

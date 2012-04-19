@@ -11,11 +11,16 @@ function confirmar(mensaje){
 function provincias(){
         var id= $("#id_region").val();
 	var provincia = $("#id_provincia");
+        var idpro = provincia.val();        
 	provincia.find('option').remove();
-	provincia.append("<option value='' selected>---------</option>");
+	provincia.append("<option value=''>---------</option>");
 	$.getJSON('/ubigeo/provincia/json/?r='+id, function(data){
-	$.each(data, function(key,value){		
+	$.each(data, function(key,value){
+                if(value.fields.numpro==idpro){
+		provincia.append("<option value='"+value.fields.numpro+"' selected='selected'>"+value.fields.provincia+"</option>");
+ 		}else{
 		provincia.append("<option value='"+value.fields.numpro+"'>"+value.fields.provincia+"</option>");
+		}
 	});
 	});
 }
@@ -35,13 +40,4 @@ function dependencias(){
 		dependencia.append("<option value='"+value.fields.numgob+"'>"+value.fields.gobernacion+"</option>");}		
 	});
 	});
-/*
-var provincia = $("#id_dependencia");
-	provincia.find('option').remove();
-	provincia.append("<option value='' selected>---------</option>");
-	$.getJSON('/ubigeo/provincia/json/?r='+id, function(data){
-	$.each(data, function(key,value){		
-		provincia.append("<option value='"+value.fields.numpro+"'>"+value.fields.provincia+"</option>");
-	});
-	});*/
 }

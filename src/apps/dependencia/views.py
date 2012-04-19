@@ -10,6 +10,8 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 import django_tables2 as tables
 from django_tables2.config import RequestConfig
+from ubigeo.models import Provincia
+from django.db.models import Q
 
 @login_required(login_url='/')
 def ministerioadd(request):
@@ -97,7 +99,10 @@ def odpquery(request):
     if request.method == "POST":
         consultaodpform = ConsultaOdpForm(request.POST)        
         if consultaodpform.is_valid():
-            odps = odps.filter(odp__icontains=request.POST['odp'],nummin__ministerio__icontains=request.POST['nummin']).order_by(col)
+            if request.POST['nummin']!='':
+                odps = odps.filter(odp__icontains=request.POST['odp'],nummin__nummin=request.POST['nummin']).order_by(col)
+            else:
+                odps = odps.filter(odp__icontains=request.POST['odp']).order_by(col)
     else:
         consultaodpform = ConsultaOdpForm()
     tblodps = OdpTable(odps.order_by(col))
@@ -132,6 +137,7 @@ def gobernacionedit(request, codigo):
     else:
         gobernacion = get_object_or_404(Gobernacion, numgob=int(codigo))
         frmgobernacion = GobernacionForm(instance=gobernacion)
+        #frmgobernacion.provincia.choices = Provincia.objects.filter(region=gobernacion.region).values_list('numpro','provincia')        
     return render_to_response('dependencia/gobernacion.html', {'frmgobernacion': frmgobernacion,'opcion':'edit','codigo':codigo}, context_instance=RequestContext(request),)
 
 @login_required(login_url='/')
@@ -143,9 +149,11 @@ def gobernacionquery(request):
     config = RequestConfig(request)
     if request.method == "POST":
         consultagobernacionform = ConsultaGobernacionForm(request.POST)        
-        if consultagobernacionform.is_valid():
-            print consultagobernacionform
-            gobernaciones = gobernaciones.filter(region=request.POST['region'], provincia=request.POST['provincia']).order_by(col)
+        #if consultagobernacionform.is_valid():
+	if request.POST['region']!='':
+	    gobernaciones = gobernaciones.filter(region__numreg=request.POST['region'],).order_by(col)
+	if request.POST['region']!='' and request.POST['provincia']!='':
+	    gobernaciones = gobernaciones.filter(region=request.POST['region'], provincia=request.POST['provincia']).order_by(col)
     else:
         consultagobernacionform = ConsultaGobernacionForm()
     tblgobernaciones = GobernacionTable(gobernaciones.order_by(col))

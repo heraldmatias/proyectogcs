@@ -13,7 +13,8 @@
     </div>
     <div class="modal-body">
       {% csrf_token %}
-      {{ consultaodpform.as_p }}
+      <p>{{ consultaodpform.nummin.label_tag }}: {{ consultaodpform.nummin }}</p>
+      <p>{{ consultaodpform.odp.label_tag }}: {{ consultaodpform.odp }}</p>
       <br>
       <fieldset>
 	<legend><h4>Lista de Odp</h4></legend>
