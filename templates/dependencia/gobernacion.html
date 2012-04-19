@@ -3,29 +3,44 @@
   {% block title %} Plataforma Intersectorial de Comunicaci&oacute;n OGCS {% endblock %}
   {% block content %}
   {% include 'include/header.html' %}
-<form class="form-inline" name="frmgob" method="post" action="/dependencia/gobernacion/" onSubmit="return confirmar('¿Desea grabar el registro?'); "><!--data-toggle="modal"-->
+<div id="contenido">
+<form class="form-inline" name="frmgob" method="post" action="/dependencia/gobernacion/{{ opcion }}/{% if codigo %}{{ codigo }}/{% endif %}" onSubmit="return confirmar('¿Desea grabar el registro?'); "><!--data-toggle="modal"-->
 <div id="frmgobernacion" class="modal" style="position: relative; top: auto; left: auto; margin: 0 auto; z-index: 1"><!--class="modal hide fade">-->
     <div class="modal-header">
       <a class="close" data-dismiss="modal" >&times;</a>
       <h3>Matenimiento de Gobernacion</h3>
     </div>
     <div class="modal-body">
-      {% csrf_token %}              
+      {% csrf_token %}
+      {% if opcion == "add" %}
+      {{ frmgobernacion.non_field_errors }}
+      <p>{{ frmgobernacion.region.errors }}
+      {{ frmgobernacion.region.label_tag }}: {{ frmgobernacion.region }}</p>
+      <p>{{ frmgobernacion.provincia.errors }}
+      {{ frmgobernacion.provincia.label_tag }}: {{ frmgobernacion.provincia }}</p>
+      <p>{{ frmgobernacion.gobernacion.errors }}
+      {{ frmgobernacion.gobernacion.label_tag }}: {{ frmgobernacion.gobernacion }}</p>
+      <p>{{ frmgobernacion.iniciales.errors }}
+      {{ frmgobernacion.iniciales.label_tag }}: {{ frmgobernacion.iniciales }}</p>
+      <p><input type="hidden" name="estado" id="id_estado" value="1"></p>
+      {% else %}
       {{ frmgobernacion.as_p }}
+      {% endif %}      
     </div>
     <div class="modal-footer">
-     <input class="btn" name="grabar" value="Cerrar" type="button" onclick="javascript: $('#frmregion').modal('hide')">
+     <input class="btn" name="grabar" value="Cerrar" type="button" onclick="cerrarformulario('contenido');">
       <input class="btn-primary" name="grabar" value="Guardar Cambios" type="submit">
     </div>
 </div>
 </form>
+</div>
   {% endblock %}
-  {% block scriptjs %}    
+  {% block scriptjs %}
 <script>
-$(document).ready(function() {
+/*$(document).ready(function() {
 var provincia = $("#id_provincia");
 provincia.find('option').remove();
 provincia.append("<option value='' selected>---------</option>");
-});
+});*/
 </script>
   {% endblock %}

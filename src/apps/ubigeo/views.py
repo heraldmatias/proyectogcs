@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render_to_response, redirect
-from forms import RegionForm, ProvinciaForm, ConsultaRegionForm, RegionTable
+from forms import RegionForm, ProvinciaForm, ConsultaRegionForm, RegionTable, ConsultaProvinciaForm, ProvinciaTable
 from django.template import RequestContext
 from usuario.models import Usuario, Estado
 from models import Region, Provincia
@@ -42,31 +42,71 @@ def regionedit(request, codigo):
 
 @login_required(login_url='/')
 def regionquery(request):
-    tblregiones = RegionTable(Region.objects.all(), prefix="2-")
+    col = "-region"
+    if "2-sort" in request.GET:
+        col = request.GET['2-sort']
+    regiones = Region.objects.all()
+    config = RequestConfig(request)
     if request.method == "POST":
-        consultaregionform = ConsultaRegionForm(request.POST)
+        consultaregionform = ConsultaRegionForm(request.POST)        
         if consultaregionform.is_valid():
-            tblregiones = RegionTable(Region.objects.all(), prefix="2-")
-            config = RequestConfig(request)
-            config.configure(tblregiones)
+            print consultaregionform
+            regiones = regiones.filter(region__icontains=request.POST['region']).order_by(col)
     else:
         consultaregionform = ConsultaRegionForm()
-    return render_to_response('ubigeo/region_consulta.html', {'consultaregionform':consultaregionform,'tblregiones':tblregiones}, context_instance=RequestContext(request),)
+    tblregiones = RegionTable(regiones.order_by(col))
+    config.configure(tblregiones)
+    tblregiones.paginate(page=request.GET.get('page', 1), per_page=6)
+    return render_to_response('ubigeo/region_consulta.html', {'consultaregionform':consultaregionform,'tblregiones':tblregiones,}, context_instance=RequestContext(request),)
 
 @login_required(login_url='/')
-def provincia(request):
+def provinciaadd(request):
     profile = Usuario.objects.get(user = request.user)
     if request.method == 'POST':
         num = Provincia.objects.values("numpro").order_by("-numpro",)[:1]
         num = 1 if len(num)==0 else int(num[0]["numpro"])+1
         provincia = Provincia(numpro=num,estado=Estado.objects.get(pk=1),idusuario_creac=profile.numero)
         frmprovincia = ProvinciaForm(request.POST, instance=provincia) # A form bound to the POST data
+        print request.POST  
         if frmprovincia.is_valid():
             frmprovincia.save()
             return redirect('/home/') # Crear un parametro en home para mostrar los mensajes de exito.
     else:        
         frmprovincia = ProvinciaForm()
-    return render_to_response('ubigeo/provincia.html', {'frmprovincia': frmprovincia,}, context_instance=RequestContext(request),)
+    print frmprovincia.non_field_errors
+    return render_to_response('ubigeo/provincia.html', {'frmprovincia': frmprovincia,'opcion':'add',}, context_instance=RequestContext(request),)
+
+def provinciaedit(request, codigo):
+    if request.method == 'POST':
+        profile = Usuario.objects.get(user = request.user)
+        provincia = Provincia.objects.get(numpro=int(codigo))
+        provincia.idusuario_mod=profile.numero
+        frmprovincia = ProvinciaForm(request.POST, instance=provincia) # A form bound to the POST data	
+        if frmprovincia.is_valid():
+            frmprovincia.save()
+            return redirect('/home/') # Crear un parametro en home para mostrar los mensajes de exito.
+    else:
+        provincia = get_object_or_404(Provincia, numpro=int(codigo))
+        frmprovincia = ProvinciaForm(instance=provincia)
+    return render_to_response('ubigeo/provincia.html', {'frmprovincia': frmprovincia,'opcion':'edit','codigo':codigo}, context_instance=RequestContext(request),)
+
+@login_required(login_url='/')
+def provinciaquery(request):
+    col = "-provincia"
+    if "2-sort" in request.GET:
+        col = request.GET['2-sort']
+    provincias = Provincia.objects.all()
+    config = RequestConfig(request)
+    if request.method == "POST":
+        consultaprovinciaform = ConsultaProvinciaForm(request.POST)        
+        if consultaprovinciaform.is_valid():
+            provincias = provincias.filter(provincia__icontains=request.POST['provincia'], region__region__icontains=request.POST['region']).order_by(col)
+    else:
+        consultaprovinciaform = ConsultaProvinciaForm()
+    tblprovincias = ProvinciaTable(provincias.order_by(col))
+    config.configure(tblprovincias)
+    tblprovincias.paginate(page=request.GET.get('page', 1), per_page=6)
+    return render_to_response('ubigeo/provincia_consulta.html', {'consultaprovinciaform':consultaprovinciaform,'tabla':tblprovincias,}, context_instance=RequestContext(request),)
 
 @login_required(login_url='/')
 def jsonprovincia(request):

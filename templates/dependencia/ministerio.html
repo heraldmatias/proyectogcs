@@ -3,22 +3,33 @@
   {% block title %} Plataforma Intersectorial de Comunicaci&oacute;n OGCS {% endblock %}
   {% block content %}
   {% include 'include/header.html' %}
-<form class="form-inline" name="frmmin" method="post" action="/dependencia/ministerio/" onSubmit="return confirmar('¿Desea grabar el registro?'); "><!--data-toggle="modal"-->
+<div id="contenido">
+<form class="form-inline" name="frmmin" method="post" action="/dependencia/ministerio/{{ opcion }}/{% if codigo %}{{ codigo }}/{% endif %}" onSubmit="return confirmar('¿Desea grabar el registro?'); "><!--data-toggle="modal"-->
 <div id="frmministerio" class="modal" style="position: relative; top: auto; left: auto; margin: 0 auto; z-index: 1"><!--class="modal hide fade">-->
     <div class="modal-header">
       <a class="close" data-dismiss="modal" >&times;</a>
       <h3>Matenimiento de Ministerio</h3>
     </div>
     <div class="modal-body">
-      {% csrf_token %}              
+      {% csrf_token %}
+      {% if opcion == "add" %}
+      {{ frmprovincia.non_field_errors }}
+      <p>{{ frmministerio.ministerio.errors }}
+      {{ frmministerio.ministerio.label_tag }}: {{ frmministerio.ministerio }}</p>
+      <p>{{ frmministerio.iniciales.errors }}
+      {{ frmministerio.iniciales.label_tag }}: {{ frmministerio.iniciales }}</p>
+      <p><input type="hidden" name="estado" id="id_estado" value="1"></p>
+      {% else %}
       {{ frmministerio.as_p }}
+      {% endif %}
     </div>
     <div class="modal-footer">
-     <input class="btn" name="grabar" value="Cerrar" type="button" onclick="javascript: $('#frmregion').modal('hide')">
+     <input class="btn" name="grabar" value="Cerrar" type="button" onclick="cerrarformulario('contenido');">
       <input class="btn-primary" name="grabar" value="Guardar Cambios" type="submit">
     </div>
 </div>
 </form>
+</div>
   {% endblock %}
   {% block scriptjs %}    
 <script>

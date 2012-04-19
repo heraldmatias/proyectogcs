@@ -1,3 +1,7 @@
+function cerrarformulario(formulario){
+var frm=$('#'+formulario);
+frm.html(" ");
+}
 function confirmar(mensaje){
 	if (confirm(mensaje))
 		return true;

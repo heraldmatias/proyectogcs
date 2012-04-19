@@ -3,6 +3,7 @@
   {% block title %} Plataforma Intersectorial de Comunicaci&oacute;n OGCS {% endblock %}
   {% block content %}
   {% include 'include/header.html' %}
+<div id='contenido' name='contenido'> 
 <form class="form-inline span5" name="frmtw" id="frmtw" method="post" action="/redessociales/twitter/" ><!--data-toggle="modal"-->
 <div id="frmtwitter" class="modal span7" style="position: relative; top: auto; left: absolute; margin: 0 auto; z-index: 1"><!--class="modal hide fade">-->
     <div class="modal-header">
@@ -25,11 +26,12 @@
       </table>
     </div>
     <div class="modal-footer">
-     <input class="btn" name="grabar" value="Cerrar" type="button" onclick="javascript: $('#frmregion').modal('hide')">
+     <input class="btn" name="grabar" value="Cerrar" type="button" onclick="cerrarformulario('contenido');">
       <input class="btn-primary" name="grabar" value="Guardar Cambios" type="submit">
     </div>
 </div>
 </form>
+</div>
   {% endblock %}
   {% block scriptjs %}    
 <script>
