@@ -45,12 +45,11 @@ class Usuario(models.Model):
     user = models.OneToOneField(User)
     codigo = models.AutoField(verbose_name='Codigo Autogenerado', primary_key=True)
     numero = models.IntegerField(verbose_name='Codigo' ,unique=True)
-    nivel = models.ForeignKey(Nivel, verbose_name='nivel', blank=True, null=True)
+    nivel = models.ForeignKey(Nivel, verbose_name='nivel',)
     organismo = models.ForeignKey(Organismo, verbose_name='Organismo')
     dependencia = models.IntegerField(verbose_name='Dependencia',)
     nombres = models.CharField(verbose_name='Nombres', max_length=125,)
     sexo = models.CharField(verbose_name='sexo', max_length=2,choices = SEXO, default='MA')
-    usuario = models.CharField(verbose_name='usuario', max_length=45, blank=True, null=True)
     email = models.EmailField(verbose_name='Email', max_length=135, unique=True)
     contrasena = models.CharField(verbose_name='contraseña', max_length=32)
     emailalt = models.EmailField(verbose_name='Email Alta', max_length=135)
@@ -64,6 +63,7 @@ class Usuario(models.Model):
         db_table = u'usuario'
         verbose_name = u'Usuario'
         verbose_name_plural = u'Usuarios'
+        unique_together = ('organismo','dependencia',)
 
     def __unicode__(self):
         return self.nombres

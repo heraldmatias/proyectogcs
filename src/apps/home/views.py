@@ -27,6 +27,9 @@ def singin(request):
                         {"error_message":"Por favor ingrese valores correctos.",'form':form,})
 
 @login_required(login_url='/')
-def main(request):    
-    return render_to_response('home/home.html', context_instance=RequestContext(request),)
+def main(request):
+    if 'm' in request.GET:
+        return render_to_response('home/home.html',{'m':request.GET['m'],}, context_instance=RequestContext(request),)
+    else: 
+        return render_to_response('home/home.html', context_instance=RequestContext(request),)
 

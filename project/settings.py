@@ -15,7 +15,7 @@ DEBUG = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'redesogcs',                      # Or path to database file if using sqlite3.
+        'NAME': 'dbredesogcs',                      # Or path to database file if using sqlite3.
         'USER': 'root',                      # Not used with sqlite3.
         'PASSWORD': 'ollanta2011',                  # Not used with sqlite3.
         'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -25,7 +25,7 @@ DATABASES = {
 	    }
     }
 }
-
+DEFAULT_FROM_EMAIL = 'prensa@presidencia.gob.pe'
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.

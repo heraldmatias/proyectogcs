@@ -24,6 +24,7 @@ urlpatterns = patterns('',
     (r'^dependencia/', include('dependencia.urls')),
     (r'^mantenimiento/', include('usuario.urls')),
     (r'^redessociales/', include('redessociales.urls')),
+    (r'^usuario/', include('usuario.urls')),
 )
 
 #if settings.DEBUG:
