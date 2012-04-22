@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render_to_response, redirect
-from forms import UsuarioForm
+from forms import UsuarioForm, UsuarioTable, ConsultaUsuarioForm
 from django.template import RequestContext
 from usuario.models import Usuario, Estado
 from dependencia.models import Ministerio, Odp, Gobernacion
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-#from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404
+import django_tables2 as tables
+from django_tables2.config import RequestConfig
 
 @login_required(login_url='/')
-def usuario(request):
+def useradd(request):
     if request.method == 'POST':
         num = Usuario.objects.values("numero").order_by("-numero",)[:1]
         num = 1 if len(num)==0 else int(num[0]["numero"])+1
@@ -45,4 +47,38 @@ def usuario(request):
             return redirect('/home/?m=usadd',)
     else:        
         frmusuario = UsuarioForm()
-    return render_to_response('usuario/usuario.html', {'frmusuario': frmusuario,}, context_instance=RequestContext(request),)
+    return render_to_response('usuario/usuario.html', {'frmusuario': frmusuario,'opcion':'add','usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
+
+@login_required(login_url='/')
+def useredit(request, codigo):
+    if request.method == 'POST':
+        profile = Usuario.objects.get(user = request.user)
+        usuario = Usuario.objects.get(numero=int(codigo))
+        usuario.idusuario_mod=profile.numero
+        frmusuario = UsuarioForm(request.POST, instance=usuario) # A form bound to the POST data	
+        if frmusuario.is_valid():
+            frmusuario.save()
+            return redirect('/home/') # Crear un parametro en home para mostrar los mensajes de exito.
+    else:
+        usuario = get_object_or_404(Usuario, numero=int(codigo))
+        frmusuario = UsuarioForm(instance=usuario)
+    return render_to_response('usuario/usuario.html', {'frmusuario': frmusuario,'opcion':'edit','codigo':codigo,'usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
+
+@login_required(login_url='/')
+def userquery(request):
+    col = "-nombres"
+    if "2-sort" in request.GET:
+        col = request.GET['2-sort']
+    usuarios = Usuario.objects.all()
+    config = RequestConfig(request)
+    if request.method == "POST":
+        consultausuarioform = ConsultaUsuarioForm(request.POST)        
+        if consultausuarioform.is_valid():
+            usuarios = usuarios.filter(nombres__icontains=request.POST['nombres']).order_by(col)
+    else:
+        consultausuarioform = ConsultaUsuarioForm()
+    tblusuarios = UsuarioTable(usuarios.order_by(col))
+    config.configure(tblusuarios)
+    tblusuarios.paginate(page=request.GET.get('page', 1), per_page=6)
+    return render_to_response('usuario/usuario_consulta.html', {'consultausuarioform':consultausuarioform,'tabla':tblusuarios,'usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
+

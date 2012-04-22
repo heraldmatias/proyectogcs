@@ -15,8 +15,9 @@ def index(request):
     return render_to_response('home/index.html', {'form': form,}, context_instance=RequestContext(request),)
 
 def singin(request):
-    username = request.POST['usuario']
-    password = request.POST['clave']
+    if request.method == 'POST':
+        username = request.POST['usuario']
+        password = request.POST['clave']
     try:
         profile = Usuario.objects.get(email=request.POST['usuario'])
         user = authenticate(username=profile.user.username, password=password)
@@ -26,7 +27,7 @@ def singin(request):
         if user.is_active:
             login(request, user)
             today = datetime.now() #fecha actual
-            dateFormat = today.strftime("%Y/%m/%d") # fecha con formato
+            #dateFormat = today.strftime("%Y/%m/%d") # fecha con formato
             request.session['login_date'] = today
             nombres = Usuario.objects.get(user=request.user).nombres 
             request.session['nombres'] = nombres

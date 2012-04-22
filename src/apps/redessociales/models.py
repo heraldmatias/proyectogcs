@@ -47,9 +47,9 @@ class Twitter(models.Model):
     idusuario_creac = models.IntegerField(verbose_name='Numero del Usuario de creación')
     fec_creac = models.DateTimeField(verbose_name='Fecha de creación del registro', auto_now_add=True)
     idusuario_mod = models.IntegerField(null=True, blank=True)
-    fec_mod = models.DateTimeField(null=True, blank=True)
-    idadministrador_mod = models.IntegerField(verbose_name='Administrador que modifico')
-    fec_modadm = models.DateTimeField(verbose_name='Fecha modificacion Administrador', auto_now_add=True)
+    fec_mod = models.DateTimeField(null=True, blank=True,auto_now=True)
+    idadministrador_mod = models.IntegerField(verbose_name='Administrador que modifico', null=True, blank=True)
+    fec_modadm = models.DateTimeField(verbose_name='Fecha modificacion Administrador', auto_now=True,null=True, blank=True)
     class Meta:
         db_table = u'twitter'
         verbose_name = u'Twet'
@@ -63,7 +63,7 @@ class TwitterDetalle(models.Model):
     codigo = models.AutoField(verbose_name='Codigo Autogenerado', primary_key=True)
     numtw = models.ForeignKey(Twitter, verbose_name='Numero del twitter',to_field='numtw')
     item = models.IntegerField(verbose_name='Item')
-    fechadettw = models.DateTimeField(verbose_name='Fecha',)
+    fechadettw = models.DateField(verbose_name='Fecha',)
     tweets = models.IntegerField(verbose_name='Tweets',)
     siguiendo = models.IntegerField(verbose_name='Siguiendo', blank=True, null=True)
     seguidores = models.IntegerField(verbose_name='Seguidores',)

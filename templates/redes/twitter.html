@@ -64,8 +64,19 @@ var fecha=$('#id_fechadettw');
 var tweets=$('#id_tweets');
 var siguiendo=$('#id_siguiendo');
 var seguidores=$('#id_seguidores');
+var tdetalle= $('#tbldetalle');
+var ok=true;
 if ($.trim(fecha.val())==''){
 alert("Escriba la fecha");fecha.focus();return false;
+}else {
+$.each(tdetalle.find("tbody tr"),function(){
+    tfecha = this.cells[1].innerHTML;
+    tfecha= tfecha.substr(tfecha.lastIndexOf("/")-5);
+    if (tfecha==fecha.val()){
+    ok=false;return tfecha;
+    }
+});
+if(ok==false){alert("Ya existe un registro con dicha FECHA, elija otra fecha POR FAVOR.");fecha.focus();return false;}
 }
 if ($.trim(tweets.val())==''){
 alert("Escriba el numero de tweets");tweets.focus();return false;
@@ -78,8 +89,8 @@ alert("Escriba el numero de seguidores");seguidores.focus();return false;
 }
 var tdetalle= $('#tbldetalle').find("tbody");
 var n= $('#tbldetalle').find("tbody tr").length+1;
-fila="<tr id='fila"+n+"'><td>"+n+'</td><td><input type="hidden" name="fechas" value='+fecha.val()+'>'+fecha.val()+'</td><td><input type="hidden" name="tweets" value='+tweets.val()+'>'+tweets.val()+'</td><td>'
-+siguiendo.val()+'</td><td>'+seguidores.val()+"</td><td> <a class='close' href='javascript: removedetalle("+n+")'>&times;</a></td></tr>"
+fila="<tr id='fila"+n+"'><td>"+n+"</td><td><input type='hidden' name='tfechas' value='"+fecha.val()+"'>"+fecha.val()+"</td><td><input type='hidden' name='ttweets' value='"+tweets.val()+"'>"+tweets.val()+"</td><td><input type='hidden' name='tsiguiendo' id='tsiguiendo' value='"
++siguiendo.val()+"'>"+siguiendo.val()+"</td><td><input type='hidden' name='tseguidores' id='tseguidores' value='"+seguidores.val()+"'>"+seguidores.val()+"</td><td> <a class='close' href='javascript: removedetalle("+n+")'>&times;</a></td></tr>"
 tdetalle.append(fila);
 fecha.val('');tweets.val('');siguiendo.val('');seguidores.val('');
 //fecha.focus();

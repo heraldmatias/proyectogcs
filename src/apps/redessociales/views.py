@@ -5,6 +5,7 @@ from django.template import RequestContext
 from usuario.models import Usuario, Estado
 from django.contrib.auth.decorators import login_required
 from models import Informacion, Twitter, TwitterDetalle
+from datetime import datetime
 
 @login_required(login_url='/')
 def informacion(request):
@@ -26,14 +27,20 @@ def twitter(request):
     profile = Usuario.objects.get(user = request.user)    
     if request.method == 'POST':  
         num = Twitter.objects.values("numtw").order_by("-numtw",)[:1]
-        num = 1 if len(num)==0 else int(num[0]["numtw"])+1
-        fechas = request.POST.getlist('det')
-        for det in fechas:
-            a=det
+	num = 1 if len(num)==0 else int(num[0]["numtw"])+1
         itwittwer = Twitter(numtw=num,idusuario_creac=profile.numero)
         frmtwitter = TwitterForm(request.POST, instance=itwittwer) # A form bound to the POST data
         if frmtwitter.is_valid():
             frmtwitter.save()
+            fechas = request.POST.getlist('tfechas')
+            tweets = request.POST.getlist('ttweets')
+            siguiendos = request.POST.getlist('tsiguiendo')
+            seguidores = request.POST.getlist('tseguidores')
+	    for co in range(len(fechas)):
+                fecha = fechas[co]
+                fecha = datetime.strptime(fecha,"%d/%m/%y").date()
+                det = TwitterDetalle(numtw=itwittwer,item=co+1,fechadettw = fecha,tweets=tweets[co],siguiendo =siguiendos[co], seguidores = seguidores[co],)
+                det.save() 
             return redirect('/home/') # Crear un parametro en home para mostrar los mensajes de exito.
     else:        
         frmtwitter = TwitterForm()

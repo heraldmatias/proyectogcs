@@ -58,7 +58,7 @@ class Usuario(models.Model):
     celular = models.CharField(verbose_name='Celular', max_length=25, blank=True, null=True)
     estado = models.ForeignKey(Estado, verbose_name='Estado del Usuario',related_name='+')
     idusuario_mod = models.IntegerField(verbose_name='Usuario modifico', null=True, blank=True)
-    fec_mod = models.DateTimeField(verbose_name='Fecha modifico', null=True, blank=True)
+    fec_mod = models.DateTimeField(verbose_name='Fecha modifico', auto_now=True, null=True, blank=True)
     class Meta:
         db_table = u'usuario'
         verbose_name = u'Usuario'

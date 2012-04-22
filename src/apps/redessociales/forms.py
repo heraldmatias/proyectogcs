@@ -19,6 +19,8 @@ class TwitterForm(forms.ModelForm):
         exclude = ('numtw','idusuario_creac','fec_creac','idusuario_mod','fec_mod','idadministrador_mod','fec_modadm')
         widgets = {
             'fechacreac': forms.TextInput(attrs={'id':'id_fechacreac_tw','readonly':'readonly'}),
+            'dependencia': forms.Select(),
+            'organismo': forms.Select(attrs={'onChange':'dependencias();',}),
         }
 
 class TwitterDetalleForm(forms.ModelForm):
