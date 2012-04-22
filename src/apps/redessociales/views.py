@@ -19,7 +19,7 @@ def informacion(request):
             return redirect('/home/') # Crear un parametro en home para mostrar los mensajes de exito.
     else:        
         frminformacion = InformacionForm()
-    return render_to_response('redes/informacion.html', {'frminformacion': frminformacion,}, context_instance=RequestContext(request),)
+    return render_to_response('redes/informacion.html', {'frminformacion': frminformacion,'usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
 
 @login_required(login_url='/')
 def twitter(request):
@@ -38,4 +38,4 @@ def twitter(request):
     else:        
         frmtwitter = TwitterForm()
     frmtwitterdetalle = TwitterDetalleForm()
-    return render_to_response('redes/twitter.html', {'frmtwitter': frmtwitter,'frmtwitterdetalle':frmtwitterdetalle,}, context_instance=RequestContext(request),)
+    return render_to_response('redes/twitter.html', {'frmtwitter': frmtwitter,'frmtwitterdetalle':frmtwitterdetalle,'usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)

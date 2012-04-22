@@ -52,7 +52,7 @@ class Usuario(models.Model):
     sexo = models.CharField(verbose_name='sexo', max_length=2,choices = SEXO, default='MA')
     email = models.EmailField(verbose_name='Email', max_length=135, unique=True)
     contrasena = models.CharField(verbose_name='contraseña', max_length=32)
-    emailalt = models.EmailField(verbose_name='Email Alta', max_length=135)
+    emailalt = models.EmailField(verbose_name='Email Alta', max_length=135, unique=True)
     fono = models.CharField(verbose_name='Telefono', max_length=25,)
     anexo = models.CharField(verbose_name='Anexo', max_length=10, blank=True, null=True)
     celular = models.CharField(verbose_name='Celular', max_length=25, blank=True, null=True)

@@ -26,8 +26,9 @@ def ministerioadd(request):
             return redirect('/home/') # Crear un parametro en home para mostrar los mensajes de exito.
     else:        
         frmministerio = MinisterioForm()
-    return render_to_response('dependencia/ministerio.html', {'frmministerio': frmministerio,'opcion':'add'}, context_instance=RequestContext(request),)
+    return render_to_response('dependencia/ministerio.html', {'frmministerio': frmministerio,'opcion':'add','usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
 
+@login_required(login_url='/')
 def ministerioedit(request, codigo):
     if request.method == 'POST':
         profile = Usuario.objects.get(user = request.user)
@@ -40,7 +41,7 @@ def ministerioedit(request, codigo):
     else:
         ministerio = get_object_or_404(Ministerio, nummin=int(codigo))
         frmministerio = MinisterioForm(instance=ministerio)
-    return render_to_response('dependencia/ministerio.html', {'frmministerio': frmministerio,'opcion':'edit','codigo':codigo}, context_instance=RequestContext(request),)
+    return render_to_response('dependencia/ministerio.html', {'frmministerio': frmministerio,'opcion':'edit','codigo':codigo,'usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
 
 @login_required(login_url='/')
 def ministerioquery(request):
@@ -58,7 +59,7 @@ def ministerioquery(request):
     tblministerios = MinisterioTable(ministerios.order_by(col))
     config.configure(tblministerios)
     tblministerios.paginate(page=request.GET.get('page', 1), per_page=6)
-    return render_to_response('dependencia/ministerio_consulta.html', {'consultaministerioform':consultaministerioform,'tabla':tblministerios,}, context_instance=RequestContext(request),)
+    return render_to_response('dependencia/ministerio_consulta.html', {'consultaministerioform':consultaministerioform,'tabla':tblministerios,'usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
 
 @login_required(login_url='/')
 def odpadd(request):
@@ -73,8 +74,9 @@ def odpadd(request):
             return redirect('/home/') # Crear un parametro en home para mostrar los mensajes de exito.
     else:        
         frmopd = OdpForm()
-    return render_to_response('dependencia/odp.html', {'frmodp': frmopd,'opcion':'add'}, context_instance=RequestContext(request),)
+    return render_to_response('dependencia/odp.html', {'frmodp': frmopd,'opcion':'add','usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
 
+@login_required(login_url='/')
 def odpedit(request, codigo):
     if request.method == 'POST':
         profile = Usuario.objects.get(user = request.user)
@@ -87,7 +89,7 @@ def odpedit(request, codigo):
     else:
         odp = get_object_or_404(Odp, numodp=int(codigo))
         frmodp = OdpForm(instance=odp)
-    return render_to_response('dependencia/odp.html', {'frmodp': frmodp,'opcion':'edit','codigo':codigo}, context_instance=RequestContext(request),)
+    return render_to_response('dependencia/odp.html', {'frmodp': frmodp,'opcion':'edit','codigo':codigo,'usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
 
 @login_required(login_url='/')
 def odpquery(request):
@@ -108,7 +110,7 @@ def odpquery(request):
     tblodps = OdpTable(odps.order_by(col))
     config.configure(tblodps)
     tblodps.paginate(page=request.GET.get('page', 1), per_page=6)
-    return render_to_response('dependencia/odp_consulta.html', {'consultaodpform':consultaodpform,'tabla':tblodps,}, context_instance=RequestContext(request),)
+    return render_to_response('dependencia/odp_consulta.html', {'consultaodpform':consultaodpform,'tabla':tblodps,'usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
 
 @login_required(login_url='/')
 def gobernacionadd(request):
@@ -123,8 +125,9 @@ def gobernacionadd(request):
             return redirect('/home/') # Crear un parametro en home para mostrar los mensajes de exito.
     else:        
         frmgobernacion = GobernacionForm()
-    return render_to_response('dependencia/gobernacion.html', {'frmgobernacion': frmgobernacion,'opcion':'add'}, context_instance=RequestContext(request),)
+    return render_to_response('dependencia/gobernacion.html', {'frmgobernacion': frmgobernacion,'opcion':'add','usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
 
+@login_required(login_url='/')
 def gobernacionedit(request, codigo):
     if request.method == 'POST':
         profile = Usuario.objects.get(user = request.user)
@@ -138,7 +141,7 @@ def gobernacionedit(request, codigo):
         gobernacion = get_object_or_404(Gobernacion, numgob=int(codigo))
         frmgobernacion = GobernacionForm(instance=gobernacion)
         #frmgobernacion.provincia.choices = Provincia.objects.filter(region=gobernacion.region).values_list('numpro','provincia')        
-    return render_to_response('dependencia/gobernacion.html', {'frmgobernacion': frmgobernacion,'opcion':'edit','codigo':codigo}, context_instance=RequestContext(request),)
+    return render_to_response('dependencia/gobernacion.html', {'frmgobernacion': frmgobernacion,'opcion':'edit','codigo':codigo,'usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
 
 @login_required(login_url='/')
 def gobernacionquery(request):
@@ -159,7 +162,7 @@ def gobernacionquery(request):
     tblgobernaciones = GobernacionTable(gobernaciones.order_by(col))
     config.configure(tblgobernaciones)
     tblgobernaciones.paginate(page=request.GET.get('page', 1), per_page=6)
-    return render_to_response('dependencia/gobernacion_consulta.html', {'consultagobernacionform':consultagobernacionform,'tabla':tblgobernaciones,}, context_instance=RequestContext(request),)
+    return render_to_response('dependencia/gobernacion_consulta.html', {'consultagobernacionform':consultagobernacionform,'tabla':tblgobernaciones,'usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
 
 @login_required(login_url='/')
 def jsondependencia(request):

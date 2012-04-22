@@ -18,14 +18,15 @@ def regionadd(request):
         num = Region.objects.values("numreg").order_by("-numreg",)[:1]
         num = 1 if len(num)==0 else int(num[0]["numreg"])+1
         region = Region(numreg=num,estado=Estado.objects.get(pk=1),idusuario_creac=profile.numero,)
-        frmregion = RegionForm(request.POST, instance=region) # A form bound to the POST data	
+        frmregion = RegionForm(request.POST, instance=region) # A form bound to the POST data
         if frmregion.is_valid():
             frmregion.save()
             return redirect('/home/') # Crear un parametro en home para mostrar los mensajes de exito.
     else:        
         frmregion = RegionForm()
-    return render_to_response('ubigeo/region.html', {'frmregion': frmregion,'opcion':'add'}, context_instance=RequestContext(request),)
+    return render_to_response('ubigeo/region.html', {'frmregion': frmregion,'opcion':'add','usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
 
+@login_required(login_url='/')
 def regionedit(request, codigo):
     if request.method == 'POST':
         profile = Usuario.objects.get(user = request.user)
@@ -38,7 +39,7 @@ def regionedit(request, codigo):
     else:
         region = get_object_or_404(Region, numreg=int(codigo))
         frmregion = RegionForm(instance=region)
-    return render_to_response('ubigeo/region.html', {'frmregion': frmregion,'opcion':'edit','codigo':codigo}, context_instance=RequestContext(request),)
+    return render_to_response('ubigeo/region.html', {'frmregion': frmregion,'opcion':'edit','codigo':codigo,'usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
 
 @login_required(login_url='/')
 def regionquery(request):
@@ -57,7 +58,7 @@ def regionquery(request):
     tblregiones = RegionTable(regiones.order_by(col))
     config.configure(tblregiones)
     tblregiones.paginate(page=request.GET.get('page', 1), per_page=6)
-    return render_to_response('ubigeo/region_consulta.html', {'consultaregionform':consultaregionform,'tblregiones':tblregiones,}, context_instance=RequestContext(request),)
+    return render_to_response('ubigeo/region_consulta.html', {'consultaregionform':consultaregionform,'tblregiones':tblregiones,'usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
 
 @login_required(login_url='/')
 def provinciaadd(request):
@@ -74,8 +75,9 @@ def provinciaadd(request):
     else:        
         frmprovincia = ProvinciaForm()
     print frmprovincia.non_field_errors
-    return render_to_response('ubigeo/provincia.html', {'frmprovincia': frmprovincia,'opcion':'add',}, context_instance=RequestContext(request),)
+    return render_to_response('ubigeo/provincia.html', {'frmprovincia': frmprovincia,'opcion':'add','usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
 
+@login_required(login_url='/')
 def provinciaedit(request, codigo):
     if request.method == 'POST':
         profile = Usuario.objects.get(user = request.user)
@@ -88,7 +90,7 @@ def provinciaedit(request, codigo):
     else:
         provincia = get_object_or_404(Provincia, numpro=int(codigo))
         frmprovincia = ProvinciaForm(instance=provincia)
-    return render_to_response('ubigeo/provincia.html', {'frmprovincia': frmprovincia,'opcion':'edit','codigo':codigo}, context_instance=RequestContext(request),)
+    return render_to_response('ubigeo/provincia.html', {'frmprovincia': frmprovincia,'opcion':'edit','codigo':codigo,'usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
 
 @login_required(login_url='/')
 def provinciaquery(request):
@@ -106,7 +108,7 @@ def provinciaquery(request):
     tblprovincias = ProvinciaTable(provincias.order_by(col))
     config.configure(tblprovincias)
     tblprovincias.paginate(page=request.GET.get('page', 1), per_page=6)
-    return render_to_response('ubigeo/provincia_consulta.html', {'consultaprovinciaform':consultaprovinciaform,'tabla':tblprovincias,}, context_instance=RequestContext(request),)
+    return render_to_response('ubigeo/provincia_consulta.html', {'consultaprovinciaform':consultaprovinciaform,'tabla':tblprovincias,'usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
 
 @login_required(login_url='/')
 def jsonprovincia(request):
