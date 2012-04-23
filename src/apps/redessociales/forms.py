@@ -55,9 +55,16 @@ class FacebookDetalleForm(forms.ModelForm):
 class TwitterDiarioForm(forms.ModelForm):
     class Meta:
         model = TwitterDiario
-        #exclude = ('numreg','estado','idusuario_creac','idusuario_mod',)
-
+        exclude = ('numtwdia','idusuario_creac',)
+        widgets = {
+            'dependencia': forms.Select(),
+            'organismo': forms.Select(attrs={'onChange':'dependencias();',}),
+        }
 class FacebookDiarioForm(forms.ModelForm):
     class Meta:
         model = FacebookDiario
-        #exclude = ('numreg','estado','idusuario_creac','idusuario_mod',)
+        exclude = ('numfbdia','idusuario_creac','idusuario_mod','fec_mod','fec_modadm','idadministrador_mod')
+        widgets = {
+            'dependencia': forms.Select(),
+            'organismo': forms.Select(attrs={'onChange':'dependencias();',}),
+        }

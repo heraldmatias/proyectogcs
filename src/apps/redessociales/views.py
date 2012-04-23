@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render_to_response, redirect
-from forms import InformacionForm, TwitterForm, TwitterDetalleForm, FacebookForm, FacebookDetalleForm
+from forms import InformacionForm, TwitterForm, TwitterDetalleForm, FacebookForm, FacebookDetalleForm,FacebookDiarioForm, TwitterDiarioForm
 from django.template import RequestContext
 from usuario.models import Usuario, Estado
 from django.contrib.auth.decorators import login_required
-from models import Informacion, Twitter, TwitterDetalle, Facebook, FacebookDetalle
+from models import Informacion, Twitter, TwitterDetalle, Facebook, FacebookDetalle, TwitterDiario, FacebookDiario
 from datetime import datetime
 
 @login_required(login_url='/')
@@ -23,11 +23,11 @@ def informacion(request):
     return render_to_response('redes/informacion.html', {'frminformacion': frminformacion,'usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
 
 @login_required(login_url='/')
-def twitter(request):
-    profile = Usuario.objects.get(user = request.user)    
+def twitter(request): 
     if request.method == 'POST':  
         num = Twitter.objects.values("numtw").order_by("-numtw",)[:1]
 	num = 1 if len(num)==0 else int(num[0]["numtw"])+1
+        profile = Usuario.objects.get(user = request.user)
         itwittwer = Twitter(numtw=num,idusuario_creac=profile.numero)
         frmtwitter = TwitterForm(request.POST, instance=itwittwer) # A form bound to the POST data
         if frmtwitter.is_valid():
@@ -48,11 +48,11 @@ def twitter(request):
     return render_to_response('redes/twitter.html', {'frmtwitter': frmtwitter,'frmtwitterdetalle':frmtwitterdetalle,'usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
 
 @login_required(login_url='/')
-def facebook(request):
-    profile = Usuario.objects.get(user = request.user)    
+def facebook(request):   
     if request.method == 'POST':  
         num = Facebook.objects.values("numfb").order_by("-numfb",)[:1]
 	num = 1 if len(num)==0 else int(num[0]["numfb"])+1
+        profile = Usuario.objects.get(user = request.user) 
         ifacebook = Facebook(numfb=num,idusuario_creac=profile.numero)
         frmfacebook = FacebookForm(request.POST, instance=ifacebook) # A form bound to the POST data
         if frmfacebook.is_valid():
@@ -69,3 +69,33 @@ def facebook(request):
         frmfacebook = FacebookForm()
     frmfacebookdetalle = FacebookDetalleForm()
     return render_to_response('redes/facebook.html', {'frmfacebook': frmfacebook,'frmfacebookdetalle':frmfacebookdetalle,'usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
+
+@login_required(login_url='/')
+def facebookdiario(request):   
+    if request.method == 'POST':  
+        num = FacebookDiario.objects.values("numfbdia").order_by("-numfbdia",)[:1]
+	num = 1 if len(num)==0 else int(num[0]["numfbdia"])+1
+        profile = Usuario.objects.get(user = request.user) 
+        ifacebook = FacebookDiario(numfbdia=num,idusuario_creac=profile.numero)
+        frmfacebookdiario = FacebookDiarioForm(request.POST, instance=ifacebook) # A form bound to the POST data
+        if frmfacebookdiario.is_valid():
+            frmfacebookdiario.save()
+            return redirect('/home/') # Crear un parametro en home para mostrar los mensajes de exito.
+    else:        
+        frmfacebookdiario = FacebookDiarioForm()
+    return render_to_response('redes/facebookdiario.html', {'frmfacebookdiario': frmfacebookdiario,'usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
+
+@login_required(login_url='/')
+def twitterdiario(request):
+    if request.method == 'POST':  
+        num = TwitterDiario.objects.values("numtwdia").order_by("-numtwdia",)[:1]
+	num = 1 if len(num)==0 else int(num[0]["numtwdia"])+1
+        profile = Usuario.objects.get(user = request.user) 
+        itwittwer = TwitterDiario(numtwdia=num,idusuario_creac=profile.numero)
+        frmtwitterdiario = TwitterDiarioForm(request.POST, instance=itwittwer) # A form bound to the POST data
+        if frmtwitterdiario.is_valid():
+            frmtwitterdiario.save()
+            return redirect('/home/') # Crear un parametro en home para mostrar los mensajes de exito.
+    else:        
+        frmtwitterdiario = TwitterDiarioForm()
+    return render_to_response('redes/twitterdiario.html', {'frmtwitterdiario': frmtwitterdiario,'usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)

@@ -1,4 +1,11 @@
-<div id="frmfacebookdiario" class="modal hide fade">
+  {% extends 'base.html' %}
+  {% load static %}
+  {% block title %} Plataforma Intersectorial de Comunicaci&oacute;n OGCS {% endblock %}
+  {% block content %}
+  {% include 'include/header.html' %}
+<div id='contenido' name='contenido'> 
+<form class="form-inline span5" name="frmfbdiario" id="frmfbdiario" method="post" action="/redessociales/facebook/diario/" ><!--data-toggle="modal"-->
+<div id="frmfacebookdiario" class="modal span7" style="position: relative; top: auto; left: absolute; margin: 0 auto; z-index: 1"><!--class="modal hide fade">-->
     <div class="modal-header">
       <a class="close" data-dismiss="modal" >&times;</a>
       <h3>Nuevo Facebook Diario</h3>
@@ -6,9 +13,11 @@
     <div class="modal-body">
       {% csrf_token %}              
       {{ frmfacebookdiario.as_p }}
-    </div>
     <div class="modal-footer">
-      <a href="#" class="btn" data-dismiss="modal" >Cerrar</a>
-      <a href="" class="btn btn-primary">Guardar Cambios</a>
+     <input class="btn" name="grabar" value="Cerrar" type="button" onclick="cerrarformulario('contenido');">
+      <input class="btn-primary" name="grabar" value="Guardar Cambios" type="submit">
     </div>
 </div>
+</form>
+</div>
+  {% endblock %}
