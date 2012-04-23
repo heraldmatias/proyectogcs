@@ -1,4 +1,11 @@
-<div id="frmfacebook" class="modal hide fade">
+  {% extends 'base.html' %}
+  {% load static %}
+  {% block title %} Plataforma Intersectorial de Comunicaci&oacute;n OGCS {% endblock %}
+  {% block content %}
+  {% include 'include/header.html' %}
+<div id='contenido' name='contenido'> 
+<form class="form-inline span5" name="frmfb" id="frmfb" method="post" action="/redessociales/facebook/" ><!--data-toggle="modal"-->
+<div id="frmfacebook" class="modal span7" style="position: relative; top: auto; left: absolute; margin: 0 auto; z-index: 1"><!--class="modal hide fade">-->
     <div class="modal-header">
       <a class="close" data-dismiss="modal" >&times;</a>
       <h3>Informacion General De Facebook</h3>
@@ -6,9 +13,87 @@
     <div class="modal-body">
       {% csrf_token %}              
       {{ frmfacebook.as_p }}
+      <div class="modal-header"> <h4>Les Gusta</h4> </div><br>
+      <div class="inline">
+      {{ frmfacebookdetalle }} <input class="btn" type="button" value="Agregar" onClick="agregardetalle();">
+      </div>
+      <br>
+      <table class="table table-bordered table-condensed" id="tbldetalle">
+      <thead><tr>
+      <th>Item</th><th>Fecha</th><th>Tweets</th><th>Eliminar</th>
+      </tr></thead>
+      <tbody></tbody>
+      </table>
     </div>
     <div class="modal-footer">
-      <a href="#" class="btn" data-dismiss="modal" >Cerrar</a>
-      <a href="" class="btn btn-primary">Guardar Cambios</a>
+     <input class="btn" name="grabar" value="Cerrar" type="button" onclick="cerrarformulario('contenido');">
+      <input class="btn-primary" name="grabar" value="Guardar Cambios" type="submit">
     </div>
 </div>
+</form>
+</div>
+  {% endblock %}
+  {% block scriptjs %}    
+<script>
+$('#frmfb').submit(function() {
+if ($('#tbldetalle').find("tbody tr").length==0) {
+alert('Debe ingresar por lo menos una informacion acerca de LES GUSTA.'); return false;}
+else{
+return confirmar('¿Desea grabar el registro?');}});
+$(document).ready(function() {
+ //$('#frmregion').modal({show: true,});
+  dependencias();validanumber('id_cantidad');
+});
+$('#id_fechacreac_fb').datepicker({
+    format: 'dd/mm/yyyy',
+    language: 'es',
+    autoclose: true,
+});
+$('#id_fechadetfb').datepicker({
+    format: 'dd/mm/yy',
+    language: 'es',
+    autoclose: true,    
+});
+function validanumber(campo){
+ $('#'+campo).keyup(function () {
+  this.value = this.value.replace(/[^0-9]/g,'');
+});
+}
+function agregardetalle(){
+var fecha=$('#id_fechadetfb');
+var likes=$('#id_cantidad');
+var tdetalle= $('#tbldetalle');
+var ok=true;
+if ($.trim(fecha.val())==''){
+alert("Escriba la fecha");fecha.focus();return false;
+}else {
+$.each(tdetalle.find("tbody tr"),function(){
+    tfecha = this.cells[1].innerHTML;
+    tfecha= tfecha.substr(tfecha.lastIndexOf("/")-5);
+    if (tfecha==fecha.val()){
+    ok=false;return tfecha;
+    }
+});
+if(ok==false){alert("Ya existe un registro con dicha FECHA, elija otra fecha POR FAVOR.");fecha.focus();return false;}
+}
+if ($.trim(likes.val())==''){
+alert("Escriba el numero de likes");tweets.focus();return false;
+}
+var tdetalle= $('#tbldetalle').find("tbody");
+var n= $('#tbldetalle').find("tbody tr").length+1;
+fila="<tr id='fila"+n+"'><td>"+n+"</td><td><input type='hidden' name='tfechas' value='"+fecha.val()+"'>"+fecha.val()+"</td><td><input type='hidden' name='tlikes' value='"+likes.val()+"'>"+likes.val()+"</td><td> <a class='close' href='javascript: removedetalle("+n+")'>&times;</a></td></tr>"
+tdetalle.append(fila);
+fecha.val('');likes.val('');
+//fecha.focus();
+}
+function removedetalle(fila){
+$("#fila"+fila).remove();
+var n=1;
+var tdetalle= $('#tbldetalle');
+$.each(tdetalle.find("tbody tr"),function(){
+    this.cells[0].innerHTML=n;
+    n+=1;
+});
+}
+</script>
+  {% endblock %}

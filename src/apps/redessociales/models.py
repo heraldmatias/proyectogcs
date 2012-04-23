@@ -133,15 +133,15 @@ class Facebook(models.Model):
     numfb = models.IntegerField(verbose_name='Codigo' ,unique=True)    
     organismo = models.ForeignKey(Organismo, verbose_name='Organismo')
     dependencia = models.IntegerField(verbose_name='Dependencia', blank=True, null=True)
-    fechacreac = models.DateTimeField(verbose_name='Fecha de creación del Facebook',)
+    fechacreac = models.DateField(verbose_name='Fecha de creación del Facebook',)
     cuentafb = models.CharField(verbose_name='Cuenta Oficial', max_length=100,)
     urlfb = models.CharField(verbose_name='URL Oficial', max_length=150,)
     idusuario_creac = models.IntegerField(verbose_name='Numero del Usuario de creación')
     fec_creac = models.DateTimeField(verbose_name='Fecha de creación del registro', auto_now_add=True)
     idusuario_mod = models.IntegerField(null=True, blank=True)
-    fec_mod = models.DateTimeField(null=True, blank=True)
-    idadministrador_mod = models.IntegerField(verbose_name='Administrador que modifico')
-    fec_modadm = models.DateTimeField(verbose_name='Fecha modificacion Administrador', auto_now_add=True)	
+    fec_mod = models.DateTimeField(null=True, blank=True,auto_now=True)
+    idadministrador_mod = models.IntegerField(verbose_name='Administrador que modifico', blank=True, null=True)
+    fec_modadm = models.DateTimeField(verbose_name='Fecha modificacion Administrador', auto_now=True,)	
     class Meta:
         db_table = u'facebook'
         verbose_name = u'cuenta de facebook'

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render_to_response, redirect
-from forms import InformacionForm, TwitterForm, TwitterDetalleForm
+from forms import InformacionForm, TwitterForm, TwitterDetalleForm, FacebookForm, FacebookDetalleForm
 from django.template import RequestContext
 from usuario.models import Usuario, Estado
 from django.contrib.auth.decorators import login_required
-from models import Informacion, Twitter, TwitterDetalle
+from models import Informacion, Twitter, TwitterDetalle, Facebook, FacebookDetalle
 from datetime import datetime
 
 @login_required(login_url='/')
@@ -46,3 +46,26 @@ def twitter(request):
         frmtwitter = TwitterForm()
     frmtwitterdetalle = TwitterDetalleForm()
     return render_to_response('redes/twitter.html', {'frmtwitter': frmtwitter,'frmtwitterdetalle':frmtwitterdetalle,'usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
+
+@login_required(login_url='/')
+def facebook(request):
+    profile = Usuario.objects.get(user = request.user)    
+    if request.method == 'POST':  
+        num = Facebook.objects.values("numfb").order_by("-numfb",)[:1]
+	num = 1 if len(num)==0 else int(num[0]["numfb"])+1
+        ifacebook = Facebook(numfb=num,idusuario_creac=profile.numero)
+        frmfacebook = FacebookForm(request.POST, instance=ifacebook) # A form bound to the POST data
+        if frmfacebook.is_valid():
+            frmfacebook.save()
+            fechas = request.POST.getlist('tfechas')
+            likes = request.POST.getlist('tlikes')
+	    for co in range(len(fechas)):
+                fecha = fechas[co]
+                fecha = datetime.strptime(fecha,"%d/%m/%y").date()
+                det = FacebookDetalle(numfb=ifacebook,item=co+1,fechadetfb = fecha,cantidad=likes[co],)
+                det.save() 
+            return redirect('/home/') # Crear un parametro en home para mostrar los mensajes de exito.
+    else:        
+        frmfacebook = FacebookForm()
+    frmfacebookdetalle = FacebookDetalleForm()
+    return render_to_response('redes/facebook.html', {'frmfacebook': frmfacebook,'frmfacebookdetalle':frmfacebookdetalle,'usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)

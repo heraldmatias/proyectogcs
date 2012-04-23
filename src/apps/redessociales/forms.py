@@ -37,11 +37,21 @@ class TwitterDetalleForm(forms.ModelForm):
 class FacebookForm(forms.ModelForm):
     class Meta:
         model = Facebook
-        #exclude = ('numreg','estado','idusuario_creac','idusuario_mod',)
+        exclude = ('numfb','estado','idusuario_creac','idusuario_mod','fec_mod','idadministrador_mod','fec_modadm')
         widgets = {
             'fechacreac': forms.TextInput(attrs={'id':'id_fechacreac_fb',}),
+            'dependencia': forms.Select(),
+            'organismo': forms.Select(attrs={'onChange':'dependencias();',}),
         }
 
+class FacebookDetalleForm(forms.ModelForm):
+    class Meta:
+        model = FacebookDetalle
+        exclude = ('numfb','item','auditoria',)        
+        widgets = {
+            'cantidad': forms.TextInput(attrs={'class':'span1'}),
+            'fechadetfb': forms.TextInput(attrs={'class':'span1'}),
+        }
 class TwitterDiarioForm(forms.ModelForm):
     class Meta:
         model = TwitterDiario
