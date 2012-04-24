@@ -10,6 +10,10 @@ ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 
+FCGI_OPTIONS = {
+    'method': 'threaded',
+}
+
 MANAGERS = ADMINS
 DEBUG = True
 DATABASES = {

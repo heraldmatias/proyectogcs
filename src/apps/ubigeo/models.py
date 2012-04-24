@@ -7,7 +7,7 @@ class Region(models.Model):
     codigo = models.AutoField(verbose_name='Codigo', primary_key=True)
     numreg = models.IntegerField(verbose_name='Numero de la región', unique=True)
     region = models.CharField(verbose_name='Nombre de la región',unique=True, max_length=70)
-    estado = models.ForeignKey(Estado, verbose_name='Estado',default=1)
+    estado = models.ForeignKey(Estado, verbose_name='Estado',)
     idusuario_creac = models.IntegerField(verbose_name='Numero del Usuario de creación')
     fec_creac = models.DateTimeField(verbose_name='Fecha de creación del registro', auto_now_add=True)
     idusuario_mod = models.IntegerField(verbose_name='Numero del Usuario de modificación', blank=True, null=True)
