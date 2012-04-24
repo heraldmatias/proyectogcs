@@ -1,2 +1,0 @@
-insert into estado values(1,'USUARIO');
-insert into estado values(2,'ADMINISTRADOR');
