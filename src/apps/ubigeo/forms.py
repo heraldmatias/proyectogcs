@@ -13,9 +13,11 @@ class RegionForm(forms.ModelForm):
 class ConsultaRegionForm(forms.Form):
     region = forms.CharField(label="Digite el texto de busqueda:", required=False)
 
-class ConsultaProvinciaForm(forms.Form):
-    region = forms.CharField(label="Digite el nombre de región", required=False)
-    provincia = forms.CharField(label="Digite el nombre de provincia",required=False)
+class ConsultaProvinciaForm(forms.ModelForm):
+    provincia = forms.CharField(label="Digite el texto de busqueda",required=False)  
+    class Meta:
+        model = Provincia
+        fields = ('region','provincia',)
 
 class RegionTable(tables.Table):
     item = tables.Column()
@@ -28,7 +30,7 @@ class RegionTable(tables.Table):
         return '%d' % value
 
     class Meta:
-        attrs = {"class": "table table-bordered table-condensed"}
+        attrs = {"class": "table table-bordered table-condensed table-striped"}
         orderable = False
 
 class ProvinciaTable(tables.Table):
@@ -43,10 +45,11 @@ class ProvinciaTable(tables.Table):
         return '%d' % value
 
     class Meta:
-        attrs = {"class": "table table-bordered table-condensed"}
+        attrs = {"class": "table table-bordered table-condensed table-striped"}
         orderable = False
 
 class ProvinciaForm(forms.ModelForm):
     class Meta:
         model = Provincia
         exclude = ('numpro','idusuario_creac','idusuario_mod',)
+

@@ -5,6 +5,11 @@ from models import Ministerio, Odp, Gobernacion
 from ubigeo.models import Region, Provincia
 import django_tables2 as tables
 from django_tables2.utils import A
+from ubigeo.models import Provincia
+
+
+MINISTERIOS = list(Ministerio.objects.all().values_list('nummin','ministerio'))
+MINISTERIOS.append(('','TODOS'))
 
 class MinisterioForm(forms.ModelForm):
     class Meta:
@@ -25,7 +30,7 @@ class MinisterioTable(tables.Table):
         return '%d' % value
 
     class Meta:
-        attrs = {"class": "table table-bordered table-condensed"}
+        attrs = {"class": "table table-bordered table-condensed table-striped"}
         orderable = False
 
 
@@ -34,17 +39,16 @@ class OdpForm(forms.ModelForm):
         model = Odp
         fields = ('nummin','odp','iniciales','estado')
 
-class ConsultaOdpForm(forms.Form):#CORREGIR
-    nummin = forms.ModelChoiceField(queryset=Ministerio.objects.all(),label='Ministerio',required=False)#.values_list('ministerio','ministerio',)
-    odp = forms.CharField(label='Nombre de Odp', max_length=70,required=False)
-    #class Meta:
-    #    model = Odp
-    #    fields = ('nummin','odp',)
+class ConsultaOdpForm(forms.ModelForm):#CORREGIR
+    odp = forms.CharField(label='Digite el texto de busqueda:', max_length=70,required=False)
+    class Meta:
+        model = Odp
+        fields = ('nummin','odp',)
 
 class OdpTable(tables.Table):
     item = tables.Column()
     nummin = tables.Column()
-    odp = tables.LinkColumn('ogcs-mantenimiento-odp-edit', args=[A('numodp')],orderable=True)
+    odp = tables.LinkColumn('ogcs-mantenimiento-odp-edit', args=[A('numodp')],orderable=True,)
     iniciales = tables.Column()
     estado = tables.Column()    
 
@@ -54,7 +58,7 @@ class OdpTable(tables.Table):
         return '%d' % value
 
     class Meta:
-        attrs = {"class": "table table-bordered table-condensed"}
+        attrs = {"class": "table table-bordered table-condensed table-striped"}
         orderable = False
 
 class GobernacionForm(forms.ModelForm):
@@ -66,14 +70,12 @@ class GobernacionForm(forms.ModelForm):
         }
 
 class ConsultaGobernacionForm(forms.ModelForm):
-#    region = forms.ModelChoiceField(queryset=Region.objects.all(),label='Region',required=False,widget=forms.Select(attrs={'onChange':'provincias();',}))
- #   provincia = forms.ModelChoiceField(queryset=Provincia.objects.filter(region=0),label='Provincia',required=False)
     class Meta:
         model = Gobernacion
         fields = ('region','provincia',)
         widgets = {
             'region': forms.Select(attrs={'onChange':'provincias();',}),
-        }
+        }     
 
 class GobernacionTable(tables.Table):
     item = tables.Column()
@@ -89,5 +91,5 @@ class GobernacionTable(tables.Table):
         return '%d' % value
 
     class Meta:
-        attrs = {"class": "table table-bordered table-condensed"}
+        attrs = {"class": "table table-bordered table-condensed table-striped"}
         orderable = False
