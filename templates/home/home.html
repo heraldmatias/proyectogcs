@@ -1,30 +1,47 @@
   {% extends 'base.html' %}
   {% load static %}
   {% block title %} Plataforma Intersectorial de Comunicaci&oacute;n OGCS {% endblock %}
-  {% block content %}
-  {% include 'include/header.html' %}
-  <br><br>
-  {% if m == "userr" %}
-    <h3><div class="span6"><div class="alert alert-error"><a class="close" data-dismiss="alert">×</a><strong>Mensaje:</strong>
-    <p>Usuario creado correctamente,pero no se ha podido enviar el email con los datos del registro.</p>  </div></div></h3>
-  {% endif %}
-  {% if m == "usadd" %}
-    <h3><div class="span6"><div class="alert alert-success"><a class="close" data-dismiss="alert">×</a><strong>Mensaje:</strong>
-    <p>Usuario creado correctamente, se ha enviado un email con los datos del registro.</p>  </div></div></h3>
-  {% endif %}
+  {% block csspage %}
+  	<style type="text/css">
+  	ul#portfolio li img{
+	padding: 0px;
+	}
+	ul#portfolio {
+	margin-bottom: 2em;
+	list-style:none;
+	height:222px;
+	overflow:hidden
+	}
+	</style>
   {% endblock %}
-  {% block scriptjs %}	
-	<script>
-	$('#id_fechacreac_tw').datepicker({
-	    format: 'mm-dd-yyyy',
-            language: 'es',
-            autoclose: true
-	});
-        $('#id_fechacreac_fb').datepicker({
-	    format: 'mm-dd-yyyy',
-            language: 'es',
-            autoclose: true
-	});		
-	</script>
-  {% endblock %}
-
+  {% block content %}    
+    <div id="contenido">
+    	<div id="contenido_izq">
+              <div style="margin: auto auto auto 7px;">
+                    <ul id="portfolio">					
+                            <li>
+                                <img src="{{ STATIC_URL }}images/intrito2.jpg" alt="" />
+                            </li>
+                            <li>
+                                <img src="{{ STATIC_URL }}images/intrito3.jpg" alt="" />
+                            </li>					
+                                    
+                        </ul>
+              </div>
+              
+      	</div>
+    </div>
+{% endblock %}
+{% block scriptjs %}
+	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.innerfade.js"></script>
+    <script type="text/javascript">
+		$(document).ready(function(){
+			$('ul#portfolio').innerfade({
+						speed: 1000,
+						timeout: 5000,
+						type: 'sequence',
+						containerheight: '222px'
+					});
+		});
+    </script>
+{% endblock %}
