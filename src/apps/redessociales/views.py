@@ -20,7 +20,7 @@ def informacion(request):
             return redirect('/home/') # Crear un parametro en home para mostrar los mensajes de exito.
     else:        
         frminformacion = InformacionForm()
-    return render_to_response('redes/informacion.html', {'frminformacion': frminformacion,'usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
+    return render_to_response('redes/informacion.html', {'frminformacion': frminformacion,'opcion':'add'}, context_instance=RequestContext(request),)
 
 @login_required(login_url='/')
 def twitter(request): 
@@ -45,7 +45,7 @@ def twitter(request):
     else:        
         frmtwitter = TwitterForm()
     frmtwitterdetalle = TwitterDetalleForm()
-    return render_to_response('redes/twitter.html', {'frmtwitter': frmtwitter,'frmtwitterdetalle':frmtwitterdetalle,'usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
+    return render_to_response('redes/twitter.html', {'frmtwitter': frmtwitter,'frmtwitterdetalle':frmtwitterdetalle,'opcion':'add'}, context_instance=RequestContext(request),)
 
 @login_required(login_url='/')
 def facebook(request):   
@@ -68,7 +68,7 @@ def facebook(request):
     else:        
         frmfacebook = FacebookForm()
     frmfacebookdetalle = FacebookDetalleForm()
-    return render_to_response('redes/facebook.html', {'frmfacebook': frmfacebook,'frmfacebookdetalle':frmfacebookdetalle,'usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
+    return render_to_response('redes/facebook.html', {'frmfacebook': frmfacebook,'frmfacebookdetalle':frmfacebookdetalle,'opcion':'add'}, context_instance=RequestContext(request),)
 
 @login_required(login_url='/')
 def facebookdiario(request):   
@@ -83,7 +83,7 @@ def facebookdiario(request):
             return redirect('/home/') # Crear un parametro en home para mostrar los mensajes de exito.
     else:        
         frmfacebookdiario = FacebookDiarioForm()
-    return render_to_response('redes/facebookdiario.html', {'frmfacebookdiario': frmfacebookdiario,'usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
+    return render_to_response('redes/facebookdiario.html', {'frmfacebookdiario': frmfacebookdiario,'opcion':'add',}, context_instance=RequestContext(request),)
 
 @login_required(login_url='/')
 def twitterdiario(request):
@@ -98,4 +98,4 @@ def twitterdiario(request):
             return redirect('/home/') # Crear un parametro en home para mostrar los mensajes de exito.
     else:        
         frmtwitterdiario = TwitterDiarioForm()
-    return render_to_response('redes/twitterdiario.html', {'frmtwitterdiario': frmtwitterdiario,'usuario':request.session['nombres'],'fecha':request.session['login_date']}, context_instance=RequestContext(request),)
+    return render_to_response('redes/twitterdiario.html', {'frmtwitterdiario': frmtwitterdiario,'opcion':'add'}, context_instance=RequestContext(request),)
