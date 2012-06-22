@@ -1,62 +1,36 @@
-<section id="navbar">
-  <div class="page-header">
-<div class="navbar">
-    <div class="navbar-inner">
-      <div class="container">
-        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </a>
-        <a class="brand" href=""><h1>OGCS</h1>Plataforma Intersectorial de Redes Sociales</a>
-  <div class="subnav">
-		<ul class="nav nav-pills">
-	      <li class="dropdown">
-		<a class="dropdown-toggle" data-toggle="dropdown" href="">Mantenimiento<b class="caret"></b></a>
-		<ul class="dropdown-menu">                  
-                  <li><a href="/ubigeo/region/add/" data-toggle="modal">Regi&oacute;n</a></li>                
-		  <li><a href="/ubigeo/provincia/add/" data-toggle="modal">Provincia</a></li>
-		  <li><a href="/dependencia/ministerio/add/" data-toggle="modal">Ministerio</a></li>
-		  <li><a href="/dependencia/odp/add/" data-toggle="modal">ODP</a></li>
-		  <li><a href="/dependencia/gobernacion/add/" data-toggle="modal">Gobernaci&oacute;n</a></li>
-		  <li><a href="/usuario/add/" data-toggle="modal">Niveles de Usuario</a></li>
-		</ul>
-	      </li>
-	      <li class="dropdown">
-		<a class="dropdown-toggle" data-toggle="dropdown" href="#">Información General<b class="caret"></b></a>
-		<ul class="dropdown-menu">
-		  <li><a href="/redessociales/informacion/" data-toggle="modal">Nuevo Información General</a></li>
-		  <li><a href="#" data-toggle="modal">Consultar Información General</a></li>
-		</ul>
-	      </li>
-	      <li class="dropdown">
-		<a class="dropdown-toggle" data-toggle="dropdown" href="#">Twitter<b class="caret"></b></a>
-		<ul class="dropdown-menu">
-		  <li><a href="/redessociales/twitter/" data-toggle="modal">Nuevo Información General Twitter</a></li>
-		  <li><a href="">Consultar Información General Twitter</a></li>
-		  <li><a href="/redessociales/twitter/diario/" data-toggle="modal">Nuevo Twitter Diario</a></li>
-		  <li><a href="">Consultar Twitter Diario</a></li>
-		</ul>
-	      </li>
-	      <li class="dropdown">
-		<a class="dropdown-toggle" data-toggle="dropdown" href="#">Facebook<b class="caret"></b></a>
-		<ul class="dropdown-menu">
-		  <li><a href="/redessociales/facebook/" data-toggle="modal">Nuevo Información General Facebook</a></li>
-		  <li><a href="">Consultar Información General Facebook</a></li>
-		  <li><a href="/redessociales/facebook/diario/" data-toggle="modal">Nuevo Facebook Diario</a></li>
-		  <li><a href="">Consultar Facebook Diario</a></li>
-		</ul>
-	      </li>
-	      <li><a href="">Chat Privado</a></li>
-	      <li><a href="">Documentos Compartidos</a></li>
-	      <li><a href="">Calendario de Actividades</a></li>	      
-	    </ul> 
-          </div>  
-	  <div id="sesion" class="pull-right">
-          <p>Fecha: {{ fecha }} </p>
-          Usuario: {{ usuario }}          
-          <a  href="/home/logout/">Cerrar Sesión</a>
-          </div>   </div>   
-        </div>
-      </div>
-    </div></section>
+<div id="menu">  
+        <ul id="nave">
+           {% if user.get_profile.nivel.codigo == 2 %}
+            <li class="dropdown principal"><a class="dropdown-toggle menublanco" data-toggle="dropdown" href="">Mantenimiento<b class="caret"></b></a>
+                <ul class="dropdown-menu">                  
+                 <li class="opcion"><a href="{% url ogcs-mantenimiento-region-add %}" data-toggle="modal">Regi&oacute;n</a></li>                
+		  <li class="opcion"><a href="{% url ogcs-mantenimiento-provincia-add %}" data-toggle="modal">Provincia</a></li>
+		  <li class="opcion"><a href="{% url ogcs-mantenimiento-ministerio-add %}" data-toggle="modal">Ministerio</a></li>
+		  <li class="opcion"><a href="{% url ogcs-mantenimiento-odp-add %}" data-toggle="modal">OPD</a></li>
+		  <li class="opcion"><a href="{% url ogcs-mantenimiento-gobernacion-add %}" data-toggle="modal">Gobernaci&oacute;n</a></li>
+		  <li class="opcion"><a href="{% url ogcs-mantenimiento-usuario-add 1 %}" data-toggle="modal">Usuario</a></li>
+                  <li class="opcion"><a href="{% url ogcs-mantenimiento-usuario-add 2 %}" data-toggle="modal">Administrador</a></li>
+                </ul></li>
+            {% endif %}<!--data-content="Los OAC se utilizan para..." rel="popover" data-original-title="Organigrama del Área de Comunicaciones"  rel="tooltip" data-original-title="first tooltip"  <div class="popover-content"><p></p></div>--> 
+            <li class="dropdown principal"><a class="dropdown-toggle menublanco" data-toggle="dropdown" data-content="Los OAC se utilizan para..." rel="popover" data-original-title="Información General" href="">Información General<b class="caret"></b></a>
+                <ul class="dropdown-menu">   
+		  <li><a href="{% url ogcs-redes-informacion %}" data-toggle="modal">Nuevo Información General</a></li>		  
+		  <li><a href="{% url ogcs-redes-informacion %}" data-toggle="modal">Consultar Información General</a></li>
+		</ul></li>
+            <li class="dropdown principal"><a class="dropdown-toggle menublanco" data-toggle="dropdown" data-content="Los OAC se utilizan para..." rel="popover" data-original-title="Plan General de Comunicacion del Sector" href="">Twitter<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+     <li><a href="{% url ogcs-redes-twitter %}" data-toggle="modal">Nuevo Información General Twitter</a></li>		  
+     <li><a href="{% url ogcs-redes-twitter %}" data-toggle="modal">Consultar Información General Twitter</a></li>	
+     <li><a href="{% url ogcs-redes-twitter-diario %}" data-toggle="modal">Nuevo Twitter Diario</a></li>	
+     <li><a href="{% url ogcs-redes-twitter %}" data-toggle="modal">Consultar Twitter Diario</a></li>	
+		</ul></li>
+            <li class="dropdown principal"><a class="dropdown-toggle menublanco" data-toggle="dropdown" data-content="Los OAC se utilizan para..." rel="popover" data-original-title="Matriz de Campaña de Comunicaciones Anuales" href="">Facebook<b class="caret"></b></a>
+                <ul class="dropdown-menu">                  
+                  <li><a href="{% url ogcs-redes-facebook %}" data-toggle="modal">Nuevo Información General Facebook</a></li>                
+		  <li><a href="{% url ogcs-redes-facebook %}" data-toggle="modal">Consultar Información General Facebook</a></li>                  <li><a href="{% url ogcs-redes-facebook %}" data-toggle="modal">Nuevo Facebook Diario</a></li>                
+		  <li><a href="{% url ogcs-redes-facebook-diario %}" data-toggle="modal">Consultar Facebook Diario</a></li>		  
+		</ul></li>                       
+        </ul>
+        <div id="cerrar_sesion">
+        <a class="menublanco" href="{% url ogcs-logout %}"> Cerrar sesión&nbsp;<img width="20" height="19" src="{{ STATIC_URL }}images/sesion.png" align="absmiddle"></a>
+        </div></div>

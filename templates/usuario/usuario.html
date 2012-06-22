@@ -1,57 +1,99 @@
  {% extends 'base.html' %}
   {% load static %}
   {% block title %} Plataforma Intersectorial de Comunicaci&oacute;n OGCS {% endblock %}
+  {% block csspage %}
+  <style type="text/css"> 
+  .baja {height:15px;width:25px;float:left} .media {height:15px;width:25px;float:left} .alta {width:25px;height:15px;float:left}
+  .info {height:10px;width:220px;margin: auto auto 2px auto;font-style:italic;}
+  </style>
+  {% endblock %}
   {% block content %}
-  {% include 'include/header.html' %}
+  
+{% if tipo == 0 %}
+    <h3><div class="alert alert-error"><a class="close" data-dismiss="alert">×</a><strong>Mensaje:</strong>
+    <p>Usuario creado correctamente,pero no se ha podido enviar el email con los datos del registro.</p></div></h3>
+  {% endif %}
+  {% if tipo == 1 %}
+    <h3><div class="alert alert-success"><a class="close" data-dismiss="alert">×</a><strong>Mensaje:</strong>
+    <p>Usuario creado correctamente, se ha enviado un email con los datos del registro.</p> </div></h3>
+  {% endif %}
 <ul class="nav nav-tabs">
-<li class="active"><a href="/usuario/{{ opcion }}/{% if codigo %}{{ codigo }}/{% endif %}">{% if opcion == "add" %}Nuevo {% else %} Modificar {% endif %}</a></li>
-<li><a href="/usuario/consulta/" >Consultar</a></li>
+ {% if opcion == "add" %}
+    <li class="active"><a href="{% url ogcs-mantenimiento-usuario-add nivel %}">Nuevo</a></li>{% else %}
+    <li class="active"><a href="{% url ogcs-mantenimiento-usuario-edit nivel codigo %}">Modificar</a></li>{% endif %}
+    <li><a href="{% url ogcs-mantenimiento-usuario-consulta nivel %}" >Consultar</a></li>
 </ul>
-<div class="tab-content" id="contenido">
-<div id="nuevo" class="tab-pane fade in active">
-<form class="form-inline" name="frmusu" id="frmusu" method="post" action="/usuario/{{ opcion }}/{% if codigo %}{{ codigo }}/{% endif %}" ><!--data-toggle="modal"-->
-<div id="frminformacion" class="modal" style="position: relative; top: auto; left: auto; margin: 0 auto; z-index: 1"><!--class="modal hide fade">-->
+<div class="tab-content" id="contenido_izq">
+<div id="nuevo" class="tab-pane fade in active" >
+{% if opcion == "add" %}
+<form enctype="multipart/form-data" class="form-inline" name="frmusu" id="frmusu" method="post" action="{% url ogcs-mantenimiento-usuario-add nivel %}" >{% else %}
+<form enctype="multipart/form-data" class="form-inline" name="frmusu" id="frmusu" method="post" action="{% url ogcs-mantenimiento-usuario-edit nivel codigo %}" >{% endif %}
+<div id="frminformacion" class="modal" style="position: relative; top: auto; left: auto; margin: 0 auto auto 20px; z-index: 1;width:720px;height:auto"><!--class="modal hide fade">-->
     <div class="modal-header">
       <a class="close" data-dismiss="modal" >&times;</a>
-      <h3>Registro de Usuario</h3>
+      {% if nivel == "1" %}
+      <h3>Mantenimiento de Usuario</h3> {% else %}       <h3>Mantenimiento de Administrador</h3> {% endif %}
     </div>
     <div class="modal-body">
       {% csrf_token %}              
-      {{ frmusuario.non_field_errors }}
+      {% if existe == 0 %}<ul class="errorlist"><li> Ya existe un usuario en este Organismo y Dependencia. </li></ul>{% endif %} 
+      {% if existe == 3 %}<ul class="errorlist"> <li> Ya existe un Administrador en este Organismo y Dependencia. </li></ul>{% endif %} 
       {% if opcion == "add" %}
       {% for campo in frmusuario %}      
       {{ campo.errors }}      
+      {% if campo.label != "Estado" %} 
       <div class="row-fluid">
-      <div class="span4">{{ campo.label_tag }}:</div><div class="span2">{{ campo }} </div></div><p></p>
+      <div class="span3">{{ campo.label_tag }}:</div><div class="span5">{{ campo }} </div>{% if campo.label == "Contraseña" %}<div class="row"><div class='span2'><b><div class="info" id="sclave" name="sclave"></div></b><div class="baja"> </div><div class="media"> </div><div class="alta"> </div> </div></div>
+{% endif %}</div><p></p>{% if campo.label == "Contraseña" %}
+<div class="row-fluid">
+<div class="span3"><label for="id_contrasena2">Contraseña (Confirmar)</label>:</div><div class="span5"><input id="id_contrasena2" type="password" name="contrasena2" maxlength="128" /> </div><div class="row"><div class='span2'><b><div class="info" style="color:red;" id="sclave2" name="sclave2"></div></b></div></div></div><p></p>
+ {% endif %}{% endif %}
       {% endfor %}
+      <input type="hidden" name="estado" id="id_estado" value="2">
+     {% if nivel == "1" %} <input type="hidden" name="nivel" id="id_nivel" value="1">{% else %} <input type="hidden" name="nivel" id="id_nivel" value="2">{% endif %}
       {% else %}
       {% for campo in frmusuario %}      
       {{ campo.errors }}
       <div class="row-fluid">
-      <div class="span4">{{ campo.label_tag }}:</div><div class="span2">{{ campo }} </div></div><p></p>
+      <div class="span4">{{ campo.label_tag }}:</div>{% if campo.label == 'Foto' %} {% if foto %} 
+      <div class="span6"><input type="checkbox" name="foto-clear" id="foto-clear_id" /><label for="foto-clear_id"><strong>Eliminar esta Foto</strong></label><br /><div style="font-size:12px">Actualmente: <a href="{{ foto.url }}" target="_blank">{{ foto }}</a></div> <br /><br />
+<strong style="font-size:13px">Cambiar de Foto</strong> <input type="file" name="foto" id="id_foto" /></div>
+     {% else %} <div class="span6"><input type="file" name="foto" id="id_foto" /></div> {% endif %}
+      {% else %}<div class="span2">{{ campo}}</div>{% endif %}</div><p></p>
       {% endfor %}        
       {% endif %}
     </div><input type="hidden" value="{{ dependencia }}" id="id_dep" name="id_dep">
     <div class="modal-footer">
+     <input class="btn-primary" name="grabar" value="{% if opcion == 'add' %}Guardar {% else %} Modificar {% endif %}" type="submit">
      <input class="btn" name="grabar" value="Cerrar" type="button" onclick="javascript: $('#frmregion').modal('hide')">
-      <input class="btn-primary" name="grabar" value="Guardar Cambios" type="submit">
     </div>
 </div>
 </form></div></div>
   {% endblock %}
   {% block scriptjs %}    
 <script>
+var ok=true;
 $('#frmusu').submit(function() {
 if (!document.getElementById("id_politica").checked) {
-alert('Debe Aceptar las politicas de uso para poder registrarse.'); return false;}
-else{
-return confirmar('¿Desea grabar el registro?');}
+alert('Debe Aceptar las politicas de uso para poder registrarse.'); return false;
+}{% if opcion == "add" %}else if(validaclave('id_contrasena','sclave','id_contrasena2','sclave2')==false){
+alert('Revise su contraseña Por Favor!');return false;}{% endif %}
+if(ok){return confirmar("¿Desea {% if opcion == 'add' %}Guardar {% else %} Modificar {% endif %} el registro?");}else{ok=true;alert('Solo se acepta archivos de IMAGEN');return false;}
 });
+$('#id_foto').change(function() {
+ var ext = $('#id_foto').val().split('.').pop().toLowerCase();
+if($.inArray(ext, ['jpg','png','gif','jpeg']) == -1) {
+    alert('Solo se acepta archivos de IMAGEN');$('#id_foto').focus();ok=false;return false;
+}});
 $(document).ready(function() {
   dependencias();
+  $("#foto-clear_id").change(function() {
+  $("#id_foto").attr('disabled',this.checked);
 });
-validaletra('id_nombres');
-validaletra('id_apellidos');
+  
+});
+validaletra('id_nombres');{% if opcion == "add" %}validaclave('id_contrasena','sclave','id_contrasena2','sclave2');{% endif %}
+validaletra('id_apellidos');comboelegir('id_organismo');comboelegir('id_sexo');
 validanumero('id_rpc');
 validanumero('id_rpm');
 validanumero('id_nextel');

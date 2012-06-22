@@ -1,20 +1,23 @@
   {% extends 'base.html' %}
   {% load static %}
   {% block title %} Plataforma Intersectorial de Comunicaci&oacute;n OGCS {% endblock %}
-  {% block content %}
-  {% include 'include/header.html' %}
+  {% block content %}  
   {% load render_table from django_tables2 %}
+{% if mensaje %}
+<h4><div class="alert alert-success"><a class="close" data-dismiss="alert">×</a><strong>Mensaje:</strong>
+<p>Registro modificado satisfactoriamente.</p></div></h4>
+{% endif %}
 <ul class="nav nav-tabs">
-<li><a href="/dependencia/odp/add/">{%if not opcion %} Nuevo {% else %} {% if opcion == "add" %}Nuevo {% else %} Modificar {% endif %}{% endif %}</a></li>
-<li class="active"><a href="/dependencia/odp/consulta/" >Consultar</a></li>
+<li><a href="{% url ogcs-mantenimiento-odp-add %}">Nuevo</a></li>
+<li class="active"><a href="{% url ogcs-mantenimiento-odp-consulta %}" >Consultar</a></li>
 </ul>
-<div class="tab-content" id="contenido">
+<div class="tab-content" id="contenido_izq">
 <div id="nuevo" class="tab-pane fade in active">
-<form class="form-inline span5" name="frmreg" method="get" action="/dependencia/odp/consulta/"><!--data-toggle="modal"-->
-<div id="frmregion" class="modal span7" style="position: relative; top: auto; left: absolute; margin: 0 auto; z-index: 1"><!--class="modal hide fade">-->
+<form class="form-inline" name="frmreg" method="get" action="/{% url ogcs-mantenimiento-odp-consulta %}"><!--data-toggle="modal"-->
+<div id="frmregion" class="modal" style="position: relative; top: auto; left: auto; margin: 0 auto auto 20px; z-index: 1;width:720px;height:auto"><!--class="modal hide fade">-->
     <div class="modal-header">
       <a class="close" data-dismiss="modal" href="javascript: cerrarformulario('contenido');">&times;</a>
-      <h3>Consulta de ODP</h3>
+      <h3>Consulta de OPD</h3>
     </div>
     <div class="modal-body">
     <div class="row-fluid">
@@ -25,7 +28,7 @@
     <div class="span2"><a class="btn btn-primary" href="javascript: imprimir();">Imprimir</a></div></div> <p></p>
       <br>
       <fieldset>
-	<legend><h4>Lista de Odp</h4></legend>
+	<legend><h4>Lista de OPD</h4></legend>
       {% render_table tabla %}    
       </fieldset>
     </div>
@@ -41,8 +44,9 @@
 function imprimir(){
 var ministerio=$('#id_nummin').val();
 var odp=$('#id_odp').val();
-var url="/dependencia/odp/imprimir/?odp="+odp+"&nummin="+ministerio;
+var url="{% url ogcs-mantenimiento-odp-print %}?odp="+odp+"&nummin="+ministerio;
 location.href=url;
 }
+combotodos('id_nummin');validaletra('id_odp');
 </script>
   {% endblock %}

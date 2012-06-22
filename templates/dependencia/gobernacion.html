@@ -2,18 +2,28 @@
   {% load static %}
   {% block title %} Plataforma Intersectorial de Comunicaci&oacute;n OGCS {% endblock %}
   {% block content %}
-  {% include 'include/header.html' %}
+  
+{% if mensaje %}
+<h4><div class="alert alert-success"><a class="close" data-dismiss="alert">×</a><strong>Mensaje:</strong>
+<p>{{ mensaje }}</p></div></h4>
+{% endif %}
 <ul class="nav nav-tabs">
-<li class="active"><a href="/dependencia/gobernacion/{{ opcion }}/{% if codigo %}{{ codigo }}/{% endif %}">{% if opcion == "add" %}Nuevo {% else %} Modificar {% endif %}</a></li>
-<li><a href="/dependencia/gobernacion/consulta/" >Consultar</a></li>
+{% if opcion == "add" %}
+    <li class="active"><a href="{% url ogcs-mantenimiento-gobernacion-add %}">Nuevo</a></li>{% else %}
+    <li class="active"><a href="{% url ogcs-mantenimiento-gobernacion-edit codigo %}">Modificar</a></li>{% endif %}
+    <li><a href="{% url  ogcs-mantenimiento-gobernacion-consulta %}" >Consultar</a></li>
 </ul>
-<div class="tab-content" id="contenido">
+<div class="tab-content" id="contenido_izq">
 <div id="nuevo" class="tab-pane fade in active">
-<form class="form-inline" name="frmgob" method="post" action="/dependencia/gobernacion/{{ opcion }}/{% if codigo %}{{ codigo }}/{% endif %}" onSubmit="return confirmar('¿Desea grabar el registro?'); "><!--data-toggle="modal"-->
-<div id="frmgobernacion" class="modal" style="position: relative; top: auto; left: auto; margin: 0 auto; z-index: 1"><!--class="modal hide fade">-->
+{% if opcion == "add" %}
+<form class="form-inline" name="frmgob" method="post" action="{% url ogcs-mantenimiento-gobernacion-add %}" onSubmit="return confirmar('¿Desea grabar el registro?'); ">
+{% else %}
+<form class="form-inline" name="frmgob" method="post" action="{% url ogcs-mantenimiento-gobernacion-edit codigo %}" onSubmit="return confirmar('¿Desea modificar el registro?'); ">
+{% endif %}
+<div id="frmgobernacion" class="modal" style="position: relative; top: auto; left: auto; margin: 0 auto auto 20px; z-index: 1;width:720px;height:auto"><!--class="modal hide fade">-->
     <div class="modal-header">
       <a class="close" data-dismiss="modal" >&times;</a>
-      <h3>Matenimiento de Gobernacion</h3>
+      <h3>Mantenimiento de Gobernacion</h3>
     </div>
     <div class="modal-body">
       {% csrf_token %}
@@ -40,8 +50,8 @@
       {% endif %}      
     </div>
     <div class="modal-footer">
+     <input class="btn-primary" name="grabar" value="{% if opcion == 'add' %}Guardar {% else %} Modificar {% endif %}" type="submit">
      <input class="btn" name="grabar" value="Cerrar" type="button" onclick="cerrarformulario('contenido');">
-      <input class="btn-primary" name="grabar" value="Guardar Cambios" type="submit">
     </div>
 </div>
 </form>
@@ -51,8 +61,8 @@
 <script>
 $(document).ready(function() {
 provincias();
-validaletra('id_gobernacion');
-validaletra('id_iniciales');
+validaletra('id_gobernacion');comboelegir('id_region');
+validaletra('id_iniciales');comboelegir('id_provincia');
 });
 </script>
   {% endblock %}
