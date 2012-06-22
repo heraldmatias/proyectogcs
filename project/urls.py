@@ -18,6 +18,7 @@ urlpatterns = patterns('',
     # grapelli admin urls
     (r'^grappelli/', include('grappelli.urls')),
     # urls
+    (r'^chat/', include('jqchat.urls')),
     (r'^$', 'home.views.index'),
     (r'^home/', include('home.urls')),
     (r'^ubigeo/', include('ubigeo.urls')),

@@ -25,8 +25,8 @@ class RegionTable(tables.Table):
     estado = tables.Column()    
 
     def render_item(self):
-        value = getattr(self, '_counter', 1)
-        self._counter = value + 1
+        value = getattr(self, '_coo', 1)
+        self._coo = value+1
         return '%d' % value
 
     class Meta:
@@ -35,7 +35,7 @@ class RegionTable(tables.Table):
 
 class ProvinciaTable(tables.Table):
     item = tables.Column()
-    region = tables.Column(verbose_name="Región")
+    region = tables.Column(verbose_name="Región",orderable=True)
     provincia = tables.LinkColumn('ogcs-mantenimiento-provincia-edit', args=[A('numpro')],orderable=True)
     estado = tables.Column()    
 

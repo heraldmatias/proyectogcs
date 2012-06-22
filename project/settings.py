@@ -145,6 +145,9 @@ INSTALLED_APPS = (
     'ubigeo',
     'usuario',
     'dependencia',
+    'scripts',
+    'jqchat',
+    'timezones',
 )
 
 GRAPPELLI_ADMIN_TITLE = 'Sitio Administrativo de la Plataforma de Redes Sociales'

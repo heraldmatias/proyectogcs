@@ -47,8 +47,8 @@ class ConsultaOdpForm(forms.ModelForm):#CORREGIR
 
 class OdpTable(tables.Table):
     item = tables.Column()
-    nummin = tables.Column()
-    odp = tables.LinkColumn('ogcs-mantenimiento-odp-edit', args=[A('numodp')],orderable=True,)
+    nummin = tables.Column(orderable=True)
+    odp = tables.LinkColumn('ogcs-mantenimiento-odp-edit', args=[A('numodp')],orderable=True,verbose_name='OPD')
     iniciales = tables.Column()
     estado = tables.Column()    
 
@@ -66,7 +66,7 @@ class GobernacionForm(forms.ModelForm):
         model = Gobernacion
         fields = ('region','provincia','gobernacion','iniciales','estado')
         widgets = {
-            'region': forms.Select(attrs={'onChange':'provincias();',}),
+            'region': forms.Select(attrs={'onChange':'provincias(1);',}),
         }
 
 class ConsultaGobernacionForm(forms.ModelForm):
@@ -74,13 +74,13 @@ class ConsultaGobernacionForm(forms.ModelForm):
         model = Gobernacion
         fields = ('region','provincia',)
         widgets = {
-            'region': forms.Select(attrs={'onChange':'provincias();',}),
+            'region': forms.Select(attrs={'onChange':'provincias(0);',}),
         }     
 
 class GobernacionTable(tables.Table):
     item = tables.Column()
-    region = tables.Column()
-    provincia = tables.Column()
+    region = tables.Column(orderable=True)
+    provincia = tables.Column(orderable=True)
     gobernacion = tables.LinkColumn('ogcs-mantenimiento-gobernacion-edit', args=[A('numgob')],orderable=True)
     iniciales = tables.Column()
     estado = tables.Column()    
