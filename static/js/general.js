@@ -1,6 +1,24 @@
+$(document).ready(function() {
+	
+				$(".corners_5").corner("5px");
+				$(".corners_15").corner("15px");
+				$(".corners_20").corner("20px");
+				$(".corners_arriba").corner("top");
+				$(".corners_arriba_15").corner("top 15px");
+				$(".corners_derecha").corner("right");
+				$(".corners_derecha_15").corner("right");
+				$(".corners_izquierda").corner("left");
+				$(".corners_abajo").corner("bottom 10px");
+				$(".corners_abajo_15").corner("bottom 15px");				
+				$(".corners_abajo_tr").corner("tr bottom 5px");
+				$(".corners_abajo_tl").corner("tl bottom 10px");				
+});
+
+
 function cerrarformulario(formulario){
-var frm=$('#'+formulario);
-frm.html(" ");
+/*var frm=$('#'+formulario);
+frm.html(" ");*/
+location.href="/home/";
 }
 function confirmar(mensaje){
 	if (confirm(mensaje))
@@ -8,12 +26,17 @@ function confirmar(mensaje){
 	return false;
 }
 
-function provincias(){
+function provincias(label){
         var id= $("#id_region").val();
 	var provincia = $("#id_provincia");
-        var idpro = provincia.val();var select=true;    
+        var idpro = provincia.val();var select=true;   
+		provincia.removeAttr("disabled");
 	provincia.find('option').remove();
-provincia.append("<option selected='selected' value=''>---------</option>");
+if(label==0){
+provincia.append("<option selected='selected' value=''>---TODOS---</option>");
+}else{
+provincia.append("<option selected='selected' value=''>---ELEGIR---</option>");
+}
 	$.getJSON('/ubigeo/provincia/json/?r='+id, function(data){
 	$.each(data, function(key,value){
                 if(value.fields.numpro==idpro){
@@ -25,15 +48,21 @@ provincia.append("<option selected='selected' value=''>---------</option>");
 	});
 }
 
-function dependencias(){
+function dependencias(label){
         var id= $("#id_organismo").val();
 	var dependencia = $("#id_dependencia");
+	$("#id_dependencia").removeAttr("disabled")
         var iddep = $("#id_dep").val();var select=true;
 	dependencia.find('option').remove();
-dependencia.append("<option selected='selected' value=''>---------</option>");
+if(label==0){
+dependencia.append("<option selected='selected' value=''>---TODOS---</option>");
+}else{
+dependencia.append("<option selected='selected' value=''>---ELEGIR---</option>");
+}
 	$.getJSON('/dependencia/dependencias/json/?r='+id, function(data){
 	$.each(data, function(key,value){
                 if(id==1){
+					
                    if(value.fields.nummin==iddep){
 		      dependencia.append("<option value='"+value.fields.nummin+"' selected='selected'>"+value.fields.ministerio+"</option>");select=false;
                    }else{
@@ -58,12 +87,25 @@ dependencia.append("<option selected='selected' value=''>---------</option>");
 //if(select){dependencia.append("<option selected='selected' value=''>---------</option>");}else{dependencia.append("<option value=''>---------</option>");}
 	});
 }
+function validaalfa(campo){
+ $('#'+campo).keyup(function () {
+  this.value = this.value.replace(/[^0-9A-Za-záéíóúÁÉÍÓÚÜüñÑ._ ]/g,'');
+});
+$('#'+campo).focusout(function () {
+  l = $.trim($('#'+campo).val().toUpperCase());
+  $('#'+campo).val(l);
+});
+}
 
 function validaletra(campo){
 var l='';
  $('#'+campo).keyup(function () {
-  this.value = this.value.replace(/[^A-Za-záéíóúÁÉÍÓÚÜü ]/g,'');
-  l = this.value.toUpperCase();
+  this.value = this.value.replace(/[^A-Za-záéíóúÁÉÍÓÚÜüñÑ ]/g,'');
+  //l = this.value.toUpperCase();
+  //$('#'+campo).val(l);
+});
+$('#'+campo).focusout(function () {
+  l = $.trim($('#'+campo).val().toUpperCase());
   $('#'+campo).val(l);
 });
 }
@@ -71,3 +113,65 @@ function validanumero(campo){
  $('#'+campo).keyup(function () {
   this.value = this.value.replace(/[^0-9]/g,'');
 });}
+
+passtatus= new Array(5);
+passtatus[0]='Escriba su contraseña';
+passtatus[1]='La contraseña debe superar 5 caracteres';
+passtatus[2]='Contraseña baja';
+passtatus[3]='Contraseña media';
+passtatus[4]='Contraseña alta';
+passtatus[5]='Las Contraseñas no coinciden';
+function validaclave(campo,sclave,campo2,sclave2){
+var pass='';var r=false;
+var estado=0;
+var clave = $('#'+sclave);var clave2 = $('#'+sclave2);
+
+if(($.trim($('#'+campo).val()).length<5)|$.trim($('#'+campo).val())!=$.trim($('#'+campo2).val())){
+estado=5; clave2.html(" ");clave2.html(passtatus[estado]); r=false;
+}else{clave2.html(" ");r=true;}
+
+$('#'+campo2).keyup(function () {
+if(pass.length>=5){
+if(pass!=$.trim($('#'+campo2).val())){
+estado=5; clave2.html(" ");clave2.html(passtatus[estado]); r=false;
+}else{clave2.html(" ");r=true;}}else{r=false;}
+});
+$('#'+campo).keyup(function () {
+this.value = this.value.replace(/[ ]/g,'');pass=$.trim($('#'+campo).val());
+var letras= /^[a-z]+$/gi;var numeros=/^\d+$/g;var caracteres=/^\W+$/g;
+var alfa=/^\w+$/g;
+if(pass.length>=5){
+	if(letras.test(pass)|numeros.test(pass)|caracteres.test(pass)){
+        estado=2;
+	}else if(alfa.test(pass)){
+        estado=3;  
+        }else if((/\W+/gi).test(pass)&(/\w+/gi).test(pass)&(/\d+/gi).test(pass)){
+        estado=4;  
+        }else{
+        estado=3; 
+        }
+}else if(pass.length==0){
+estado=0;
+}else if(pass.length<5){
+estado=1;
+}
+clave.html(" ");clave.html(passtatus[estado]);
+if (estado<2){$("div.baja").css("background-color","white");$("div.media").css("background-color","white");$("div.alta").css("background-color","white");r=false;};
+if (estado==2){$("div.baja").css("background-color","green");$("div.media").css("background-color","white");$("div.alta").css("background-color","white");r=true;};
+if (estado==3){$("div.baja").css("background-color","green");$("div.media").css("background-color","yellow");$("div.alta").css("background-color","white");r=true;};
+if (estado==4){$("div.baja").css("background-color","green");$("div.media").css("background-color","yellow");$("div.alta").css("background-color","red");r=true;};
+if(pass!=$.trim($('#'+campo2).val())){
+estado=5; clave2.html(" ");clave2.html(passtatus[estado]); r=false;
+}else{clave2.html(" ");r=true;}
+});
+return r;
+}
+
+function combotodos(combo){
+var cb= $('#'+combo);
+cb.get(0).options[0].text="---TODOS---";
+}
+function comboelegir(combo){
+var cb= $('#'+combo);
+cb.get(0).options[0].text="---ELEGIR---";
+}
