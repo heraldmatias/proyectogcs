@@ -162,7 +162,7 @@ def useradd(request,nivel):
                 frmusuario.save()
                 usuario.contrasena = user.password
                 usuario.save() 
-                asunto="Bienvenido a la plataforma de Comunicación Social"
+                asunto="Bienvenido a la plataforma de Redes Sociales"
                 from django.core.mail import EmailMessage                
                 t = loader.get_template('home/mail.html')
                 current_site = get_current_site(request)
