@@ -33,7 +33,8 @@ def informacion_edit(request, codigo):
     if request.method == 'POST':
         info = get_object_or_404(Informacion, numinf=int(codigo))  
         info.idusuario_mod = request.user.get_profile()
-        info.fec_mod = datetime.now()  
+        info.fec_mod = datetime.now()
+        dependencia = request.POST['dependencia']
         formulario = InformacionForm(request.POST, instance=info) # A form bound to the POST data
         if formulario.is_valid():
             formulario.save()
