@@ -13,11 +13,10 @@
     <li><a href="{% url ogcs-redes-facebook %}" >Consultar</a></li>
 </ul>
 <div class="tab-content" id="contenido_izq">
-<div id="nuevo" class="tab-pane fade in active">
+<div id="nuevo" class="tab-pane fade in active" >
 {% if opcion == "add" %}
-<form class="form-inline" name="frmpro" method="post" action="{% url ogcs-redes-facebook %}" onSubmit="return confirmar('¿Desea grabar el registro?'); ">{% else %}
-<form class="form-inline" name="frmpro" method="post" action="{% url ogcs-redes-facebook %}" onSubmit="return confirmar('¿Desea modificar el registro?'); ">{% endif %}
-<form class="form-inline span5" name="frmfb" id="frmfb" method="post" action="{% url ogcs-redes-facebook %}" ><!--data-toggle="modal"-->
+<form enctype="multipart/form-data" class="form-inline" name="frmface" id="frmface" method="post" action="{% url ogcs-redes-facebook %}" >{% else %}
+<form enctype="multipart/form-data" class="form-inline" name="frmface" id="frmface" method="post" action="{% url ogcs-redes-facebook %}" >{% endif %}
 <div id="frmfacebook" class="modal" style="position: relative; top: auto; left: auto; margin: 0 auto auto 20px; z-index: 1;width:720px;height:auto">
     <div class="modal-header">
       <a class="close" data-dismiss="modal" >&times;</a>

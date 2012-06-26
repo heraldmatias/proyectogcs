@@ -13,6 +13,33 @@ class InformacionForm(forms.ModelForm):
             'organismo': forms.Select(attrs={'onChange':'dependencias();',}),
         }
 
+class InformacionConsultaForm(forms.ModelForm):
+    class Meta:
+        model = Informacion
+        fields = ('organismo','dependencia',)
+        widgets = {
+            'dependencia': forms.Select(),
+            'organismo': forms.Select(attrs={'onChange':'dependencias();',}),
+        }
+
+class InformacionTable(tables.Table):
+    item = tables.Column()
+    organismo = tables.Column(orderable=True)
+    dependencia = tables.Column(orderable=True)
+    idusuario_creac = tables.Column(orderable=True)
+    fec_creac = tables.Column(orderable=True)
+    idusuario_mod = tables.Column(orderable=True)
+    fec_mod = tables.Column(orderable=True)
+    modificar = tables.TemplateColumn('<a href={% url ogcs-redes-informacion-edit record.numinf %}>Modificar</a>')
+    def render_item(self):
+        value = getattr(self, '_counter', 1)
+        self._counter = value + 1
+        return '%d' % value
+
+    class Meta:
+        attrs = {"class": "table table-bordered table-condensed table-striped"}
+        orderable = False
+
 class TwitterForm(forms.ModelForm):
     class Meta:
         model = Twitter

@@ -1,43 +1,114 @@
  {% extends 'base.html' %}
   {% load static %}
-  {% block title %} Plataforma Intersectorial de Comunicaci&oacute;n OGCS {% endblock %}
+  {% block title %} Plataforma Intersectorial de Redes Sociales OGCS {% endblock %}
+  {% block csspage %}
+  <style type="text/css">
+  .requerido{
+   font-size:18px;
+   color:#F4003F;
+   }
+  </style>
+  {% endblock %}
   {% block content %}
-<div id="contenido">
-<form class="form-inline" name="frminfo" method="post" action="/redessociales/informacion/" onSubmit="return confirmar('¿Desea grabar el registro?'); "><!--data-toggle="modal"-->
-<div id="frminformacion" class="modal" style="position: relative; top: auto; left: auto; margin: 0 auto; z-index: 1"><!--class="modal hide fade">-->
+{% if mensaje %}
+<h4><div class="alert alert-success"><a class="close" data-dismiss="alert">×</a><strong>Mensaje:</strong>
+<p>{{ mensaje }}</p></div></h4>
+{% endif %}
+<ul class="nav nav-tabs">
+ {% if opcion == "add" %}
+    <li class="active"><a href="{% url ogcs-redes-informacion %}">Nuevo</a></li>{% else %}
+    <li class="active"><a href="{% url ogcs-redes-informacion-edit codigo %}">Modificar</a></li>{% endif %}
+    <li><a href="{% url ogcs-redes-informacion-query %}" >Consultar</a></li>
+</ul>
+<div class="tab-content" id="contenido_izq">
+<div id="nuevo" class="tab-pane fade in active" >
+{% if opcion == "add" %}
+<form enctype="multipart/form-data" class="form-inline" name="frminfo" id="frminfo" method="post" action="{% url ogcs-redes-informacion %}" >{% else %}
+<form enctype="multipart/form-data" class="form-inline" name="frminfo" id="frminfo" method="post" action="{% url ogcs-redes-informacion-edit codigo %}" >{% endif %}
+<div id="frminformacion" class="modal" style="position: relative; top: auto; left: auto; margin: 0 auto auto 20px; z-index: 1;width:720px;height:auto">
     <div class="modal-header">
       <a class="close" data-dismiss="modal" >&times;</a>
-      <h3>Informacion General</h3>
+      <h3>Información General</h3>
     </div>
     <div class="modal-body">
-      {% csrf_token %}              
-	{% for field in frminformacion %}
-	{% if field.label == "Nombres del encargado" %}
+      {% csrf_token %} 
+<div class="alert alert-info" style="font-size:12px"><a class="close" data-dismiss="alert">×</a><strong>Información: </strong>Los campos marcados con <strong class="requerido">*</strong> son obligatorios.</div>            
+        <div class="row-fluid">
+        <div class="span6"> {{ formulario.organismo.errors }}
+	<div class="span4"><strong class="requerido"><strong class="requerido">*</strong></strong>{{ formulario.organismo.label_tag }}:</div>{{ formulario.organismo }}</div>        
+        <div class="span6"> {{ formulario.dependencia.errors }}
+	<div class="span4"><strong class="requerido">*</strong>{{ formulario.dependencia.label_tag }}:</div>{{ formulario.dependencia }}</div></div><br />
 	     <div class="modal-header">	      
-	      <h4>Encargado de Facebook y Twitter</h4>
-	    </div><br>    
-	{% endif %}
-        {% if field.label == "Nombres del jefe" %}
+	      <h3>Encargado de Facebook y Twitter</h3>
+	    </div><br><!-------------------------------INFORMACION DEL ENCARGADO----------------------------->    
+	<div class="row-fluid">
+        <div class="span6"> {{ formulario.nombresenc.errors }}
+	<div class="span4"><strong class="requerido">*</strong>{{ formulario.nombresenc.label_tag }}:</div>{{ formulario.nombresenc }}</div>
+        <div class="span6"> {{ formulario.apellidosenc.errors }}
+	<div class="span4"><strong class="requerido">*</strong>{{ formulario.apellidosenc.label_tag }}:</div>{{ formulario.apellidosenc }}</div></div><br />
+        <div class="row-fluid">
+        <div class="span6">{{ formulario.emailenc1.errors }}
+	<div class="span4"><strong class="requerido">*</strong>{{ formulario.emailenc1.label_tag }}:</div>{{ formulario.emailenc1 }}</div>
+        <div class="span6"> {{ formulario.emailenc2.errors }}
+	<div class="span4">{{ formulario.emailenc2.label_tag }}</div>{{ formulario.emailenc2 }}</div></div><br />	
+        <div class="row-fluid"> 
+        <div class="span6">{{ formulario.fonoenc.errors }}  
+	<div class="span4"><strong class="requerido">*</strong>{{ formulario.fonoenc.label_tag }}:</div>{{ formulario.fonoenc }}</div>
+        <div class="span6"> {{ formulario.areaenc.errors }}
+        <div class="span4"><strong class="requerido">*</strong>{{ formulario.areaenc.label_tag }}:</div>{{ formulario.areaenc }}</div></div><br />
+        <div class="row-fluid">
+        <div class="span6"> {{ formulario.celularenc.errors }}
+	<div class="span4"><strong class="requerido">*</strong>{{ formulario.celularenc.label_tag }}:</div>{{ formulario.celularenc }}</div>        
+        <div class="span6"> {{ formulario.anexoenc.errors }} 
+	<div class="span4">{{ formulario.anexoenc.label_tag }}:</div>{{ formulario.anexoenc }}</div></div><br />        
+<!-style="width: 12.790%;float:left;display:block; margin-left: 2.5641%;" -->
+        <!-------------------------------INFORMACION DEL ENCARGADO----------------------------->    
 	     <div class="modal-header">	      
-	      <h4>Jefe directo del Encargado</h4>
-	    </div><br>
-	{% endif %}
-	{{ field.errors }}	         
-        <p><strong>{{ field.label_tag }}:</strong> {{ field }}</p>
-	{% endfor %}
+	      <h3>Jefe directo del Encargado</h3>
+	    </div><br><!-------------------------------INFORMACION DEL JEFE----------------------------->    
+	<div class="row-fluid">
+        <div class="span6"> {{ formulario.nombresjefe.errors }}
+	<div class="span4"><strong class="requerido">*</strong>{{ formulario.nombresjefe.label_tag }}:</div>{{ formulario.nombresjefe }}</div>
+        <div class="span6"> {{ formulario.apellidosjefe.errors }}
+	<div class="span4"><strong class="requerido">*</strong>{{ formulario.apellidosjefe.label_tag }}:</div>{{ formulario.apellidosjefe }}</div></div><br />
+        <div class="row-fluid">
+        <div class="span6">{{ formulario.emailjefe1.errors }}
+	<div class="span4"><strong class="requerido">*</strong>{{ formulario.emailjefe1.label_tag }}:</div>{{ formulario.emailjefe1 }}</div>
+        <div class="span6"> {{ formulario.emailjefe2.errors }}
+	<div class="span4">{{ formulario.emailjefe2.label_tag }}</div>{{ formulario.emailjefe2 }}</div></div><br />	
+        <div class="row-fluid"> 
+        <div class="span6">{{ formulario.fonojefe.errors }}  
+	<div class="span4"><strong class="requerido">*</strong>{{ formulario.fonojefe.label_tag }}:</div>{{ formulario.fonojefe }}</div>
+        <div class="span6"> {{ formulario.areajefe.errors }}
+        <div class="span4"><strong class="requerido">*</strong>{{ formulario.areajefe.label_tag }}:</div>{{ formulario.areajefe }}</div></div><br />
+        <div class="row-fluid">
+        <div class="span6"> {{ formulario.celularjefe.errors }}
+	<div class="span4"><strong class="requerido">*</strong>{{ formulario.celularjefe.label_tag }}:</div>{{ formulario.celularjefe }}</div>        
+        <div class="span6"> {{ formulario.anexojefe.errors }} 
+	<div class="span4">{{ formulario.anexojefe.label_tag }}:</div>{{ formulario.anexojefe }}</div></div><br />
+<!-------------------------------INFORMACION DEL JEFE----------------------------->    
+        <input type="hidden" value="{{ dependencia }}" id="id_dep" name="id_dep">	
     </div>
     <div class="modal-footer">
-     <input class="btn" name="grabar" value="Cerrar" type="button" onclick="cerrarformulario('contenido');">
-      <input class="btn-primary" name="grabar" value="Guardar Cambios" type="submit">
+      <input class="btn-primary" name="grabar" value="{% if opcion == 'add' %}Guardar{% else %}Modificar{% endif %}" type="submit">
+      <input class="btn" name="grabar" value="Cerrar" type="button" onclick="cerrarformulario('contenido');">
     </div>
 </div>
-</form></div>
+</form></div></div>
   {% endblock %}
   {% block scriptjs %}    
 <script>
+var iderror=0;
 $(document).ready(function() {
- //$('#frmregion').modal({show: true,});
-  dependencias();  
+comboelegir('id_organismo');
+dependencias(); 
 });
+$('#frminfo').submit(function() {
+ /* switch(iderror){
+    case 1:{$('#alert1').show().find('strong').text('fgfg');}
+  }*/
+  
+});
+
 </script>
   {% endblock %}
