@@ -9,6 +9,8 @@ from datetime import datetime
 from django_tables2.config import RequestConfig
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
+from scripts.scripts import imprimirToPDF
+from django.template.loader import render_to_string
 
 @login_required()
 def informacion(request):
@@ -64,6 +66,22 @@ def informacion_consulta(request):
     RequestConfig(request).configure(tabla)
     tabla.paginate(page=request.GET.get('page', 1), per_page=6)
     return render_to_response('redes/informacion_consulta.html',{'formulario':formulario,'tabla':tabla,'dependencia':dependencia,'mensaje':mensaje},context_instance=RequestContext(request))
+
+@login_required()
+def informacion_print(request):
+    filtro = []
+    if 'organismo' in request.GET:
+        if request.GET['organismo']:
+            filtro.append(u'organismo_id=%s'%request.GET['organismo'])   
+    if 'dependencia' in request.GET:
+        if request.GET['dependencia']:
+            filtro.append(u'dependencia=%s'%request.GET['dependencia'])
+            dependencia = request.GET['dependencia']
+    formulario = InformacionConsultaForm(request.GET)
+    query = Informacion.objects.extra(where=filtro, select={'dependencia':"case organismo_id when 1 then (select ministerio from ministerio where nummin=dependencia) when 2 then (select odp from odp where numodp=dependencia) when 3 then (select gobernacion from gobernacion where numgob=dependencia) end",'encargado':"concat(nombresenc,' ',apellidosenc)",'jefe':"concat(nombresjefe,' ',apellidosjefe)"})
+    html = render_to_string('redes/informacion_reporte.html',{'data': query,'pagesize':'A4','usuario':request.user.get_profile()},context_instance=RequestContext(request))
+    filename= "informacion_%s.pdf" % datetime.today().strftime("%Y%m%d")        
+    return imprimirToPDF(html,filename)
 
 @login_required(login_url='/')
 def twitter(request): 

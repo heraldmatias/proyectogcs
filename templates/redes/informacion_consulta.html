@@ -47,7 +47,7 @@ $(document).ready(function() {
 });
 function imprimir(){
 var data=$('#frm_info').serialize();
-var url="?"+data;
+var url="{% url ogcs-redes-informacion-print %}?"+data;
 location.href=url;
 }
 </script>
