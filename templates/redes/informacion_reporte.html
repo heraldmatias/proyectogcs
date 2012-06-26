@@ -37,7 +37,7 @@ h1{font-size:138.5%;}h2{font-size:123.1%;}h3{font-size:108%;}h1,h2,h3{margin:1em
   <tbody>{% for row in data %}
 	<tr>
 	<td>{{ forloop.counter }}</td><td>{{ row.organismo }}</td><td>{{ row.dependencia }}</td><td>{{ row.jefe }}</td><td>{{ row.encargado }}</td><td>{{ row.idusuario_creac }}</td><td>{{ row.fec_creac }}</td></tr>{% empty %}
-        <tr><td colspan="5"> NO ENCONTRE NINGUN REGISTRO </td></tr>   
+        <tr><td colspan="7"> NO ENCONTRE NINGUN REGISTRO </td></tr>   
 	{% endfor %}<br><br>
   </tbody>  
 </table>
