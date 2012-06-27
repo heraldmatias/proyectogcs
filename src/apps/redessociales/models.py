@@ -85,7 +85,7 @@ class TwitterDiario(models.Model):
     numtwdia = models.IntegerField(verbose_name='Codigo' ,unique=True)    
     organismo = models.ForeignKey(Organismo, verbose_name='Organismo')
     dependencia = models.IntegerField(verbose_name='Dependencia', blank=True, null=True)
-    fechacreacdia = models.DateField(verbose_name='Fecha de creación',)   
+    fechacreacdia = models.DateField(verbose_name='Fecha Actividad',)   
     actividad = models.CharField(verbose_name='Nombre Actividad', max_length=150,)
     totaltweets = models.IntegerField(verbose_name='Tweets',)    
     totalretweets = models.IntegerField(verbose_name='Retweets',)     
@@ -121,7 +121,12 @@ class TwitterDiario(models.Model):
     frec10 = models.DecimalField(verbose_name='Frecuencia horas publicacion 10', max_digits=3, decimal_places=2, blank=True, null=True)
     tweetvarios = models.IntegerField(verbose_name='Tweets varios', blank=True, null=True)    
     retweetvarios = models.IntegerField(verbose_name='Retweets varios', blank=True, null=True)  
-    idusuario_creac = models.IntegerField(verbose_name='Usuario',)
+    idusuario_creac = models.ForeignKey(Usuario, related_name='twd_creador',verbose_name='Numero del Usuario de creación',to_field='numero')
+    fec_creac = models.DateTimeField(verbose_name='Fec. Creacion', auto_now_add=True)
+    idusuario_mod = models.ForeignKey(Usuario,related_name='twd_modificador',null=True, blank=True,to_field='numero')
+    fec_mod = models.DateTimeField(verbose_name='Fec. Modificacion',null=True, blank=True,)
+    idadministrador_mod = models.ForeignKey(Usuario,related_name='twd_admin_modificador',verbose_name='Modificador Admin',to_field='numero', null=True, blank=True)
+    fec_modadm = models.DateTimeField(verbose_name='Fec. Modificacion Admin',null=True, blank=True)
     class Meta:
         db_table = u'twitterdiario'
         verbose_name = u'Twitter Diario'

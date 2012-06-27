@@ -4,6 +4,7 @@ from django import forms
 from models import Informacion, Twitter, TwitterDetalle, TwitterDiario, Facebook, FacebookDetalle, FacebookDiario
 import django_tables2 as tables 
 from django.utils.safestring import mark_safe
+from usuario.models import Organismo
 class InformacionForm(forms.ModelForm):
     class Meta:
         model = Informacion
@@ -103,6 +104,40 @@ class DetalleTwitterTable(tables.Table):
         attrs = {"class": "table table-bordered table-condensed table-striped",'id':'tbldetalle'}
         orderable = False
 
+class TwitterDiarioForm(forms.ModelForm):
+    class Meta:
+        model = TwitterDiario
+        exclude = ('organismo','dependencia','numtwdia','idusuario_creac','fec_creac','idusuario_mod','fec_mod','idadministrador_mod','fec_modadm')
+
+class TwitterDiarioConsultaForm(forms.Form):
+    organismo = forms.ModelChoiceField(queryset=Organismo.objects.all(),widget=forms.Select(attrs={'onChange':'dependencias(1);'}))
+    dependencia = forms.ChoiceField(choices=[])
+    fecini = forms.CharField()
+    fecfin = forms.CharField()
+       
+       
+class TwitterDiarioTable(tables.Table):
+    item = tables.Column()
+    organismo = tables.Column(orderable=True)
+    dependencia = tables.Column(orderable=True)
+    fechacreacdia = tables.Column(orderable=True)
+    actividad = tables.Column(orderable=True)
+    totaltweets = tables.Column(orderable=True)
+    totalretweets = tables.Column(orderable=True)
+    idusuario_creac = tables.Column(verbose_name='Creador',orderable=True)
+    fec_creac = tables.Column(verbose_name='Fec. Creación',orderable=True)
+    idusuario_mod = tables.Column(verbose_name='Modificador',orderable=True)
+    fec_mod = tables.Column(verbose_name='Fec. Modificador',orderable=True)
+    modificar = tables.TemplateColumn('<a href={% url ogcs-redes-twitter-edit record.numtwdia %}>Modificar</a>')
+    def render_item(self):
+        value = getattr(self, '_counter', 1)
+        self._counter = value + 1
+        return '%d' % value
+
+    class Meta:
+        attrs = {"class": "table table-bordered table-condensed table-striped"}
+        orderable = False
+
 class FacebookForm(forms.ModelForm):
     class Meta:
         model = Facebook
@@ -121,14 +156,7 @@ class FacebookDetalleForm(forms.ModelForm):
             'cantidad': forms.TextInput(attrs={'class':'span1'}),
             'fechadetfb': forms.TextInput(attrs={'class':'span1'}),
         }
-class TwitterDiarioForm(forms.ModelForm):
-    class Meta:
-        model = TwitterDiario
-        exclude = ('numtwdia','idusuario_creac',)
-        widgets = {
-            'dependencia': forms.Select(),
-            'organismo': forms.Select(attrs={'onChange':'dependencias();',}),
-        }
+
 class FacebookDiarioForm(forms.ModelForm):
     class Meta:
         model = FacebookDiario

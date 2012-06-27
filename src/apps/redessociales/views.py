@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render_to_response, redirect
-from forms import InformacionForm, TwitterForm, TwitterDetalleForm, FacebookForm, FacebookDetalleForm,FacebookDiarioForm, TwitterDiarioForm,InformacionConsultaForm, InformacionTable, DetalleTwitterTable, TwitterConsultaForm, TwitterTable
+from forms import InformacionForm, TwitterForm, TwitterDetalleForm, FacebookForm, FacebookDetalleForm,FacebookDiarioForm, TwitterDiarioForm,InformacionConsultaForm, InformacionTable, DetalleTwitterTable, TwitterConsultaForm, TwitterTable,TwitterDiarioConsultaForm, TwitterDiarioTable
 from django.template import RequestContext
 from usuario.models import Usuario, Estado
 from django.contrib.auth.decorators import login_required
@@ -194,6 +194,60 @@ def twitter_print(request):
     return imprimirToPDF(html,filename)
 
 @login_required(login_url='/')
+def twitterdiario(request):
+    mensaje = ''
+    if request.method == 'POST':  
+        num = TwitterDiario.objects.values("numtwdia").order_by("-numtwdia",)[:1]
+	num = 1 if len(num)==0 else int(num[0]["numtwdia"])+1
+        profile = Usuario.objects.get(user = request.user) 
+        itwittwer = TwitterDiario(numtwdia=num,idusuario_creac=profile,organismo=profile.organismo,dependencia=profile.dependencia)
+        frmtwitterdiario = TwitterDiarioForm(request.POST, instance=itwittwer)
+        if frmtwitterdiario.is_valid():
+            frmtwitterdiario.save()
+            frmtwitterdiario = TwitterDiarioForm()
+            mensaje = 'Registro grabado satisfactoriamente'
+    else:        
+        frmtwitterdiario = TwitterDiarioForm()
+    return render_to_response('redes/twitterdiario.html', {'frmtwitterdiario': frmtwitterdiario,'opcion':'add','mensaje':mensaje}, context_instance=RequestContext(request),)
+
+@login_required()
+def twitterdiario_edit(request, codigo):
+    if request.method == 'POST':
+        info = get_object_or_404(Informacion, numinf=int(codigo))  
+        info.idusuario_mod = request.user.get_profile()
+        info.fec_mod = datetime.now()
+        dependencia = info.dependencia
+        formulario = InformacionForm(request.POST, instance=info) # A form bound to the POST data
+        if formulario.is_valid():
+            formulario.save()
+            return redirect(reverse('ogcs-redes-informacion-query')+'?m=edit') # Crear un parametro en home para mostrar los mensajes de exito.
+    else:        
+        info = get_object_or_404(Informacion, numinf=int(codigo))        
+        dependencia = info.dependencia
+        formulario = InformacionForm(instance=info)
+    return render_to_response('redes/informacion.html', {'formulario': formulario,'opcion':'edit','codigo':codigo,'dependencia':dependencia,}, context_instance=RequestContext(request),)
+
+@login_required()
+def twitterdiario_consulta(request):
+    filtro = []
+    mensaje = request.GET['m'] if 'm' in request.GET else None
+    dependencia= None
+    #filtros
+    if 'organismo' in request.GET:
+        if request.GET['organismo']:
+            filtro.append(u'organismo_id=%s'%request.GET['organismo'])   
+    if 'dependencia' in request.GET:
+        if request.GET['dependencia']:
+            filtro.append(u'dependencia=%s'%request.GET['dependencia'])
+            dependencia = request.GET['dependencia']
+    formulario = TwitterDiarioConsultaForm(request.GET)
+    query = TwitterDiario.objects.extra(where=filtro, select={'dependencia':"case organismo_id when 1 then (select ministerio from ministerio where nummin=dependencia) when 2 then (select odp from odp where numodp=dependencia) when 3 then (select gobernacion from gobernacion where numgob=dependencia) end"})
+    tabla = TwitterDiarioTable(query)
+    RequestConfig(request).configure(tabla)
+    tabla.paginate(page=request.GET.get('page', 1), per_page=6)
+    return render_to_response('redes/twitterdiario_consulta.html',{'formulario':formulario,'tabla':tabla,'dependencia':dependencia,'mensaje':mensaje},context_instance=RequestContext(request))
+
+@login_required(login_url='/')
 def facebook(request):   
     if request.method == 'POST':  
         num = Facebook.objects.values("numfb").order_by("-numfb",)[:1]
@@ -231,17 +285,4 @@ def facebookdiario(request):
         frmfacebookdiario = FacebookDiarioForm()
     return render_to_response('redes/facebookdiario.html', {'frmfacebookdiario': frmfacebookdiario,'opcion':'add',}, context_instance=RequestContext(request),)
 
-@login_required(login_url='/')
-def twitterdiario(request):
-    if request.method == 'POST':  
-        num = TwitterDiario.objects.values("numtwdia").order_by("-numtwdia",)[:1]
-	num = 1 if len(num)==0 else int(num[0]["numtwdia"])+1
-        profile = Usuario.objects.get(user = request.user) 
-        itwittwer = TwitterDiario(numtwdia=num,idusuario_creac=profile.numero)
-        frmtwitterdiario = TwitterDiarioForm(request.POST, instance=itwittwer) # A form bound to the POST data
-        if frmtwitterdiario.is_valid():
-            frmtwitterdiario.save()
-            return redirect('/home/') # Crear un parametro en home para mostrar los mensajes de exito.
-    else:        
-        frmtwitterdiario = TwitterDiarioForm()
-    return render_to_response('redes/twitterdiario.html', {'frmtwitterdiario': frmtwitterdiario,'opcion':'add'}, context_instance=RequestContext(request),)
+
