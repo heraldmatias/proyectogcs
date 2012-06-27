@@ -208,24 +208,27 @@ def twitterdiario(request):
             mensaje = 'Registro grabado satisfactoriamente'
     else:        
         frmtwitterdiario = TwitterDiarioForm()
-    return render_to_response('redes/twitterdiario.html', {'frmtwitterdiario': frmtwitterdiario,'opcion':'add','mensaje':mensaje}, context_instance=RequestContext(request),)
+    return render_to_response('redes/twitterdiario.html', {'formulario': frmtwitterdiario,'opcion':'add','mensaje':mensaje}, context_instance=RequestContext(request),)
 
 @login_required()
 def twitterdiario_edit(request, codigo):
     if request.method == 'POST':
-        info = get_object_or_404(Informacion, numinf=int(codigo))  
-        info.idusuario_mod = request.user.get_profile()
-        info.fec_mod = datetime.now()
-        dependencia = info.dependencia
-        formulario = InformacionForm(request.POST, instance=info) # A form bound to the POST data
+        info = get_object_or_404(TwitterDiario, numtwdia=int(codigo))
+        profile = Usuario.objects.get(user = request.user)   
+        if profile.nivel.codigo == 1:
+            info.fec_mod = datetime.now()
+            info.idusuario_mod = profile
+        else:
+            info.idadministrador_mod = profile
+            info.fec_modadm = datetime.now()  
+        formulario = TwitterDiarioForm(request.POST, instance=info) # A form bound to the POST data
         if formulario.is_valid():
             formulario.save()
-            return redirect(reverse('ogcs-redes-informacion-query')+'?m=edit') # Crear un parametro en home para mostrar los mensajes de exito.
+            return redirect(reverse('ogcs-redes-twitter-diario-query')+'?m=edit') # Crear un parametro en home para mostrar los mensajes de exito.
     else:        
-        info = get_object_or_404(Informacion, numinf=int(codigo))        
-        dependencia = info.dependencia
-        formulario = InformacionForm(instance=info)
-    return render_to_response('redes/informacion.html', {'formulario': formulario,'opcion':'edit','codigo':codigo,'dependencia':dependencia,}, context_instance=RequestContext(request),)
+        info = get_object_or_404(TwitterDiario, numtwdia=int(codigo))        
+        formulario = TwitterDiarioForm(instance=info)
+    return render_to_response('redes/twitterdiario.html', {'formulario': formulario,'opcion':'edit','codigo':codigo,}, context_instance=RequestContext(request),)
 
 @login_required()
 def twitterdiario_consulta(request):

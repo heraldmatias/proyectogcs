@@ -128,7 +128,7 @@ class TwitterDiarioTable(tables.Table):
     fec_creac = tables.Column(verbose_name='Fec. Creación',orderable=True)
     idusuario_mod = tables.Column(verbose_name='Modificador',orderable=True)
     fec_mod = tables.Column(verbose_name='Fec. Modificador',orderable=True)
-    modificar = tables.TemplateColumn('<a href={% url ogcs-redes-twitter-edit record.numtwdia %}>Modificar</a>')
+    modificar = tables.TemplateColumn('<a href={% url ogcs-redes-twitter-diario-edit record.numtwdia %}>Modificar</a>')
     def render_item(self):
         value = getattr(self, '_counter', 1)
         self._counter = value + 1

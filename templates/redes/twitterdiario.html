@@ -9,14 +9,14 @@
 <ul class="nav nav-tabs">
  {% if opcion == "add" %}
     <li class="active"><a href="{% url ogcs-redes-twitter-diario %}">Nuevo</a></li>{% else %}
-    <li class="active"><a href="{% url ogcs-redes-twitter-diario %}">Modificar</a></li>{% endif %}
+    <li class="active"><a href="{% url ogcs-redes-twitter-diario-edit codigo %}">Modificar</a></li>{% endif %}
     <li><a href="{% url ogcs-redes-twitter-diario-query %}" >Consultar</a></li>
 </ul>
 <div class="tab-content" id="contenido_izq">
 <div id="nuevo" class="tab-pane fade in active" >
 {% if opcion == "add" %}
 <form enctype="multipart/form-data" class="form-inline" name="frmtwt" id="frmtwt" method="post" action="{% url ogcs-redes-twitter-diario %}" >{% else %}
-<form enctype="multipart/form-data" class="form-inline" name="frmtwt" id="frmtwt" method="post" action="{% url ogcs-redes-twitter-diario %}" >{% endif %}
+<form enctype="multipart/form-data" class="form-inline" name="frmtwt" id="frmtwt" method="post" action="{% url ogcs-redes-twitter-diario-edit codigo %}" >{% endif %}
 <div id="frminformacion" class="modal" style="position: relative; top: auto; left: auto; margin: 0 auto auto 20px; z-index: 1;width:720px;height:auto">
     <div class="modal-header">
       <a class="close" data-dismiss="modal" >&times;</a>
@@ -24,7 +24,7 @@
     </div>
     <div class="modal-body">
       {% csrf_token %}              
-      {% for campo in frmtwitterdiario %}      
+      {% for campo in formulario %}      
       {{ campo.errors }}
       {% if forloop.counter == 1 %}
       <div class="row-fluid"> <div class="span4"><strong class="requerido">*</strong>{{ campo.label_tag }}:</div>
