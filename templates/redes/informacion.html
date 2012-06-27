@@ -1,14 +1,6 @@
  {% extends 'base.html' %}
   {% load static %}
-  {% block title %} Plataforma Intersectorial de Redes Sociales OGCS-PCM {% endblock %}
-  {% block csspage %}
-  <style type="text/css">
-  .requerido{
-   font-size:18px;
-   color:#F4003F;
-   }
-  </style>
-  {% endblock %}
+  {% block title %} Plataforma Intersectorial de Redes Sociales OGCS-PCM {% endblock %}  
   {% block content %}
 {% if mensaje %}
 <h4><div class="alert alert-success"><a class="close" data-dismiss="alert">×</a><strong>Mensaje:</strong>
@@ -28,16 +20,11 @@
 <div id="frminformacion" class="modal" style="position: relative; top: auto; left: auto; margin: 0 auto auto 20px; z-index: 1;width:720px;height:auto">
     <div class="modal-header">
       <a class="close" data-dismiss="modal" >&times;</a>
-      <h3>Información General</h3>
+      <h3>Información General de Redes Sociales</h3>
     </div>
     <div class="modal-body">
       {% csrf_token %} 
-<div class="alert alert-info" style="font-size:12px"><a class="close" data-dismiss="alert">×</a><strong>Información: </strong>Los campos marcados con <strong class="requerido">*</strong> son obligatorios.</div>            
-        <div class="row-fluid">
-        <div class="span6"> {{ formulario.organismo.errors }}
-	<div class="span4"><strong class="requerido"><strong class="requerido">*</strong></strong>{{ formulario.organismo.label_tag }}:</div>{{ formulario.organismo }}</div>        
-        <div class="span6"> {{ formulario.dependencia.errors }}
-	<div class="span4"><strong class="requerido">*</strong>{{ formulario.dependencia.label_tag }}:</div>{{ formulario.dependencia }}</div></div><br />
+<div class="alert alert-info" style="font-size:12px"><a class="close" data-dismiss="alert">×</a><strong>Información: </strong>Los campos marcados con <strong class="requerido">*</strong> son obligatorios.</div> 
 	     <div class="modal-header">	      
 	      <h3>Encargado de Facebook y Twitter</h3>
 	    </div><br><!-------------------------------INFORMACION DEL ENCARGADO----------------------------->    
@@ -100,14 +87,10 @@
 <script>
 var iderror=0;
 $(document).ready(function() {
-comboelegir('id_organismo');
-dependencias(); 
+validaletra('id_nombresenc');validaletra('id_areaenc');validaletra('id_apellidosenc');validanumero('id_fonoenc');validanumero('id_celularenc');validanumero('id_anexoenc');validaletra('id_nombresjefe');validaletra('id_areajefe');validaletra('id_apellidosjefe');validanumero('id_fonojefe');validanumero('id_celularjefe');validanumero('id_anexojefe');
 });
 $('#frminfo').submit(function() {
- /* switch(iderror){
-    case 1:{$('#alert1').show().find('strong').text('fgfg');}
-  }*/
-  
+ return confirmar("{% if opcion == 'add' %}¿Desea grabar el registro?{% else %}¿Desea modificar el regsitro?{% endif %}");  
 });
 
 </script>

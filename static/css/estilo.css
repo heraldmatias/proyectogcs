@@ -185,6 +185,11 @@ body{
 	width:16px;
 }
 
+.requerido{
+   font-size:18px;
+   color:#F4003F;
+}
+
 .clear{
 clear:both	
 }

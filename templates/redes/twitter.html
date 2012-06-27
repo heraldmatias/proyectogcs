@@ -2,6 +2,7 @@
   {% load static %}
   {% block title %} Plataforma Intersectorial de Redes Sociales OGCS-PCM {% endblock %}
   {% block content %}
+{% load render_table from django_tables2 %}
 {% if mensaje %}
 <h4><div class="alert alert-success"><a class="close" data-dismiss="alert">×</a><strong>Mensaje:</strong>
 <p>{{ mensaje }}</p></div></h4>
@@ -9,37 +10,45 @@
 <ul class="nav nav-tabs">
  {% if opcion == "add" %}
     <li class="active"><a href="{% url ogcs-redes-twitter %}">Nuevo</a></li>{% else %}
-    <li class="active"><a href="{% url ogcs-redes-twitter %}">Modificar</a></li>{% endif %}
-    <li><a href="{% url ogcs-redes-informacion-query %}" >Consultar</a></li>
+    <li class="active"><a href="{% url ogcs-redes-twitter-edit codigo %}">Modificar</a></li>{% endif %}
+    <li><a href="{% url ogcs-redes-twitter-query %}" >Consultar</a></li>
 </ul>
 <div class="tab-content" id="contenido_izq">
 <div id="nuevo" class="tab-pane fade in active" >
 {% if opcion == "add" %}
 <form enctype="multipart/form-data" class="form-inline" name="frmtwt" id="frmtwt" method="post" action="{% url ogcs-redes-twitter %}" >{% else %}
-<form enctype="multipart/form-data" class="form-inline" name="frmtwt" id="frmtwt" method="post" action="{% url ogcs-redes-twitter %}" >{% endif %}
-<div id="frminformacion" class="modal" style="position: relative; top: auto; left: auto; margin: 0 auto auto 20px; z-index: 1;width:720px;height:auto">
+<form enctype="multipart/form-data" class="form-inline" name="frmtwt" id="frmtwt" method="post" action="{% url ogcs-redes-twitter-edit codigo %}" >{% endif %}
+<div id="frminformacion" class="modal" style="position: relative; top: auto; left: auto; margin: 0 auto auto 20px; z-index: 1;width:720px;height:auto"> 
     <div class="modal-header">
       <a class="close" data-dismiss="modal" >&times;</a>
       <h3>Informacion General De Twitter</h3>
     </div>
     <div class="modal-body">
-      {% csrf_token %}              
-      {{ frmtwitter.as_p }}
-      <div class="modal-header"> <h4>Tweets y Seguir</h4> </div><br>
+<div class="alert alert-info" style="font-size:12px"><a class="close" data-dismiss="alert">×</a><strong>Información: </strong>Los campos marcados con <strong class="requerido">*</strong> son obligatorios.</div>
+      {% csrf_token %}   
+       <div class="row-fluid">
+       <div class="span10"> {{ formulario.fechacreac.errors }}
+       <div class="span4"><strong class="requerido">*</strong>{{ formulario.fechacreac.label_tag }}:</div>
+       <label class="input-append date" style="display:inline;" data-date-format="dd/mm/yyyy" id="dp4">{{ formulario.fechacreac }}<span class="add-on"><i class="icon-th"></i></span></label> </div></div><br />      
+      <div class="row-fluid"> 
+       <div class="span10"> {{ formulario.cuentatw.errors }}
+      <div class="span4"><strong class="requerido">*</strong>{{ formulario.cuentatw.label_tag }}:</div>{{ formulario.cuentatw }}</div></div><br />
+      <div class="row-fluid">
+       <div class="span10"> {{ formulario.urltw.errors }} 
+      <div class="span4"><strong class="requerido">*</strong>{{ formulario.urltw.label_tag }}:</div>{{ formulario.urltw }}</div></div><br />
+      <div class="row-fluid">
+      <div class="span10"> {{ formulario.listatw.errors }} 
+      <div class="span4">{{ formulario.listatw.label_tag }}:</div>{{ formulario.listatw }}</div></div><br />
+      <div class="modal-header"> <h4><strong class="requerido">*</strong>Tweets y Seguir</h4> </div><br>
       <div class="inline">
-      {{ frmtwitterdetalle }} <input class="btn" type="button" value="Agregar" onClick="agregardetalle();">
+      <label class="input-append date" style="display:inline;" data-date-format="dd/mm/yyyy" id="dp2">Fecha: {{ frm_detalle.fechadettw }}<span class="add-on"><i class="icon-th"></i></span></label>{{ frm_detalle.tweets.label_tag }}{{ frm_detalle.tweets }}{{ frm_detalle.siguiendo.label_tag }}{{ frm_detalle.siguiendo }}{{ frm_detalle.seguidores.label_tag }}{{ frm_detalle.seguidores }} <input class="btn" type="button" value="Agregar" onClick="agregardetalle();">
       </div>
       <br>
-      <table class="table table-bordered table-condensed" id="tbldetalle">
-      <thead><tr>
-      <th>Item</th><th>Fecha</th><th>Tweets</th><th>Siguiendo</th><th>Seguidores</th><th>Eliminar</th>
-      </tr></thead>
-      <tbody></tbody>
-      </table>
+      {% render_table tabla %}  
     </div>
     <div class="modal-footer">
-     <input class="btn" name="grabar" value="Cerrar" type="button" onclick="cerrarformulario('contenido');">
-      <input class="btn-primary" name="grabar" value="Guardar Cambios" type="submit">
+      <input class="btn-primary" name="grabar" value="{% if opcion == 'add' %}Guardar{% else %}Modificar{% endif %}" type="submit">
+      <input class="btn" name="grabar" value="Cerrar" type="button" onclick="cerrarformulario('contenido');">
     </div>
 </div>
 </form>
@@ -47,24 +56,29 @@
   {% endblock %}
   {% block scriptjs %}    
 <script>
-$('#frmtw').submit(function() {
+$('#frmtwt').submit(function() {
 if ($('#tbldetalle').find("tbody tr").length==0) {
 alert('Debe ingresar por lo menos una informacion acerca de tweets y seguir.'); return false;}
 else{
-return confirmar('¿Desea grabar el registro?');}});
+return confirmar("{% if opcion == 'add' %}¿Desea grabar el registro?{% else %}¿Desea modificar el regsitro?{% endif %}");}});
 $(document).ready(function() {
- //$('#frmregion').modal({show: true,});
-  dependencias();validanumber('id_tweets');validanumber('id_siguiendo');validanumber('id_seguidores');
+validanumber('id_tweets');validanumber('id_siguiendo');validanumber('id_seguidores');
 });
-$('#id_fechacreac_tw').datepicker({
+$('#dp4').datepicker({
     format: 'dd/mm/yyyy',
     language: 'es',
     autoclose: true,
+    endDate: new Date(),
+}).on('changeDate', function(ev){
+$('#dp4').datepicker('hide');
 });
-$('#id_fechadettw').datepicker({
-    format: 'dd/mm/yy',
+$('#dp2').datepicker({
+    format: 'dd/mm/yyyy',
     language: 'es',
-    autoclose: true,    
+    autoclose: true,
+    endDate: new Date(),    
+}).on('changeDate', function(ev){
+$('#dp2').datepicker('hide');
 });
 function validanumber(campo){
  $('#'+campo).keyup(function () {
@@ -101,14 +115,14 @@ alert("Escriba el numero de seguidores");seguidores.focus();return false;
 }
 var tdetalle= $('#tbldetalle').find("tbody");
 var n= $('#tbldetalle').find("tbody tr").length+1;
-fila="<tr id='fila"+n+"'><td>"+n+"</td><td><input type='hidden' name='tfechas' value='"+fecha.val()+"'>"+fecha.val()+"</td><td><input type='hidden' name='ttweets' value='"+tweets.val()+"'>"+tweets.val()+"</td><td><input type='hidden' name='tsiguiendo' id='tsiguiendo' value='"
-+siguiendo.val()+"'>"+siguiendo.val()+"</td><td><input type='hidden' name='tseguidores' id='tseguidores' value='"+seguidores.val()+"'>"+seguidores.val()+"</td><td> <a class='close' href='javascript: removedetalle("+n+")'>&times;</a></td></tr>"
+fila="<tr class='"+n+"'><td>"+n+"</td><td><input type='hidden' name='tfechas' value='"+fecha.val()+"'>"+fecha.val()+"</td><td><input type='hidden' name='ttweets' value='"+tweets.val()+"'>"+tweets.val()+"</td><td><input type='hidden' name='tsiguiendo' id='tsiguiendo' value='"
++siguiendo.val()+"'>"+siguiendo.val()+"</td><td><input type='hidden' name='tseguidores' id='tseguidores' value='"+seguidores.val()+"'>"+seguidores.val()+"</td><td><a href='javascript: removedetalle("+n+")'><div id='delete'></div></a></td></tr>"
 tdetalle.append(fila);
 fecha.val('');tweets.val('');siguiendo.val('');seguidores.val('');
 //fecha.focus();
 }
 function removedetalle(fila){
-$("#fila"+fila).remove();
+$("#tbldetalle tr."+fila).remove();
 var n=1;
 var tdetalle= $('#tbldetalle');
 $.each(tdetalle.find("tbody tr"),function(){
@@ -116,5 +130,6 @@ $.each(tdetalle.find("tbody tr"),function(){
     n+=1;
 });
 }
+
 </script>
   {% endblock %}

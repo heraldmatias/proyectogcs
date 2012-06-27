@@ -46,12 +46,12 @@ class Twitter(models.Model):
     cuentatw = models.CharField(verbose_name='Cuenta oficial de Twitter', max_length=100,)
     urltw = models.URLField(verbose_name='URL cuenta Twitter(*)', max_length=150,)	
     listatw = models.IntegerField(verbose_name='Cantidad de listas del Twitter', null=True, blank=True)
-    idusuario_creac = models.IntegerField(verbose_name='Numero del Usuario de creación')
-    fec_creac = models.DateTimeField(verbose_name='Fecha de creación del registro', auto_now_add=True)
-    idusuario_mod = models.IntegerField(null=True, blank=True)
-    fec_mod = models.DateTimeField(null=True, blank=True,auto_now=True)
-    idadministrador_mod = models.IntegerField(verbose_name='Administrador que modifico', null=True, blank=True)
-    fec_modadm = models.DateTimeField(verbose_name='Fecha modificacion Administrador', auto_now=True,null=True, blank=True)
+    idusuario_creac = models.ForeignKey(Usuario, related_name='tw_creador',verbose_name='Numero del Usuario de creación',to_field='numero')
+    fec_creac = models.DateTimeField(verbose_name='Fec. Creacion', auto_now_add=True)
+    idusuario_mod = models.ForeignKey(Usuario,related_name='tw_modificador',null=True, blank=True,to_field='numero')
+    fec_mod = models.DateTimeField(verbose_name='Fec. Modificacion',null=True, blank=True,)
+    idadministrador_mod = models.ForeignKey(Usuario,related_name='tw_admin_modificador',verbose_name='Modificador Admin',to_field='numero', null=True, blank=True)
+    fec_modadm = models.DateTimeField(verbose_name='Fec. Modificacion Admin',null=True, blank=True)
     class Meta:
         db_table = u'twitter'
         verbose_name = u'Twet'
@@ -74,7 +74,7 @@ class TwitterDetalle(models.Model):
         db_table = u'twitterdetalle'
         verbose_name = u'detalle del twitter'
         verbose_name_plural = u'detalles del twitter'
-        unique_together = ('numtw','fechadettw',)
+        #unique_together = ('numtw','fechadettw',)
 
     def __unicode__(self):
         return self.codigo

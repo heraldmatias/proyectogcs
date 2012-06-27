@@ -3,16 +3,12 @@
 from django import forms
 from models import Informacion, Twitter, TwitterDetalle, TwitterDiario, Facebook, FacebookDetalle, FacebookDiario
 import django_tables2 as tables 
-
+from django.utils.safestring import mark_safe
 class InformacionForm(forms.ModelForm):
     class Meta:
         model = Informacion
-        exclude = ('numinf','idusuario_creac','fec_creac','idusuario_mod','fec_mod',)
-        widgets = {
-            'dependencia': forms.Select(),
-            'organismo': forms.Select(attrs={'onChange':'dependencias();',}),
-        }
-
+        exclude = ('organismo','dependencia','numinf','idusuario_creac','fec_creac','idusuario_mod','fec_mod',)
+        
 class InformacionConsultaForm(forms.ModelForm):
     class Meta:
         model = Informacion
@@ -43,12 +39,37 @@ class InformacionTable(tables.Table):
 class TwitterForm(forms.ModelForm):
     class Meta:
         model = Twitter
-        exclude = ('numtw','idusuario_creac','fec_creac','idusuario_mod','fec_mod','idadministrador_mod','fec_modadm')
+        exclude = ('dependencia','organismo','numtw','idusuario_creac','fec_creac','idusuario_mod','fec_mod','idadministrador_mod','fec_modadm')
         widgets = {
-            'fechacreac': forms.TextInput(attrs={'id':'id_fechacreac_tw','readonly':'readonly'}),
+            'fechacreac': forms.TextInput(attrs={'id':'id_fechacreac_tw','style':'width:100px;','readonly':'readonly','data-date-format':'dd/mm/yyyy'}),            
+        }
+
+class TwitterConsultaForm(forms.ModelForm):
+    class Meta:
+        model = Twitter
+        fields = ('organismo','dependencia',)
+        widgets = {
             'dependencia': forms.Select(),
             'organismo': forms.Select(attrs={'onChange':'dependencias();',}),
         }
+
+class TwitterTable(tables.Table):
+    item = tables.Column()
+    organismo = tables.Column(orderable=True)
+    dependencia = tables.Column(orderable=True)
+    idusuario_creac = tables.Column(orderable=True)
+    fec_creac = tables.Column(orderable=True)
+    idusuario_mod = tables.Column(orderable=True)
+    fec_mod = tables.Column(orderable=True)
+    modificar = tables.TemplateColumn('<a href={% url ogcs-redes-twitter-edit record.numtw %}>Modificar</a>')
+    def render_item(self):
+        value = getattr(self, '_counter', 1)
+        self._counter = value + 1
+        return '%d' % value
+
+    class Meta:
+        attrs = {"class": "table table-bordered table-condensed table-striped"}
+        orderable = False
 
 class TwitterDetalleForm(forms.ModelForm):
     class Meta:
@@ -58,8 +79,29 @@ class TwitterDetalleForm(forms.ModelForm):
             'tweets': forms.TextInput(attrs={'class':'span1'}),
             'siguiendo': forms.TextInput(attrs={'class':'span1'}),
             'seguidores': forms.TextInput(attrs={'class':'span1'}),
-            'fechadettw': forms.TextInput(attrs={'class':'span1'}),
+            'fechadettw': forms.TextInput(attrs={'style':'width:100px;','readonly':'readonly'}),
         }
+
+class DetalleTwitterTable(tables.Table):
+    item = tables.Column()    
+    fechadettw = tables.TemplateColumn('<input type="hidden" name="tfechas" value="{{ record.fechadettw }}">{{ record.fechadettw }}')
+    tweets = tables.TemplateColumn('<input type="hidden" name="ttweets" value="{{ record.tweets }}">{{ record.tweets }}')
+    siguiendo = tables.TemplateColumn('<input type="hidden" name="tsiguiendo" value="{{ record.siguiendo }}">{{ record.siguiendo }}')
+    seguidores = tables.TemplateColumn('<input type="hidden" name="tseguidores" value="{{ record.seguidores }}">{{ record.seguidores }}')
+    eliminar = tables.Column()
+    def render_item(self):
+        value = getattr(self, '_counter', 1)
+        self._counter = value + 1
+        return '%d' % value
+
+    def render_eliminar(self):
+        value = getattr(self, '_co', 1) 
+        self._co = value + 1       
+        return mark_safe("<a href='javascript: removedetalle(%s)'><div id='delete'></div></a>"%str(value))
+
+    class Meta:
+        attrs = {"class": "table table-bordered table-condensed table-striped",'id':'tbldetalle'}
+        orderable = False
 
 class FacebookForm(forms.ModelForm):
     class Meta:

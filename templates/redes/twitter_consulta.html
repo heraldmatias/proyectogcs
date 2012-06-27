@@ -8,16 +8,16 @@
 <p>Registro modificado satisfactoriamente.</p></div></h4>
 {% endif %}
 <ul class="nav nav-tabs">
-    <li><a href="{% url ogcs-redes-informacion %}">Nuevo</a></li>
-    <li class="active"><a href="{% url ogcs-redes-informacion-query %}" >Consultar</a></li>
+    <li><a href="{% url ogcs-redes-twitter %}">Nuevo</a></li>
+    <li class="active"><a href="{% url ogcs-redes-twitter-query %}" >Consultar</a></li>
 </ul>
 <div class="tab-content" id="contenido_izq">
 <div id="consulta" class="tab-pane fade in active">
-<form class="form-inline" name="frmreg" method="get" action="{% url ogcs-redes-informacion-query %}"><!--data-toggle="modal"-->
+<form class="form-inline" name="frmreg" method="get" action="{% url ogcs-redes-twitter-query %}"><!--data-toggle="modal"-->
 <div id="frm_info" class="modal" style="position: relative; top: auto; left: auto; margin: 0 auto auto 20px; z-index: 1;width:720px;height:auto"><!--class="modal hide fade">-->
     <div class="modal-header">
       <a class="close" data-dismiss="modal" href="javascript: cerrarformulario('contenido');">&times;</a>
-       <h3>Consulta de Información General de Redes Sociales</h3>
+       <h3>Consulta de Información General de Twitter</h3>
     </div>
     <div class="modal-body">      
       <div class="row-fluid"> 
@@ -28,7 +28,7 @@
         <div class="span2"><a class="btn btn-primary" href="javascript: imprimir();">Imprimir</a></div></div>
         <input type="hidden" value="{{ dependencia }}" id="id_dep" name="id_dep"><br>
       <fieldset>
-	<legend><h4>Lista de Información</h4></legend>
+	<legend><h4>Lista de Twitter</h4></legend>
       {% render_table tabla %}    
       </fieldset>
     </div>
@@ -47,7 +47,7 @@ $(document).ready(function() {
 });
 function imprimir(){
 var data=$('#frm_info').serialize();
-var url="{% url ogcs-redes-informacion-print %}?"+data;
+var url="{% url ogcs-redes-twitter-print %}?"+data;
 location.href=url;
 }
 </script>
