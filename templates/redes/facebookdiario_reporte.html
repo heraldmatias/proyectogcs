@@ -36,7 +36,7 @@ h1{font-size:138.5%;}h2{font-size:123.1%;}h3{font-size:108%;}h1,h2,h3{margin:1em
   </thead> 
   <tbody>{% for row in data %}
 	<tr>
-	<td>{{ forloop.counter }}</td><td>{{ row.organismo }}</td><td>{{ row.dependencia }}</td><td>{{ row.fechacreacdia|date:"d-m-Y" }}</td><td>{{ row.actividad }}</td><td>{{ row.totaltpost }}</td><td>{{ row.totallikes }} </td><td>{{ row.idusuario_creac }}</td><td>{{ row.fec_creac|date:"d-m-Y" }}</td><td>{% if row.idusuario_mod %}{{ row.idusuario_mod }}{% endif %}</td><td>{{ row.fec_mod|date:"d-m-Y" }}</td><td>{% if row.idadministrador_mod %}{{ row.idadministrador_mod }}{% endif %}</td><td>{{ row.fec_modadm|date:"d-m-Y" }}</td></tr>{% empty %}
+	<td>{{ forloop.counter }}</td><td>{{ row.organismo }}</td><td>{{ row.dependencia }}</td><td>{{ row.fechacreacdia|date:"d-m-Y" }}</td><td>{{ row.actividad }}</td><td>{{ row.totalpost }}</td><td>{{ row.totallikes }} </td><td>{{ row.idusuario_creac }}</td><td>{{ row.fec_creac|date:"d-m-Y" }}</td><td>{% if row.idusuario_mod %}{{ row.idusuario_mod }}{% endif %}</td><td>{{ row.fec_mod|date:"d-m-Y" }}</td><td>{% if row.idadministrador_mod %}{{ row.idadministrador_mod }}{% endif %}</td><td>{{ row.fec_modadm|date:"d-m-Y" }}</td></tr>{% empty %}
         <tr><td colspan="7"> NO ENCONTRE NINGUN REGISTRO </td></tr>   
 	{% endfor %}<br><br>
   </tbody>  
