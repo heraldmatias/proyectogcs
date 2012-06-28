@@ -18,6 +18,10 @@ from django.template.loader import render_to_string
 from pybb.models import Category, Topic, Forum
 from django.core.urlresolvers import reverse
 
+@login_required()
+def view_calendar(request):
+    return render_to_response('extras/calendario.html', context_instance=RequestContext(request),)
+
 def get_categoria(tipo):
    """
       Define la categoria del documento subido, VER campo estatico CATEGORIAS en models.py

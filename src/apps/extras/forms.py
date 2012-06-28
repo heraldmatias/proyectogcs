@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import django_tables2 as tables
 from django_tables2.utils import A
-from models import MaterialGrafico, DocumentoInteresGeneral, ActaReunionIntersectorial, Documento, CATEGORIAS
+from models import Documento, CATEGORIAS
 from usuario.models import Organismo, Usuario
 from pybb.models import Category, Forum, Topic
 from django import forms

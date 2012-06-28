@@ -16,4 +16,5 @@ urlpatterns = patterns('extras.views',
     url(r'^tema/edit/(?P<codigo>\d+)/$','tema_edit', name='ogcs-mantenimiento-tema-edit'),
     url(r'^tema/consulta/$','tema_query', name='ogcs-mantenimiento-tema-query'),
     url(r'^foros/json/$','json_foros', name='ogcs-foros-jsonforos'),
+    url(r'^calendar/$','view_calendar', name='ogcs-calendar'),
 )
