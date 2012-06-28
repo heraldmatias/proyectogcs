@@ -2,6 +2,7 @@
   {% load static %}
   {% block title %} Plataforma Intersectorial de Comunicaci&oacute;n OGCS {% endblock %}
   {% block content %}
+{% load render_table from django_tables2 %}
 {% if mensaje %}
 <h4><div class="alert alert-success"><a class="close" data-dismiss="alert">×</a><strong>Mensaje:</strong>
 <p>{{ mensaje }}</p></div></h4>
@@ -9,37 +10,42 @@
 <ul class="nav nav-tabs">
  {% if opcion == "add" %}
     <li class="active"><a href="{% url ogcs-redes-facebook %}">Nuevo</a></li>{% else %}
-    <li class="active"><a href="{% url ogcs-redes-facebook %}">Modificar</a></li>{% endif %}
-    <li><a href="{% url ogcs-redes-facebook %}" >Consultar</a></li>
+    <li class="active"><a href="{% url ogcs-redes-facebook-edit codigo %}">Modificar</a></li>{% endif %}
+    <li><a href="{% url ogcs-redes-facebook-query %}" >Consultar</a></li>
 </ul>
 <div class="tab-content" id="contenido_izq">
 <div id="nuevo" class="tab-pane fade in active" >
 {% if opcion == "add" %}
 <form enctype="multipart/form-data" class="form-inline" name="frmface" id="frmface" method="post" action="{% url ogcs-redes-facebook %}" >{% else %}
-<form enctype="multipart/form-data" class="form-inline" name="frmface" id="frmface" method="post" action="{% url ogcs-redes-facebook %}" >{% endif %}
+<form enctype="multipart/form-data" class="form-inline" name="frmface" id="frmface" method="post" action="{% url ogcs-redes-facebook-edit codigo %}" >{% endif %}
 <div id="frmfacebook" class="modal" style="position: relative; top: auto; left: auto; margin: 0 auto auto 20px; z-index: 1;width:720px;height:auto">
     <div class="modal-header">
       <a class="close" data-dismiss="modal" >&times;</a>
       <h3>Informacion General De Facebook</h3>
     </div>
     <div class="modal-body">
-      {% csrf_token %}              
-      {{ frmfacebook.as_p }}
-      <div class="modal-header"> <h4>Les Gusta</h4> </div><br>
+<div class="alert alert-info" style="font-size:12px"><a class="close" data-dismiss="alert">×</a><strong>Información: </strong>Los campos marcados con <strong class="requerido">*</strong> son obligatorios.</div>
+      {% csrf_token %}
+      {{ formulario.fechacreac.errors }}               
+      <div class="row-fluid">
+      <div class="span3"><strong class="requerido">*</strong>{{ formulario.fechacreac.label_tag }}:</div>
+      <label class="input-append date" style="display:inline;" data-date-format="dd/mm/yyyy" id="dp4">{{ formulario.fechacreac }}<span class="add-on"><i class="icon-th"></i></span></label></div><br />      
+      {{ formulario.cuentafb.errors }}
+      <div class="row-fluid">       
+      <div class="span3"><strong class="requerido">*</strong>{{ formulario.cuentafb.label_tag }}:</div>{{ formulario.cuentafb }}</div><br />
+      {{ formulario.urlfb.errors }}
+      <div class="row-fluid">       
+      <div class="span3"><strong class="requerido">*</strong>{{ formulario.urlfb.label_tag }}:</div>{{ formulario.urlfb }}</div><br />
+      <div class="modal-header"> <h4><strong class="requerido">*</strong>Les Gusta</h4> </div><br>
       <div class="inline">
-      {{ frmfacebookdetalle }} <input class="btn" type="button" value="Agregar" onClick="agregardetalle();">
+      <label class="input-append date" style="display:inline;" data-date-format="dd/mm/yyyy" id="dp2">Fecha: {{ frm_detalle.fechadetfb }}<span class="add-on"><i class="icon-th"></i></span></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ frm_detalle.cantidad.label_tag }}:{{ frm_detalle.cantidad }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class="btn" type="button" value="Agregar" onClick="agregardetalle();">
       </div>
       <br>
-      <table class="table table-bordered table-condensed" id="tbldetalle">
-      <thead><tr>
-      <th>Item</th><th>Fecha</th><th>Tweets</th><th>Eliminar</th>
-      </tr></thead>
-      <tbody></tbody>
-      </table>
+      {% render_table tabla %}
     </div>
     <div class="modal-footer">
-     <input class="btn-primary" name="grabar" value="Guardar" type="submit">
-     <input class="btn" name="grabar" value="Cerrar" type="button" onclick="cerrarformulario('contenido');">     
+     <input class="btn-primary" name="grabar" value="{% if opcion == 'add' %}Guardar{% else %}Modificar{% endif %}" type="submit">
+      <input class="btn" name="grabar" value="Cerrar" type="button" onclick="cerrarformulario('contenido');">    
     </div>
 </div>
 </form>
@@ -47,30 +53,27 @@
   {% endblock %}
   {% block scriptjs %}    
 <script>
-$('#frmfb').submit(function() {
+$('#frmface').submit(function() {
 if ($('#tbldetalle').find("tbody tr").length==0) {
 alert('Debe ingresar por lo menos una informacion acerca de LES GUSTA.'); return false;}
 else{
 return confirmar('¿Desea grabar el registro?');}});
 $(document).ready(function() {
- //$('#frmregion').modal({show: true,});
-  dependencias();validanumber('id_cantidad');
+validanumber('id_cantidad');
 });
 $('#id_fechacreac_fb').datepicker({
     format: 'dd/mm/yyyy',
     language: 'es',
     autoclose: true,
+    endDate: new Date(),
 });
 $('#id_fechadetfb').datepicker({
-    format: 'dd/mm/yy',
+    format: 'dd/mm/yyyy',
     language: 'es',
     autoclose: true,    
+    endDate: new Date(),
 });
-function validanumber(campo){
- $('#'+campo).keyup(function () {
-  this.value = this.value.replace(/[^0-9]/g,'');
-});
-}
+
 function agregardetalle(){
 var fecha=$('#id_fechadetfb');
 var likes=$('#id_cantidad');
@@ -93,13 +96,13 @@ alert("Escriba el numero de likes");tweets.focus();return false;
 }
 var tdetalle= $('#tbldetalle').find("tbody");
 var n= $('#tbldetalle').find("tbody tr").length+1;
-fila="<tr id='fila"+n+"'><td>"+n+"</td><td><input type='hidden' name='tfechas' value='"+fecha.val()+"'>"+fecha.val()+"</td><td><input type='hidden' name='tlikes' value='"+likes.val()+"'>"+likes.val()+"</td><td> <a class='close' href='javascript: removedetalle("+n+")'>&times;</a></td></tr>"
+fila="<tr class='"+n+"'><td>"+n+"</td><td><input type='hidden' name='tfechas' value='"+fecha.val()+"'>"+fecha.val()+"</td><td><input type='hidden' name='tlikes' value='"+likes.val()+"'>"+likes.val()+"</td><td><a href='javascript: removedetalle("+n+")'><div id='delete'></div></a></td></tr>"
 tdetalle.append(fila);
 fecha.val('');likes.val('');
 //fecha.focus();
 }
 function removedetalle(fila){
-$("#fila"+fila).remove();
+$("#tbldetalle tr."+fila).remove();
 var n=1;
 var tdetalle= $('#tbldetalle');
 $.each(tdetalle.find("tbody tr"),function(){

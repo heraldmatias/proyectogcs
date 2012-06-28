@@ -155,12 +155,38 @@ class TwitterDiarioTable(tables.Table):
 class FacebookForm(forms.ModelForm):
     class Meta:
         model = Facebook
-        exclude = ('numfb','estado','idusuario_creac','idusuario_mod','fec_mod','idadministrador_mod','fec_modadm')
+        exclude = ('organismo','dependencia','numfb','estado','idusuario_creac','idusuario_mod','fec_mod','idadministrador_mod','fec_modadm')
         widgets = {
-            'fechacreac': forms.TextInput(attrs={'id':'id_fechacreac_fb',}),
+            'fechacreac': forms.TextInput(attrs={'id':'id_fechacreac_fb','style':'width:100px',}),            
+        }
+
+class FacebookConsultaForm(forms.ModelForm):
+    class Meta:
+        model = Facebook
+        fields = ('organismo','dependencia',)
+        widgets = {
             'dependencia': forms.Select(),
             'organismo': forms.Select(attrs={'onChange':'dependencias();',}),
         }
+
+class FacebookTable(tables.Table):
+    item = tables.Column()
+    organismo = tables.Column(orderable=True)
+    dependencia = tables.Column(orderable=True)
+    idusuario_creac = tables.Column(verbose_name='Creador',orderable=True)
+    fec_creac = tables.Column(verbose_name='Fec. Creación',orderable=True)
+    idusuario_mod = tables.Column(verbose_name='Modificador',orderable=True)
+    fec_mod = tables.Column(verbose_name='Fec. Modificador',orderable=True)
+    modificar = tables.TemplateColumn('<a href={% url ogcs-redes-facebook-edit record.numfb %}>Modificar</a>')
+    def render_item(self):
+        value = getattr(self, '_counter', 1)
+        self._counter = value + 1
+        return '%d' % value
+
+    class Meta:
+        attrs = {"class": "table table-bordered table-condensed table-striped"}
+        orderable = False
+
 
 class FacebookDetalleForm(forms.ModelForm):
     class Meta:
@@ -168,14 +194,82 @@ class FacebookDetalleForm(forms.ModelForm):
         exclude = ('numfb','item','auditoria',)        
         widgets = {
             'cantidad': forms.TextInput(attrs={'class':'span1'}),
-            'fechadetfb': forms.TextInput(attrs={'class':'span1'}),
+            'fechadetfb': forms.TextInput(attrs={'style':'width:100px'}),
         }
+
+class FacebookDetalleTable(tables.Table):
+    item = tables.Column()    
+    fechadetfb = tables.TemplateColumn('<input type="hidden" name="tfechas" value="{{ record.fechadetfb }}">{{ record.fechadetfb }}')
+    cantidad = tables.TemplateColumn('<input type="hidden" name="tlikes" value="{{ record.cantidad }}">{{ record.cantidad }}')    
+    eliminar = tables.Column()
+    def render_item(self):
+        value = getattr(self, '_counter', 1)
+        self._counter = value + 1
+        return '%d' % value
+
+    def render_eliminar(self):
+        value = getattr(self, '_co', 1) 
+        self._co = value + 1       
+        return mark_safe("<a href='javascript: removedetalle(%s)'><div id='delete'></div></a>"%str(value))
+
+    class Meta:
+        attrs = {"class": "table table-bordered table-condensed table-striped",'id':'tbldetalle'}
+        orderable = False
 
 class FacebookDiarioForm(forms.ModelForm):
     class Meta:
         model = FacebookDiario
-        exclude = ('numfbdia','idusuario_creac','idusuario_mod','fec_mod','fec_modadm','idadministrador_mod')
+        exclude = ('organismo','dependencia','numfbdia','idusuario_creac','idusuario_mod','fec_mod','fec_modadm','idadministrador_mod') 
         widgets = {
-            'dependencia': forms.Select(),
-            'organismo': forms.Select(attrs={'onChange':'dependencias();',}),
+            'fechacreacdia': forms.TextInput(attrs={'readonly':'readonly','style':'width:100px'}),
+            'actividad': forms.Textarea(attrs={'style':'width:100%','rows':'2'}),
+            'totalpost': forms.TextInput(attrs={'style':'width:13%',}),
+            'totallikes': forms.TextInput(attrs={'style':'width:13%',}),
+            'totalcompartido': forms.TextInput(attrs={'style':'width:13%',}),
+            'totalcomentario': forms.TextInput(attrs={'style':'width:13%',}),
+            'totalfotogaleria': forms.TextInput(attrs={'style':'width:13%',}),
+            'totallikegaleria': forms.TextInput(attrs={'style':'width:13%',}),
+            'totalcomentariogaleria': forms.TextInput(attrs={'style':'width:13%',}),
+            'totalcompartidogaleria': forms.TextInput(attrs={'style':'width:13%',}),
+            'post1': forms.Textarea(attrs={'style':'width:100%','rows':'2'}),
+            'post2': forms.Textarea(attrs={'style':'width:100%','rows':'2'}),
+            'post3': forms.Textarea(attrs={'style':'width:100%','rows':'2'}),
+            'post4': forms.Textarea(attrs={'style':'width:100%','rows':'2'}),
+            'post5': forms.Textarea(attrs={'style':'width:100%','rows':'2'}),
+            'post6': forms.Textarea(attrs={'style':'width:100%','rows':'2'}),
+            'post7': forms.Textarea(attrs={'style':'width:100%','rows':'2'}),
+            'post8': forms.Textarea(attrs={'style':'width:100%','rows':'2'}),
+            'post9': forms.Textarea(attrs={'style':'width:100%','rows':'2'}),
+            'post10': forms.Textarea(attrs={'style':'width:100%','rows':'2'}),
         }
+
+class FacebookDiarioConsultaForm(forms.Form):
+    organismo = forms.ModelChoiceField(queryset=Organismo.objects.all(),widget=forms.Select(attrs={'onChange':'dependencias(1);','style':'width:130px',}))
+    dependencia = forms.ChoiceField(choices=[],widget=forms.Select(attrs={'style':'width:100%',}))
+    fechaini = forms.CharField(widget=forms.TextInput(attrs={'style':'width:90px','readonly':'readonly'}),label="Fecha Inicial",)#initial=datetime.today().strftime("%d/%m/%Y"))
+    fechafin = forms.CharField(widget=forms.TextInput(attrs={'style':'width:90px','readonly':'readonly'}),label="Fecha Final",)#initial=datetime.today().strftime("%d/%m/%Y"))
+       
+       
+class FacebookDiarioTable(tables.Table):
+    item = tables.Column()
+    organismo = tables.Column(orderable=True)
+    dependencia = tables.Column(orderable=True)
+    fechacreacdia = tables.Column(orderable=True)
+    actividad = tables.TemplateColumn('{{ record.actividad|truncatewords:5 }}',orderable=True)
+    totalpost = tables.Column(orderable=True)
+    totallikes = tables.Column(orderable=True)
+    totalcompartido = tables.Column(orderable=True)
+    totalcomentario = tables.Column(orderable=True)
+    idusuario_creac = tables.Column(verbose_name='Creador',orderable=True)
+    fec_creac = tables.Column(verbose_name='Fec. Creación',orderable=True)
+    idusuario_mod = tables.Column(verbose_name='Modificador',orderable=True)
+    fec_mod = tables.Column(verbose_name='Fec. Modificador',orderable=True)
+    modificar = tables.TemplateColumn('<a href={% url ogcs-redes-facebook-diario-edit record.numfbdia %}>Modificar</a>')
+    def render_item(self):
+        value = getattr(self, '_counter', 1)
+        self._counter = value + 1
+        return '%d' % value
+
+    class Meta:
+        attrs = {"class": "table table-bordered table-condensed table-striped"}
+        orderable = False

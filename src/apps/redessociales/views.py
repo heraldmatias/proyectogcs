@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render_to_response, redirect
-from forms import InformacionForm, TwitterForm, TwitterDetalleForm, FacebookForm, FacebookDetalleForm,FacebookDiarioForm, TwitterDiarioForm,InformacionConsultaForm, InformacionTable, DetalleTwitterTable, TwitterConsultaForm, TwitterTable,TwitterDiarioConsultaForm, TwitterDiarioTable
+from forms import InformacionForm, TwitterForm, TwitterDetalleForm, FacebookForm, FacebookDetalleForm,FacebookDiarioForm, TwitterDiarioForm,InformacionConsultaForm, InformacionTable, DetalleTwitterTable, TwitterConsultaForm, TwitterTable,TwitterDiarioConsultaForm, TwitterDiarioTable, FacebookDetalleTable, FacebookConsultaForm, FacebookTable, FacebookDiarioTable, FacebookDiarioConsultaForm
 from django.template import RequestContext
 from usuario.models import Usuario, Estado
 from django.contrib.auth.decorators import login_required
@@ -222,7 +222,6 @@ def twitterdiario_edit(request, codigo):
             info.idadministrador_mod = profile
             info.fec_modadm = datetime.now()  
         formulario = TwitterDiarioForm(request.POST, instance=info) # A form bound to the POST data
-        print  formulario.errors
         if formulario.is_valid():
             formulario.save()
             return redirect(reverse('ogcs-redes-twitter-diario-query')+'?m=edit') # Crear un parametro en home para mostrar los mensajes de exito.
@@ -294,12 +293,13 @@ def twitterdiario_print(request):
     return imprimirToPDF(html,filename)
 
 @login_required(login_url='/')
-def facebook(request):   
+def facebook(request): 
+    mensaje = ''  
     if request.method == 'POST':  
         num = Facebook.objects.values("numfb").order_by("-numfb",)[:1]
 	num = 1 if len(num)==0 else int(num[0]["numfb"])+1
         profile = Usuario.objects.get(user = request.user) 
-        ifacebook = Facebook(numfb=num,idusuario_creac=profile.numero)
+        ifacebook = Facebook(numfb=num,idusuario_creac=profile,organismo=profile.organismo,dependencia=profile.dependencia)
         frmfacebook = FacebookForm(request.POST, instance=ifacebook) # A form bound to the POST data
         if frmfacebook.is_valid():
             frmfacebook.save()
@@ -307,28 +307,193 @@ def facebook(request):
             likes = request.POST.getlist('tlikes')
 	    for co in range(len(fechas)):
                 fecha = fechas[co]
-                fecha = datetime.strptime(fecha,"%d/%m/%y").date()
+                fecha = datetime.strptime(fecha,"%d/%m/%Y")
                 det = FacebookDetalle(numfb=ifacebook,item=co+1,fechadetfb = fecha,cantidad=likes[co],)
                 det.save() 
-            return redirect('/home/') # Crear un parametro en home para mostrar los mensajes de exito.
+                mensaje = 'Registro grabado satisfactoriamente'   
+                frmfacebook = FacebookForm()
     else:        
         frmfacebook = FacebookForm()
     frmfacebookdetalle = FacebookDetalleForm()
-    return render_to_response('redes/facebook.html', {'frmfacebook': frmfacebook,'frmfacebookdetalle':frmfacebookdetalle,'opcion':'add'}, context_instance=RequestContext(request),)
+    tabla = FacebookDetalleTable([])
+    return render_to_response('redes/facebook.html', {'formulario': frmfacebook,'frm_detalle':frmfacebookdetalle,'opcion':'add','tabla':tabla,'mensaje':mensaje}, context_instance=RequestContext(request),)
+
+@login_required()
+def facebook_edit(request, codigo): 
+    mensaje = ''
+    if request.method == 'POST':  
+        obj = get_object_or_404(Facebook,pk=codigo)
+        profile = request.user.get_profile()
+        if profile.nivel.codigo == 1:
+            obj.fec_mod = datetime.now()
+            obj.idusuario_mod = profile
+        else:
+            obj.idadministrador_mod = profile
+            obj.fec_modadm = datetime.now()      
+        formulario = FacebookForm(request.POST, instance=obj)  
+        if formulario.is_valid():
+            formulario.save()
+            fechas = request.POST.getlist('tfechas')
+            likes = request.POST.getlist('tlikes')            
+	    #FACEBOOK_DETALLE_save
+            query = FacebookDetalle.objects.filter(numfb=obj)
+            for c in range(len(likes)):
+                fecha = datetime.strptime(fechas[c],"%d/%m/%Y")
+                try:
+                    row = FacebookDetalle.objects.get(numfb=obj,item=c+1)
+                    row.fechadetfb = fecha
+                    row.cantidad = likes[c]
+                    row.save()
+                except FacebookDetalle.DoesNotExist:
+                    FacebookDetalle(numfb=obj,item=c+1,fechadetfb = fecha,cantidad=likes[c],).save()
+            resto= len(likes)
+            while resto < len(query):
+                row = FacebookDetalle.objects.get(numfb=obj,item=resto+1)
+                row.delete()
+                resto = resto + 1
+            return redirect(reverse('ogcs-redes-facebook-query')+'?m=edit') 
+    else: 
+        obj = get_object_or_404(Facebook,pk=codigo)
+        obj.fechacreac = obj.fechacreac.strftime("%d/%m/%Y")       
+        formulario = FacebookForm(instance = obj)
+    detalle = FacebookDetalle.objects.filter(numfb=obj)#.order_by('-fechadettw')
+    for row in detalle:
+        row.fechadetfb = row.fechadetfb.strftime("%d/%m/%Y")
+    tabla = FacebookDetalleTable(detalle)
+    frm_detalle = FacebookDetalleForm()
+    return render_to_response('redes/facebook.html', {'formulario': formulario,'frm_detalle':frm_detalle,'opcion':'edit','codigo':codigo,'tabla':tabla}, context_instance=RequestContext(request),)
+
+@login_required()
+def facebook_consulta(request):
+    filtro = []
+    mensaje = request.GET['m'] if 'm' in request.GET else None
+    dependencia= None
+    #filtros
+    if 'organismo' in request.GET:
+        if request.GET['organismo']:
+            filtro.append(u'organismo_id=%s'%request.GET['organismo'])   
+    if 'dependencia' in request.GET:
+        if request.GET['dependencia']:
+            filtro.append(u'dependencia=%s'%request.GET['dependencia'])
+            dependencia = request.GET['dependencia']
+    formulario = FacebookConsultaForm(request.GET)
+    query = Facebook.objects.extra(where=filtro, select={'dependencia':"case organismo_id when 1 then (select ministerio from ministerio where nummin=dependencia) when 2 then (select odp from odp where numodp=dependencia) when 3 then (select gobernacion from gobernacion where numgob=dependencia) end"})
+    tabla = FacebookTable(query)
+    RequestConfig(request).configure(tabla)
+    tabla.paginate(page=request.GET.get('page', 1), per_page=6)
+    return render_to_response('redes/facebook_consulta.html',{'formulario':formulario,'tabla':tabla,'dependencia':dependencia,'mensaje':mensaje},context_instance=RequestContext(request))
+
+@login_required()
+def facebook_print(request):
+    filtro = []
+    if 'organismo' in request.GET:
+        if request.GET['organismo']:
+            filtro.append(u'organismo_id=%s'%request.GET['organismo'])   
+    if 'dependencia' in request.GET:
+        if request.GET['dependencia']:
+            filtro.append(u'dependencia=%s'%request.GET['dependencia'])    
+    query = Facebook.objects.extra(where=filtro, select={'dependencia':"case organismo_id when 1 then (select ministerio from ministerio where nummin=dependencia) when 2 then (select odp from odp where numodp=dependencia) when 3 then (select gobernacion from gobernacion where numgob=dependencia) end",})
+    html = render_to_string('redes/facebook_reporte.html',{'data': query,'pagesize':'A4','usuario':request.user.get_profile()},context_instance=RequestContext(request))
+    filename= "facebook_%s.pdf" % datetime.today().strftime("%Y%m%d")        
+    return imprimirToPDF(html,filename)
 
 @login_required(login_url='/')
 def facebookdiario(request):   
+    mensaje = ''
     if request.method == 'POST':  
         num = FacebookDiario.objects.values("numfbdia").order_by("-numfbdia",)[:1]
 	num = 1 if len(num)==0 else int(num[0]["numfbdia"])+1
         profile = Usuario.objects.get(user = request.user) 
-        ifacebook = FacebookDiario(numfbdia=num,idusuario_creac=profile.numero)
-        frmfacebookdiario = FacebookDiarioForm(request.POST, instance=ifacebook) # A form bound to the POST data
+        obj = FacebookDiario(numfbdia=num,idusuario_creac=profile,organismo=profile.organismo,dependencia=profile.dependencia)
+        frmfacebookdiario = FacebookDiarioForm(request.POST, instance=obj) # A form bound to the POST data
         if frmfacebookdiario.is_valid():
             frmfacebookdiario.save()
-            return redirect('/home/') # Crear un parametro en home para mostrar los mensajes de exito.
+            mensaje= 'Registro grabado satisfactoriamente'
+            frmfacebookdiario = FacebookDiarioForm()
     else:        
         frmfacebookdiario = FacebookDiarioForm()
-    return render_to_response('redes/facebookdiario.html', {'frmfacebookdiario': frmfacebookdiario,'opcion':'add',}, context_instance=RequestContext(request),)
+    return render_to_response('redes/facebookdiario.html', {'formulario': frmfacebookdiario,'opcion':'add','mensaje':mensaje}, context_instance=RequestContext(request),)
 
+
+@login_required()
+def facebookdiario_edit(request, codigo):
+    if request.method == 'POST':
+        info = get_object_or_404(FacebookDiario, numfbdia=int(codigo))
+        profile = Usuario.objects.get(user = request.user)   
+        if profile.nivel.codigo == 1:
+            info.fec_mod = datetime.now()
+            info.idusuario_mod = profile
+        else:
+            info.idadministrador_mod = profile
+            info.fec_modadm = datetime.now()  
+        formulario = FacebookDiarioForm(request.POST, instance=info) # A form bound to the POST data
+        if formulario.is_valid():
+            formulario.save()
+            return redirect(reverse('ogcs-redes-facebook-diario-query')+'?m=edit') # Crear un parametro en home para mostrar los mensajes de exito.
+    else:        
+        info = get_object_or_404(FacebookDiario, numfbdia=int(codigo))        
+        info.fechacreacdia = info.fechacreacdia.strftime("%d/%m/%Y") 
+        formulario = FacebookDiarioForm(instance=info)
+    return render_to_response('redes/facebookdiario.html', {'formulario': formulario,'opcion':'edit','codigo':codigo,}, context_instance=RequestContext(request),)
+
+@login_required()
+def facebookdiario_consulta(request):
+    filtro = []
+    mensaje = request.GET['m'] if 'm' in request.GET else None
+    dependencia= None
+    #filtros
+    if 'organismo' in request.GET:
+        if request.GET['organismo']:
+            filtro.append(u'organismo_id=%s'%request.GET['organismo'])   
+    if 'dependencia' in request.GET:
+        if request.GET['dependencia']:
+            filtro.append(u'dependencia=%s'%request.GET['dependencia'])
+            dependencia = request.GET['dependencia']
+    if 'fechaini' in request.GET and 'fechafin' in request.GET:
+        if request.GET['fechaini'] and request.GET['fechafin']:
+            fini = datetime.strptime(request.GET['fechaini'],"%d/%m/%Y")
+            ffin = datetime.strptime(request.GET['fechafin'],"%d/%m/%Y")
+            filtro.append(u"fechacreacdia between '%s' and '%s'"%(fini,ffin))
+        elif 'fechaini' in request.GET:
+            if request.GET['fechaini']:
+                fini = datetime.strptime(request.GET['fechaini'],"%d/%m/%Y")            
+                filtro.append(u"fechacreacdia>='%s'"%fini)
+            elif 'fechafin' in request.GET:
+                if request.GET['fechafin']:
+                    ffin = datetime.strptime(request.GET['fechafin'],"%d/%m/%Y")            
+                    filtro.append(u"fechacreacdia<='%s'"%ffin)
+    formulario = FacebookDiarioConsultaForm(request.GET) if len(request.GET) != 0 else FacebookDiarioConsultaForm()
+    query = FacebookDiario.objects.extra(where=filtro, select={'dependencia':"case organismo_id when 1 then (select ministerio from ministerio where nummin=dependencia) when 2 then (select odp from odp where numodp=dependencia) when 3 then (select gobernacion from gobernacion where numgob=dependencia) end"})
+    tabla = FacebookDiarioTable(query)
+    RequestConfig(request).configure(tabla)
+    tabla.paginate(page=request.GET.get('page', 1), per_page=6)
+    return render_to_response('redes/facebookdiario_consulta.html',{'formulario':formulario,'tabla':tabla,'dependencia':dependencia,'mensaje':mensaje},context_instance=RequestContext(request))
+
+@login_required()
+def facebookdiario_print(request):
+    filtro = []
+    if 'organismo' in request.GET:
+        if request.GET['organismo']:
+            filtro.append(u'organismo_id=%s'%request.GET['organismo'])   
+    if 'dependencia' in request.GET:
+        if request.GET['dependencia']:
+            filtro.append(u'dependencia=%s'%request.GET['dependencia'])
+            dependencia = request.GET['dependencia']
+    if 'fechaini' in request.GET and 'fechafin' in request.GET:
+        if request.GET['fechaini'] and request.GET['fechafin']:
+            fini = datetime.strptime(request.GET['fechaini'],"%d/%m/%Y")
+            ffin = datetime.strptime(request.GET['fechafin'],"%d/%m/%Y")
+            filtro.append(u"fechacreacdia between '%s' and '%s'"%(fini,ffin))
+        elif 'fechaini' in request.GET:
+            if request.GET['fechaini']:
+                fini = datetime.strptime(request.GET['fechaini'],"%d/%m/%Y")            
+                filtro.append(u"fechacreacdia>='%s'"%fini)
+            elif 'fechafin' in request.GET:
+                if request.GET['fechafin']:
+                    ffin = datetime.strptime(request.GET['fechafin'],"%d/%m/%Y")            
+                    filtro.append(u"fechacreacdia<='%s'"%ffin)
+    query = FacebookDiario.objects.extra(where=filtro, select={'dependencia':"case organismo_id when 1 then (select ministerio from ministerio where nummin=dependencia) when 2 then (select odp from odp where numodp=dependencia) when 3 then (select gobernacion from gobernacion where numgob=dependencia) end"})
+    html = render_to_string('redes/facebookdiario_reporte.html',{'data': query,'pagesize':'A4','usuario':request.user.get_profile()},context_instance=RequestContext(request))
+    filename= "facebookdiario_%s.pdf" % datetime.today().strftime("%Y%m%d")        
+    return imprimirToPDF(html,filename)
 

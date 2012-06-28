@@ -140,15 +140,15 @@ class Facebook(models.Model):
     numfb = models.IntegerField(verbose_name='Codigo' ,unique=True)    
     organismo = models.ForeignKey(Organismo, verbose_name='Organismo')
     dependencia = models.IntegerField(verbose_name='Dependencia', blank=True, null=True)
-    fechacreac = models.DateField(verbose_name='Fecha de creación del Facebook',)
+    fechacreac = models.DateField(verbose_name='Fecha de creación',)
     cuentafb = models.CharField(verbose_name='Cuenta Oficial', max_length=100,)
     urlfb = models.CharField(verbose_name='URL Oficial', max_length=150,)
-    idusuario_creac = models.IntegerField(verbose_name='Numero del Usuario de creación')
-    fec_creac = models.DateTimeField(verbose_name='Fecha de creación del registro', auto_now_add=True)
-    idusuario_mod = models.IntegerField(null=True, blank=True)
-    fec_mod = models.DateTimeField(null=True, blank=True,auto_now=True)
-    idadministrador_mod = models.IntegerField(verbose_name='Administrador que modifico', blank=True, null=True)
-    fec_modadm = models.DateTimeField(verbose_name='Fecha modificacion Administrador', auto_now=True,)	
+    idusuario_creac = models.ForeignKey(Usuario, related_name='fb_creador',verbose_name='Creador',to_field='numero')
+    fec_creac = models.DateTimeField(verbose_name='Fec. Creacion', auto_now_add=True)
+    idusuario_mod = models.ForeignKey(Usuario,related_name='fb_modificador',verbose_name='Modificador',null=True, blank=True,to_field='numero')
+    fec_mod = models.DateTimeField(verbose_name='Fec. Modificacion',null=True, blank=True,)
+    idadministrador_mod = models.ForeignKey(Usuario,related_name='fb_admin_modificador',verbose_name='Modificador Admin',to_field='numero', null=True, blank=True)
+    fec_modadm = models.DateTimeField(verbose_name='Fec. Modificacion Admin',null=True, blank=True)
     class Meta:
         db_table = u'facebook'
         verbose_name = u'cuenta de facebook'
@@ -168,7 +168,7 @@ class FacebookDetalle(models.Model):
         db_table = u'facebookdetalle'
         verbose_name = u'detalle del post'
         verbose_name_plural = u'detalles de los post'
-        unique_together = ('numfb','fechadetfb',)
+        #unique_together = ('numfb','fechadetfb',)
 
     def __unicode__(self):
         return self.codigo
@@ -180,7 +180,7 @@ class FacebookDiario(models.Model):
     organismo = models.ForeignKey(Organismo, verbose_name='Organismo')
     dependencia = models.IntegerField(verbose_name='Dependencia', blank=True, null=True)
     fechacreacdia = models.DateField(verbose_name='Fecha de creación',)   
-    actividad = models.CharField(verbose_name='Nombre Actividad', max_length=150,)
+    actividad = models.CharField(verbose_name='Nombre Actividad Oficial', max_length=150,)
     totalpost = models.IntegerField(verbose_name='Posts',)    
     totallikes = models.IntegerField(verbose_name='Likes',)
     totalcompartido = models.IntegerField(verbose_name='Total Compartidos',)
@@ -233,12 +233,12 @@ class FacebookDiario(models.Model):
     likevarios = models.IntegerField(verbose_name='Les gusta varios',null=True, blank=True)
     compartidovarios = models.IntegerField(verbose_name='Compartido varios',null=True, blank=True)    
     comentariovarios = models.IntegerField(verbose_name='Comentarios varios',null=True, blank=True)  
-    idusuario_creac = models.IntegerField(verbose_name='Usuario')
-    fec_creac = models.DateTimeField(verbose_name='Fecha de creación del registro', auto_now_add=True)
-    idusuario_mod = models.IntegerField(null=True, blank=True)
-    fec_mod = models.DateTimeField(null=True, blank=True)
-    idadministrador_mod = models.IntegerField(verbose_name='Administrador que modifico',null=True, blank=True)
-    fec_modadm = models.DateTimeField(verbose_name='Fecha modificacion Administrador', auto_now_add=True)
+    idusuario_creac = models.ForeignKey(Usuario, related_name='fbd_creador',verbose_name='Numero del Usuario de creación',to_field='numero')
+    fec_creac = models.DateTimeField(verbose_name='Fec. Creacion', auto_now_add=True)
+    idusuario_mod = models.ForeignKey(Usuario,related_name='fbd_modificador',null=True, blank=True,to_field='numero')
+    fec_mod = models.DateTimeField(verbose_name='Fec. Modificacion',null=True, blank=True,)
+    idadministrador_mod = models.ForeignKey(Usuario,related_name='fbd_admin_modificador',verbose_name='Modificador Admin',to_field='numero', null=True, blank=True)
+    fec_modadm = models.DateTimeField(verbose_name='Fec. Modificacion Admin',null=True, blank=True)
     class Meta:
         db_table = u'facebookdiario'
         verbose_name = u'Facebook Diario'
