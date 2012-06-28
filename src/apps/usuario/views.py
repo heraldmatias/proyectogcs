@@ -150,7 +150,7 @@ def useradd(request,nivel):
                 user = User.objects.create_user(username=usernamee,email=request.POST['email'],password=request.POST['contrasena'],)
                 if request.POST['nivel'] == "2":
                     user.is_staff = True
-                    #user.is_superuser = True
+                    user.is_superuser = True
                 if request.POST['estado'] == "2":
                     user.is_active = False
                 user.first_name = request.POST['nombres']
