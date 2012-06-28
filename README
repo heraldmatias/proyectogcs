@@ -1,11 +1,18 @@
 ------------------------
 Instalación
 ------------------------
-- sudo apt-get install python-dev
-- python bootstrap.py -d
-- bin/buildout -vvv
-- bin/ogcs collectstatic
-- Recuerda que usamos grappelli
-	http://readthedocs.org/docs/django-grappelli/en/latest/quickstart.html#installation
+1.- sudo apt-get install python-dev
+2.- python bootstrap.py -d
+3.- bin/buildout -vvv
+4.- rm -fr eggs/pybbm-0.8.2-py2.6.egg/pybb/
+5.- cp -R src/apps/pybb/ eggs/pybbm-0.8.2-py2.6.egg/
+6.- configurar la base de datos project/settings.py
+7.- bin/ogcs syncdb
+8.- bin/ogcs migrate pybb
+9.- Modificar el nombre del sitio con el nombre del DOMINIO donde se aloja la web desde el admin.
+10.- bin/ogcs collectstatic
 
 ------------------------
+
+
+
