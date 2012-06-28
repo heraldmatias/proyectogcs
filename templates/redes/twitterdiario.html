@@ -59,9 +59,9 @@ $('#dp1').datepicker({
 }).on('changeDate', function(ev){
 $('#dp1').datepicker('hide');});validaalfa('id_actividad');
 $("form input:text").each(function(index){
-    if($.string(this.name).startsWith('tweet'))){
+    if($.string(this.name).startsWith('tweet')){
       validaalfa("id_"+this.name);
-    }else if($.string(this.name).startsWith('frec'))){
+    }else if($.string(this.name).startsWith('frec')){
       validadecimal("id_"+this.name);
     }else {
       validanumero("id_"+this.name);
