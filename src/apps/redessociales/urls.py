@@ -13,6 +13,7 @@ urlpatterns = patterns('redessociales.views',
     url(r'^twitter/diario/$','twitterdiario', name='ogcs-redes-twitter-diario'),
     url(r'^twitter/diario/edit/(?P<codigo>\d+)/$','twitterdiario_edit', name='ogcs-redes-twitter-diario-edit'), 
     url(r'^twitter/diario/consulta/$','twitterdiario_consulta', name='ogcs-redes-twitter-diario-query'),
+    url(r'^twitter/diario/print/$','twitterdiario_print', name='ogcs-redes-twitter-diario-print'),
     url(r'^facebook/$','facebook', name='ogcs-redes-facebook'),
     url(r'^facebook/diario/$','facebookdiario', name='ogcs-redes-facebook-diario'),
 )

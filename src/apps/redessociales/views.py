@@ -222,11 +222,13 @@ def twitterdiario_edit(request, codigo):
             info.idadministrador_mod = profile
             info.fec_modadm = datetime.now()  
         formulario = TwitterDiarioForm(request.POST, instance=info) # A form bound to the POST data
+        print  formulario.errors
         if formulario.is_valid():
             formulario.save()
             return redirect(reverse('ogcs-redes-twitter-diario-query')+'?m=edit') # Crear un parametro en home para mostrar los mensajes de exito.
     else:        
         info = get_object_or_404(TwitterDiario, numtwdia=int(codigo))        
+        info.fechacreacdia = info.fechacreacdia.strftime("%d/%m/%Y") 
         formulario = TwitterDiarioForm(instance=info)
     return render_to_response('redes/twitterdiario.html', {'formulario': formulario,'opcion':'edit','codigo':codigo,}, context_instance=RequestContext(request),)
 
@@ -243,12 +245,53 @@ def twitterdiario_consulta(request):
         if request.GET['dependencia']:
             filtro.append(u'dependencia=%s'%request.GET['dependencia'])
             dependencia = request.GET['dependencia']
-    formulario = TwitterDiarioConsultaForm(request.GET)
+    if 'fechaini' in request.GET and 'fechafin' in request.GET:
+        if request.GET['fechaini'] and request.GET['fechafin']:
+            fini = datetime.strptime(request.GET['fechaini'],"%d/%m/%Y")
+            ffin = datetime.strptime(request.GET['fechafin'],"%d/%m/%Y")
+            filtro.append(u"fechacreacdia between '%s' and '%s'"%(fini,ffin))
+        elif 'fechaini' in request.GET:
+            if request.GET['fechaini']:
+                fini = datetime.strptime(request.GET['fechaini'],"%d/%m/%Y")            
+                filtro.append(u"fechacreacdia>='%s'"%fini)
+            elif 'fechafin' in request.GET:
+                if request.GET['fechafin']:
+                    ffin = datetime.strptime(request.GET['fechafin'],"%d/%m/%Y")            
+                    filtro.append(u"fechacreacdia<='%s'"%ffin)
+    formulario = TwitterDiarioConsultaForm(request.GET) if len(request.GET) != 0 else TwitterDiarioConsultaForm()
     query = TwitterDiario.objects.extra(where=filtro, select={'dependencia':"case organismo_id when 1 then (select ministerio from ministerio where nummin=dependencia) when 2 then (select odp from odp where numodp=dependencia) when 3 then (select gobernacion from gobernacion where numgob=dependencia) end"})
     tabla = TwitterDiarioTable(query)
     RequestConfig(request).configure(tabla)
     tabla.paginate(page=request.GET.get('page', 1), per_page=6)
     return render_to_response('redes/twitterdiario_consulta.html',{'formulario':formulario,'tabla':tabla,'dependencia':dependencia,'mensaje':mensaje},context_instance=RequestContext(request))
+
+@login_required()
+def twitterdiario_print(request):
+    filtro = []
+    if 'organismo' in request.GET:
+        if request.GET['organismo']:
+            filtro.append(u'organismo_id=%s'%request.GET['organismo'])   
+    if 'dependencia' in request.GET:
+        if request.GET['dependencia']:
+            filtro.append(u'dependencia=%s'%request.GET['dependencia'])
+            dependencia = request.GET['dependencia']
+    if 'fechaini' in request.GET and 'fechafin' in request.GET:
+        if request.GET['fechaini'] and request.GET['fechafin']:
+            fini = datetime.strptime(request.GET['fechaini'],"%d/%m/%Y")
+            ffin = datetime.strptime(request.GET['fechafin'],"%d/%m/%Y")
+            filtro.append(u"fechacreacdia between '%s' and '%s'"%(fini,ffin))
+        elif 'fechaini' in request.GET:
+            if request.GET['fechaini']:
+                fini = datetime.strptime(request.GET['fechaini'],"%d/%m/%Y")            
+                filtro.append(u"fechacreacdia>='%s'"%fini)
+            elif 'fechafin' in request.GET:
+                if request.GET['fechafin']:
+                    ffin = datetime.strptime(request.GET['fechafin'],"%d/%m/%Y")            
+                    filtro.append(u"fechacreacdia<='%s'"%ffin)
+    query = TwitterDiario.objects.extra(where=filtro, select={'dependencia':"case organismo_id when 1 then (select ministerio from ministerio where nummin=dependencia) when 2 then (select odp from odp where numodp=dependencia) when 3 then (select gobernacion from gobernacion where numgob=dependencia) end"})
+    html = render_to_string('redes/twitterdiario_reporte.html',{'data': query,'pagesize':'A4','usuario':request.user.get_profile()},context_instance=RequestContext(request))
+    filename= "twitterdiario_%s.pdf" % datetime.today().strftime("%Y%m%d")        
+    return imprimirToPDF(html,filename)
 
 @login_required(login_url='/')
 def facebook(request):   

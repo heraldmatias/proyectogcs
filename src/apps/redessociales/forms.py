@@ -5,6 +5,7 @@ from models import Informacion, Twitter, TwitterDetalle, TwitterDiario, Facebook
 import django_tables2 as tables 
 from django.utils.safestring import mark_safe
 from usuario.models import Organismo
+from datetime import datetime
 class InformacionForm(forms.ModelForm):
     class Meta:
         model = Informacion
@@ -108,12 +109,25 @@ class TwitterDiarioForm(forms.ModelForm):
     class Meta:
         model = TwitterDiario
         exclude = ('organismo','dependencia','numtwdia','idusuario_creac','fec_creac','idusuario_mod','fec_mod','idadministrador_mod','fec_modadm')
-
+        widgets = {
+            'fechacreacdia': forms.TextInput(attrs={'readonly':'readonly','style':'width:100px'}),
+            'actividad': forms.Textarea(attrs={'style':'width:100%','rows':'2'}),
+            'tweet1': forms.Textarea(attrs={'style':'width:100%','rows':'2'}),
+            'tweet2': forms.Textarea(attrs={'style':'width:100%','rows':'2'}),
+            'tweet3': forms.Textarea(attrs={'style':'width:100%','rows':'2'}),
+            'tweet4': forms.Textarea(attrs={'style':'width:100%','rows':'2'}),
+            'tweet5': forms.Textarea(attrs={'style':'width:100%','rows':'2'}),
+            'tweet6': forms.Textarea(attrs={'style':'width:100%','rows':'2'}),
+            'tweet7': forms.Textarea(attrs={'style':'width:100%','rows':'2'}),
+            'tweet8': forms.Textarea(attrs={'style':'width:100%','rows':'2'}),
+            'tweet9': forms.Textarea(attrs={'style':'width:100%','rows':'2'}),
+            'tweet10': forms.Textarea(attrs={'style':'width:100%','rows':'2'}),
+        }
 class TwitterDiarioConsultaForm(forms.Form):
-    organismo = forms.ModelChoiceField(queryset=Organismo.objects.all(),widget=forms.Select(attrs={'onChange':'dependencias(1);'}))
-    dependencia = forms.ChoiceField(choices=[])
-    fecini = forms.CharField()
-    fecfin = forms.CharField()
+    organismo = forms.ModelChoiceField(queryset=Organismo.objects.all(),widget=forms.Select(attrs={'onChange':'dependencias(1);','style':'width:130px',}))
+    dependencia = forms.ChoiceField(choices=[],widget=forms.Select(attrs={'style':'width:100%',}))
+    fechaini = forms.CharField(widget=forms.TextInput(attrs={'style':'width:90px','readonly':'readonly'}),label="Fecha Inicial",)#initial=datetime.today().strftime("%d/%m/%Y"))
+    fechafin = forms.CharField(widget=forms.TextInput(attrs={'style':'width:90px','readonly':'readonly'}),label="Fecha Final",)#initial=datetime.today().strftime("%d/%m/%Y"))
        
        
 class TwitterDiarioTable(tables.Table):
@@ -121,7 +135,7 @@ class TwitterDiarioTable(tables.Table):
     organismo = tables.Column(orderable=True)
     dependencia = tables.Column(orderable=True)
     fechacreacdia = tables.Column(orderable=True)
-    actividad = tables.Column(orderable=True)
+    actividad = tables.TemplateColumn('{{ record.actividad|truncatewords:5 }}',orderable=True)
     totaltweets = tables.Column(orderable=True)
     totalretweets = tables.Column(orderable=True)
     idusuario_creac = tables.Column(verbose_name='Creador',orderable=True)

@@ -89,7 +89,7 @@ dependencia.append("<option selected='selected' value=''>---ELEGIR---</option>")
 }
 function validaalfa(campo){
  $('#'+campo).keyup(function () {
-  this.value = this.value.replace(/[^0-9A-Za-záéíóúÁÉÍÓÚÜüñÑ._ ]/g,'');
+  this.value = this.value.replace(/[^0-9A-Za-záéíóúÁÉÍÓÚÜüñÑ._#@ ]/g,'');
 });
 $('#'+campo).focusout(function () {
   l = $.trim($('#'+campo).val().toUpperCase());
@@ -114,6 +114,10 @@ function validanumero(campo){
   this.value = this.value.replace(/[^0-9]/g,'');
 });}
 
+function validadecimal(campo){
+ $('#'+campo).keyup(function () {
+  this.value = this.value.replace(/[^0-9.]/g,'');
+});}
 passtatus= new Array(5);
 passtatus[0]='Escriba su contraseña';
 passtatus[1]='La contraseña debe superar 5 caracteres';
