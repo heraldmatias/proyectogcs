@@ -77,6 +77,7 @@
 $('#frmfbd').submit(function() {
 return confirmar("{% if opcion == 'add' %}¿Desea grabar el registro?{% else %}¿Desea modificar el regsitro?{% endif %}");
 });
+$(document).ready(function() {
 $('#dp1').datepicker({
     format: 'dd/mm/yyyy',
     language: 'es',
@@ -84,5 +85,12 @@ $('#dp1').datepicker({
     endDate: new Date(),
 }).on('changeDate', function(ev){
 $('#dp1').datepicker('hide');});
+$("form input:text").each(function(index){    
+    validanumero("id_"+this.name);} 
+});
+$("textarea").each(function(index){
+    validaalfa("id_"+this.name);
+});
+});
 </script>
 {% endblock %}
