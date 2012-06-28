@@ -9,7 +9,7 @@ from datetime import datetime
 from django_tables2.config import RequestConfig
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
-from scripts.scripts import imprimirToPDF
+from scripts.scripts import imprimirToPDF, DivErrorList
 from django.template.loader import render_to_string
 
 @login_required()
@@ -21,7 +21,7 @@ def informacion(request):
         num = Informacion.objects.values("numinf").order_by("-numinf",)[:1]
         num = 1 if len(num)==0 else int(num[0]["numinf"])+1
         iinformacion = Informacion(numinf=num,idusuario_creac=usuario,organismo=usuario.organismo,dependencia=usuario.dependencia)
-        frminformacion = InformacionForm(request.POST, instance=iinformacion) # A form bound to the POST data
+        frminformacion = InformacionForm(request.POST, instance=iinformacion,error_class=DivErrorList) # A form bound to the POST data
         dependencia = usuario.dependencia
         if frminformacion.is_valid():
             frminformacion.save()
@@ -38,7 +38,7 @@ def informacion_edit(request, codigo):
         info.idusuario_mod = request.user.get_profile()
         info.fec_mod = datetime.now()
         dependencia = info.dependencia
-        formulario = InformacionForm(request.POST, instance=info) # A form bound to the POST data
+        formulario = InformacionForm(request.POST, instance=info,error_class=DivErrorList) # A form bound to the POST data
         if formulario.is_valid():
             formulario.save()
             return redirect(reverse('ogcs-redes-informacion-query')+'?m=edit') # Crear un parametro en home para mostrar los mensajes de exito.
@@ -90,7 +90,7 @@ def twitter(request):
 	num = 1 if len(num)==0 else int(num[0]["numtw"])+1
         profile = request.user.get_profile()
         itwittwer = Twitter(numtw=num,idusuario_creac=profile,organismo=profile.organismo,dependencia=profile.dependencia)
-        frmtwitter = TwitterForm(request.POST, instance=itwittwer) # A form bound to the POST data
+        frmtwitter = TwitterForm(request.POST, instance=itwittwer,error_class=DivErrorList) # A form bound to the POST data
         if frmtwitter.is_valid():
             frmtwitter.save()
             fechas = request.POST.getlist('tfechas')
@@ -122,7 +122,7 @@ def twitter_edit(request, codigo):
         else:
             itwitter.idadministrador_mod = profile
             itwitter.fec_modadm = datetime.now()      
-        frmtwitter = TwitterForm(request.POST, instance=itwitter)  
+        frmtwitter = TwitterForm(request.POST, instance=itwitter,error_class=DivErrorList)  
         if frmtwitter.is_valid():
             frmtwitter.save()
             fechas = request.POST.getlist('tfechas')
@@ -201,7 +201,7 @@ def twitterdiario(request):
 	num = 1 if len(num)==0 else int(num[0]["numtwdia"])+1
         profile = Usuario.objects.get(user = request.user) 
         itwittwer = TwitterDiario(numtwdia=num,idusuario_creac=profile,organismo=profile.organismo,dependencia=profile.dependencia)
-        frmtwitterdiario = TwitterDiarioForm(request.POST, instance=itwittwer)
+        frmtwitterdiario = TwitterDiarioForm(request.POST, instance=itwittwer,error_class=DivErrorList)
         if frmtwitterdiario.is_valid():
             frmtwitterdiario.save()
             frmtwitterdiario = TwitterDiarioForm()
@@ -221,7 +221,7 @@ def twitterdiario_edit(request, codigo):
         else:
             info.idadministrador_mod = profile
             info.fec_modadm = datetime.now()  
-        formulario = TwitterDiarioForm(request.POST, instance=info) # A form bound to the POST data
+        formulario = TwitterDiarioForm(request.POST, instance=info,error_class=DivErrorList) # A form bound to the POST data
         if formulario.is_valid():
             formulario.save()
             return redirect(reverse('ogcs-redes-twitter-diario-query')+'?m=edit') # Crear un parametro en home para mostrar los mensajes de exito.
@@ -300,7 +300,7 @@ def facebook(request):
 	num = 1 if len(num)==0 else int(num[0]["numfb"])+1
         profile = Usuario.objects.get(user = request.user) 
         ifacebook = Facebook(numfb=num,idusuario_creac=profile,organismo=profile.organismo,dependencia=profile.dependencia)
-        frmfacebook = FacebookForm(request.POST, instance=ifacebook) # A form bound to the POST data
+        frmfacebook = FacebookForm(request.POST, instance=ifacebook,error_class=DivErrorList) # A form bound to the POST data
         if frmfacebook.is_valid():
             frmfacebook.save()
             fechas = request.POST.getlist('tfechas')
@@ -330,7 +330,7 @@ def facebook_edit(request, codigo):
         else:
             obj.idadministrador_mod = profile
             obj.fec_modadm = datetime.now()      
-        formulario = FacebookForm(request.POST, instance=obj)  
+        formulario = FacebookForm(request.POST, instance=obj,error_class=DivErrorList)  
         if formulario.is_valid():
             formulario.save()
             fechas = request.POST.getlist('tfechas')
@@ -405,7 +405,7 @@ def facebookdiario(request):
 	num = 1 if len(num)==0 else int(num[0]["numfbdia"])+1
         profile = Usuario.objects.get(user = request.user) 
         obj = FacebookDiario(numfbdia=num,idusuario_creac=profile,organismo=profile.organismo,dependencia=profile.dependencia)
-        frmfacebookdiario = FacebookDiarioForm(request.POST, instance=obj) # A form bound to the POST data
+        frmfacebookdiario = FacebookDiarioForm(request.POST, instance=obj,error_class=DivErrorList) # A form bound to the POST data
         if frmfacebookdiario.is_valid():
             frmfacebookdiario.save()
             mensaje= 'Registro grabado satisfactoriamente'
@@ -426,7 +426,7 @@ def facebookdiario_edit(request, codigo):
         else:
             info.idadministrador_mod = profile
             info.fec_modadm = datetime.now()  
-        formulario = FacebookDiarioForm(request.POST, instance=info) # A form bound to the POST data
+        formulario = FacebookDiarioForm(request.POST, instance=info,error_class=DivErrorList) # A form bound to the POST data
         if formulario.is_valid():
             formulario.save()
             return redirect(reverse('ogcs-redes-facebook-diario-query')+'?m=edit') # Crear un parametro en home para mostrar los mensajes de exito.
