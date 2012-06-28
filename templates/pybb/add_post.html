@@ -1,0 +1,35 @@
+{% extends 'pybb/base.html' %}
+{% load i18n pybb_tags %}
+
+
+{% block content %}
+<div class="tab-content" id="contenido_izq">
+	<div id="nuevo" class="tab-pane fade in active" >
+    	<div id="frmprovincia" class="modal" style="position: relative; top: auto; left: auto; margin: 0 auto auto 20px; z-index: 1;width:720px;height:auto">
+        <div class="modal-header">
+      		<h3>{% if forum %}{% trans "Nuevo Tema" %}{% else %}{% trans "Nueva respuesta" %}{% endif %}</h3>
+      
+    	</div>
+        {% include "pybb/post_form.html" %}
+    	</div>  
+    </div>
+</div>
+
+{% endblock content %}
+{% block scriptjs %}
+{% include "pybb/markitup.html" %}
+<script>
+function mensajee(){
+$('#id_login').attr('readonly','readonly');
+var mencita='<input type="hidden" name="mencita" id="id_mencita" style="width:500px">';
+$('#form_post').prepend(mencita);
+$('#id_mencita').val($('#id_body').val());$('#id_body').val('');
+}
+mensajee();
+$('#form_post').submit(function() {
+var mcitar=$('#id_mencita').val();
+var nmensaje=$('#id_body').val();
+$('#id_body').val(mcitar+nmensaje);
+});
+</script>
+{% endblock scriptjs %}

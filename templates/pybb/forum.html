@@ -1,0 +1,74 @@
+{% extends 'pybb/base.html' %}
+{% load pybb_tags i18n %}
+
+{% block title %}{{ forum.name }}{% endblock title %}
+
+{% block content %}
+<div class="tab-content" id="contenido_izq">
+	<div id="nuevo" class="tab-pane fade in active" >
+    	<div id="frmprovincia" class="modal" style="position: relative; top: auto; left: auto; margin: 0 auto auto 20px; z-index: 1;width:720px;height:auto">
+        <div class="modal-header">
+      		<h3>{{ forum.name }}</h3>
+      <p>Creado por {{ forum.idusuario_creac.get_full_name }} de {{ forum.idusuario_creac.get_profile.get_dependencia.iniciales }} el {{ forum.fec_creac }}</p>
+    	</div>
+    {% if forum.headline %}
+        <div class='forum-headline'>
+            {{ forum.headline|safe }}
+        </div>
+    {% endif %}
+    {% include "pybb/pagination.html" %}
+    <table class='topic-list'>
+        <tr class="topic-row head-row">
+            <th class="topic-name">
+                {% trans "Temas" %}
+            </th>
+            <th class="topic-post-count">
+                {% trans "Posts" %}
+            </th>
+            <th class="topic-view-count">
+                {% trans "Vistas" %}
+            </th>            
+        </tr>
+        {% for topic in topic_list|pybb_topic_unread:user  %}
+           {% if topic.estado == 0 %}
+            <tr class="topic-row {% if topic.sticky %} sticky {% endif %} {% cycle "odd" "even" %} {% if topic.on_moderation %} on-moderation {% endif %}">
+                <td class="topic-name{% if topic.unread %} unread {% endif %}">
+                    <div class='state-indicator'></div>
+                    <a href='{{ topic.get_absolute_url }}'>{{ topic.name|truncatewords:10 }}</a>
+      <p>Creado por {{ topic.idusuario_creac.get_full_name }} de {{ topic.idusuario_creac.get_profile.get_dependencia.iniciales }} el {{ topic.fec_creac }}</p>
+                    {% if topic.sticky %} &nbsp;[{% trans "Sticky" %}] {% endif %}
+                    {% if topic.closed %} &nbsp;[{% trans "Closed" %}] {% endif %}
+                    {% with topic|pybb_topic_inline_pagination as pages %}
+                        {% if pages|length > 1 %}
+                            <span class='mini-pagination'>
+                                {% trans "pages" %}:
+                                {% for page in pages %}
+                                    <span class='page'>
+                                    {% if page == "..." %}
+                                        ...
+                                    {% else %}
+                                        <a href="{{ topic.get_absolute_url }}?page={{ page }}">{{ page }}</a>
+                                    {% endif %}
+                                    </span>
+                                {% endfor %}
+                            </span>
+                        {% endif %}
+                    {% endwith %}
+                </td>
+                <td class="topic-post-count">
+                    {{ topic.post_count }}
+                </td>
+                <td class="topic-view-count">
+                    {{ topic.views }}
+                </td>                
+            </tr>
+	  {% endif %}
+        {%  endfor %}
+    </table>
+    {% include "pybb/pagination.html" %}
+
+
+    </div>
+    </div>
+</div>
+{% endblock content %}

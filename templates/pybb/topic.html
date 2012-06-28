@@ -1,0 +1,57 @@
+{% extends 'pybb/base.html' %}
+{% load pybb_tags i18n %}
+
+{% block title %}{{ topic }}{% endblock %}
+
+
+
+{% block content %}
+<div class="tab-content" id="contenido_izq">
+	<div id="nuevo" class="tab-pane fade in active" >
+    	<div id="frmprovincia" class="modal" style="position: relative; top: auto; left: auto; margin: 0 auto auto 20px; z-index: 1;width:720px;height:auto">
+        <div class="modal-header">
+      		<h3>{{ topic.name }}</h3>
+      
+    	</div>
+    {% with _('Posts') as label %}
+        {% include "pybb/pagination.html" %}
+    {% endwith %}
+
+    <div class="posts">
+        {% if first_post %}{% ifnotequal first_post post_list.0 %}
+            {% with first_post as post %}
+                <li class="first_post">{% include "pybb/post_template.html" %}</li>
+            {% endwith %}
+        {% endifnotequal %}{% endif %}
+        {% for post in post_list %}
+            {% cycle 'odd' 'even' as rowcolors silent %}
+            {% include "pybb/post_template.html" %}
+        {% endfor %}
+    </div>
+    <div>&nbsp;</div>
+    {% with _('Posts') as label %}
+        {% include "pybb/pagination.html" %}
+    {% endwith %}
+
+
+    {% if user.is_authenticated or PYBB_ENABLE_ANONYMOUS_POST %}
+        {% if not user.get_profile.is_banned %}
+            {% if not topic.closed %}
+                {% include "pybb/post_form.html" %}
+            {% endif %}
+        {% endif %}
+    
+    {% endif %}
+
+    
+    	</div>
+    </div>
+</div>
+
+{% endblock %}
+{% block scriptjs %}
+{% include "pybb/markitup.html" %}
+<script>
+$('#id_login').attr('readonly','readonly');
+</script>
+{% endblock scriptjs %}
