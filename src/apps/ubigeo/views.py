@@ -10,7 +10,7 @@ from django.shortcuts import get_object_or_404
 import django_tables2 as tables
 from django_tables2.config import RequestConfig
 from datetime import datetime
-from scripts.scripts import imprimirToExcel, imprimirToPDF#, render_to_pdf_response
+from scripts.scripts import imprimirToExcel, imprimirToPDF, DivErrorList
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
@@ -23,7 +23,7 @@ def regionadd(request):
         num = Region.objects.values("numreg").order_by("-numreg",)[:1]
         num = 1 if len(num)==0 else int(num[0]["numreg"])+1
         region = Region(numreg=num,estado=Estado.objects.get(pk=1),idusuario_creac=profile.numero,)
-        frmregion = RegionForm(request.POST, instance=region) # A form bound to the POST data
+        frmregion = RegionForm(request.POST, instance=region,error_class=DivErrorList) # A form bound to the POST data
         if frmregion.is_valid():
             for campo in frmregion.fields:
                 frmregion.fields[campo]=request.POST[campo].upper()
@@ -40,7 +40,7 @@ def regionedit(request, codigo):
         profile = Usuario.objects.get(user = request.user)
         region = Region.objects.get(numreg=int(codigo))
         region.idusuario_mod=profile.numero
-        frmregion = RegionForm(request.POST, instance=region) # A form bound to the POST data	
+        frmregion = RegionForm(request.POST, instance=region,error_class=DivErrorList) # A form bound to the POST data	
         if frmregion.is_valid():
             frmregion.save()
             return redirect(reverse('ogcs-mantenimiento-region-consulta')+'?m=edit')
@@ -82,7 +82,7 @@ def provinciaadd(request):
         num = Provincia.objects.values("numpro").order_by("-numpro",)[:1]
         num = 1 if len(num)==0 else int(num[0]["numpro"])+1
         provincia = Provincia(numpro=num,estado=Estado.objects.get(pk=1),idusuario_creac=profile.numero)
-        frmprovincia = ProvinciaForm(request.POST, instance=provincia) # A form bound to the POST data
+        frmprovincia = ProvinciaForm(request.POST, instance=provincia,error_class=DivErrorList) # A form bound to the POST data
         if frmprovincia.is_valid():
             frmprovincia.save()
             frmprovincia = ProvinciaForm()  
@@ -97,7 +97,7 @@ def provinciaedit(request, codigo):
         profile = Usuario.objects.get(user = request.user)
         provincia = Provincia.objects.get(numpro=int(codigo))
         provincia.idusuario_mod=profile.numero
-        frmprovincia = ProvinciaForm(request.POST, instance=provincia) # A form bound to the POST data	
+        frmprovincia = ProvinciaForm(request.POST, instance=provincia,error_class=DivErrorList) # A form bound to the POST data	
         if frmprovincia.is_valid():
             frmprovincia.save()
             return redirect(reverse('ogcs-mantenimiento-provincia-consulta')+'?m=edit')

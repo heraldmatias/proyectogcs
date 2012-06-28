@@ -13,7 +13,7 @@ from django_tables2.config import RequestConfig
 from ubigeo.models import Provincia
 from django.db.models import Q
 from datetime import datetime
-from scripts.scripts import imprimirToExcel, imprimirToPDF
+from scripts.scripts import imprimirToExcel, imprimirToPDF, DivErrorList
 from django.core.urlresolvers import reverse
 from usuario.models import Organismo
 from django.template.loader import render_to_string
@@ -40,7 +40,7 @@ def ministerioadd(request):
         num = Ministerio.objects.values("nummin").order_by("-nummin",)[:1]
         num = 1 if len(num)==0 else int(num[0]["nummin"])+1
         iministerio = Ministerio(nummin=num,estado=Estado.objects.get(pk=1),idusuario_creac=profile.numero)
-        frmministerio = MinisterioForm(request.POST, instance=iministerio) # A form bound to the POST data
+        frmministerio = MinisterioForm(request.POST, instance=iministerio,error_class=DivErrorList) # A form bound to the POST data
         if frmministerio.is_valid():
             frmministerio.save()
             frmministerio = MinisterioForm() # Crear un parametro en home para mostrar los mensajes de exito.
@@ -55,7 +55,7 @@ def ministerioedit(request, codigo):
         profile = Usuario.objects.get(user = request.user)
         ministerio = Ministerio.objects.get(nummin=int(codigo))
         ministerio.idusuario_mod=profile.numero
-        frmministerio = MinisterioForm(request.POST, instance=ministerio) # A form bound to the POST data	
+        frmministerio = MinisterioForm(request.POST, instance=ministerio,error_class=DivErrorList) # A form bound to the POST data	
         if frmministerio.is_valid():
             frmministerio.save() # Crear un parametro en home para mostrar los mensajes de exito.
             return redirect(reverse('ogcs-mantenimiento-ministerio-consulta')+'?m=edit')
@@ -99,7 +99,7 @@ def odpadd(request):
         num = Odp.objects.values("numodp").order_by("-numodp",)[:1]
         num = 1 if len(num)==0 else int(num[0]["numodp"])+1
         iodp = Odp(numodp=num,estado=Estado.objects.get(pk=1),idusuario_creac=profile.numero)
-        frmopd = OdpForm(request.POST, instance=iodp) # A form bound to the POST data
+        frmopd = OdpForm(request.POST, instance=iodp,error_class=DivErrorList) # A form bound to the POST data
         if frmopd.is_valid():
             frmopd.save()
             frmopd = OdpForm() # Crear un parametro en home para mostrar los mensajes de exito.
@@ -114,7 +114,7 @@ def odpedit(request, codigo):
         profile = Usuario.objects.get(user = request.user)
         odp = Odp.objects.get(numodp=int(codigo))
         odp.idusuario_mod=profile.numero
-        frmodp = OdpForm(request.POST, instance=odp) # A form bound to the POST data	
+        frmodp = OdpForm(request.POST, instance=odp,error_class=DivErrorList) # A form bound to the POST data	
         if frmodp.is_valid():
             frmodp.save()
             return redirect(reverse('ogcs-mantenimiento-odp-consulta')+'?m=edit')
@@ -169,7 +169,7 @@ def gobernacionadd(request):
         if request.POST['region']:
             region = Region.objects.get(numreg= request.POST['region'])
         igobernacion = Gobernacion(numgob=num,estado=Estado.objects.get(pk=1),region= region,idusuario_creac=profile.numero)
-        frmgobernacion = GobernacionForm(request.POST, instance=igobernacion) # A form bound to the POST data
+        frmgobernacion = GobernacionForm(request.POST, instance=igobernacion,error_class=DivErrorList) # A form bound to the POST data
         if frmgobernacion.is_valid():
             frmgobernacion.save()
             frmgobernacion = GobernacionForm() # Crear un parametro en home para mostrar los mensajes de exito.
@@ -184,7 +184,7 @@ def gobernacionedit(request, codigo):
         profile = Usuario.objects.get(user = request.user)
         gobernacion = Gobernacion.objects.get(numgob=int(codigo))
         gobernacion.idusuario_mod=profile.numero
-        frmgobernacion = GobernacionForm(request.POST, instance=gobernacion) # A form bound to the POST data	
+        frmgobernacion = GobernacionForm(request.POST, instance=gobernacion,error_class=DivErrorList) # A form bound to the POST data	
         if frmgobernacion.is_valid():
             frmgobernacion.save()
             return redirect(reverse('ogcs-mantenimiento-gobernacion-consulta')+'?m=edit')

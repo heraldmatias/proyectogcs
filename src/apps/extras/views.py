@@ -10,7 +10,7 @@ from django.shortcuts import get_object_or_404
 import django_tables2 as tables
 from django_tables2.config import RequestConfig
 from datetime import datetime
-from scripts.scripts import imprimirToPDF
+from scripts.scripts import imprimirToPDF, DivErrorList
 from django.http import HttpResponse, Http404
 from django.core.files.storage import  FileSystemStorage,default_storage
 from usuario.models import Usuario
@@ -149,7 +149,7 @@ def forum_add(request):
     mensaje=""
     if request.method == 'POST':
         cat = Forum(idusuario_creac=request.user)
-        formulario = ForummForm(request.POST,instance=cat)
+        formulario = ForummForm(request.POST,instance=cat,error_class=DivErrorList)
         if formulario.is_valid():
             formulario.save()
             #temas = request.POST.getlist('ctema')
@@ -169,7 +169,7 @@ def forum_edit(request, codigo):
         cat = get_object_or_404(Forum, pk=int(codigo))
         cat.idusuario_mod=request.user
         cat.fec_mod = datetime.now()
-        formulario = ForummForm(request.POST,instance=cat)
+        formulario = ForummForm(request.POST,instance=cat,error_class=DivErrorList)
         if formulario.is_valid():
             formulario.save()
             return redirect(reverse('ogcs-mantenimiento-foro-query')+'?m=edit')
@@ -201,7 +201,7 @@ def tema_add(request):
     mensaje=""
     if request.method == 'POST':
         cat = Topic(idusuario_creac=request.user,user=request.user,created=datetime.now(),updated=datetime.now())
-        formulario = TopicForm(request.POST,instance=cat)
+        formulario = TopicForm(request.POST,instance=cat,error_class=DivErrorList)
         if formulario.is_valid():
             formulario.save()
             cat.forum.topic_count = cat.forum.topics.count()
@@ -220,7 +220,7 @@ def tema_edit(request,codigo):
         cat.idusuario_mod=request.user
         cat.updated=datetime.now()
         cat.fec_mod=datetime.now()
-        formulario = TopicForm(request.POST,instance=cat)
+        formulario = TopicForm(request.POST,instance=cat,error_class=DivErrorList)
         if formulario.is_valid():
             formulario.save()
             formulario = TopicForm() # Crear un parametro en home para mostrar los mensajes de exito.
@@ -264,7 +264,7 @@ def categoria_add(request):
     mensaje=""        
     if request.method == 'POST':
         cat = Category(idusuario_creac=request.user)
-        formulario = CategoryForm(request.POST, instance=cat)
+        formulario = CategoryForm(request.POST, instance=cat,error_class=DivErrorList)
         if formulario.is_valid():
             formulario.save()
         #cat = Category(idusuario_creac=request.user,name=request.POST.getlist('name')[0],position=request.POST.getlist('position')[0],hidden=True if 'hidden' in request.POST else False,estado=request.POST.getlist('estado')[0])
@@ -298,7 +298,7 @@ def categoria_edit(request, codigo):
         #cpos = request.POST.getlist('cpos')
         #chid = request.POST.getlist('chid')
         #cest = request.POST.getlist('cest')
-        formulario = CategoryForm(request.POST,instance=cat)
+        formulario = CategoryForm(request.POST,instance=cat,error_class=DivErrorList)
         if formulario.is_valid():
             formulario.save()
             return redirect(reverse('ogcs-mantenimiento-categoria-query')+'?m=edit')
