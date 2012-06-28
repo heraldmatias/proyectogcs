@@ -199,7 +199,7 @@ class FacebookDetalleForm(forms.ModelForm):
 
 class FacebookDetalleTable(tables.Table):
     item = tables.Column()    
-    fechadetfb = tables.TemplateColumn('<input type="hidden" name="tfechas" value="{{ record.fechadetfb }}">{{ record.fechadetfb }}')
+    fechadetfb = tables.TemplateColumn('<input type="hidden" name="tfechas" value="{{ record.fechadetfb }}">{{ record.fechadetfb }}',verbose_name='Fecha')
     cantidad = tables.TemplateColumn('<input type="hidden" name="tlikes" value="{{ record.cantidad }}">{{ record.cantidad }}')    
     eliminar = tables.Column()
     def render_item(self):
