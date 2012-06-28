@@ -17,6 +17,7 @@ urlpatterns = patterns('',
     (r'^admin/', include(admin.site.urls)),    
     # grapelli admin urls
     (r'^grappelli/', include('grappelli.urls')),
+    (r'^foro/', include('pybb.urls', namespace='pybb')),
     # urls
     (r'^chat/', include('jqchat.urls')),
     (r'^$', 'home.views.index'),
@@ -26,6 +27,7 @@ urlpatterns = patterns('',
     (r'^mantenimiento/', include('usuario.urls')),
     (r'^redessociales/', include('redessociales.urls')),
     (r'^usuario/', include('usuario.urls')),
+    (r'^extras/', include('extras.urls')),
 )
 
 #if settings.DEBUG:
