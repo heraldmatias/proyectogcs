@@ -9,8 +9,9 @@ Instalación
 6.- configurar la base de datos project/settings.py
 7.- bin/ogcs syncdb
 8.- bin/ogcs migrate pybb
-9.- Modificar el nombre del sitio con el nombre del DOMINIO donde se aloja la web desde el admin.
-10.- bin/ogcs collectstatic
+9.- bin/ogcs collectstatic
+10.- Modificar el nombre del sitio con el nombre del DOMINIO donde se aloja la web desde el admin.
+
 
 ------------------------
 
