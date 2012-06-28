@@ -30,7 +30,7 @@ class Odp(models.Model):
     codigo = models.AutoField(verbose_name='Codigo', primary_key=True)
     numodp = models.IntegerField(verbose_name='Numero', unique=True)
     nummin = models.ForeignKey(Ministerio, verbose_name='Ministerio', to_field='nummin')
-    odp = models.CharField(verbose_name='ODP', max_length=70, unique=True)
+    odp = models.CharField(verbose_name='OPD', max_length=70, unique=True)
     iniciales = models.CharField(verbose_name='Iniciales', max_length=15, unique=True) 
     estado = models.ForeignKey(Estado, verbose_name='Estado')
     idusuario_creac = models.IntegerField(verbose_name='Numero del Usuario de creación', blank=True, null=True)
