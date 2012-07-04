@@ -27,16 +27,16 @@ h1{font-size:138.5%;}h2{font-size:123.1%;}h3{font-size:108%;}h1,h2,h3{margin:1em
   </thead> </table>
 <!--<div class="yui-t1" id="doc">
 <div id="hd">-->
-<h1 style="text-align: center; text-decoration:underline;"> Reporte de la Información de las Cuentas de Twitter</h1>
+<h1 style="text-align: center; text-decoration:underline;"> Reporte de las Actividades Diarias de las Cuentas de Twitter</h1>
 <br>
 <br>
 <table style="width: 100%;" id="content">
   <thead>
-  <tr><th>Item</th><th>Organismo</th><th>Dependencia</th><th>Cuenta</th><th>Url Cuenta</th><th>Usuario</th><th>Fecha</th></tr>
+  <tr><th>Item</th><th>Organismo</th><th>Dependencia</th><th>Fecha</th><th>Actividad</th><th>Tweets</th><th>ReTweets</th><th>Usuario</th><th>Fecha Creac</th><th >Usu MOD</th><th >Fecha Usu Mod</th><th >Admin MOD</th><th >Fecha Admin Mod</th></tr>
   </thead> 
   <tbody>{% for row in data %}
 	<tr>
-	<td>{{ forloop.counter }}</td><td>{{ row.organismo }}</td><td>{{ row.dependencia }}</td><td>{{ row.cuentatw }}</td><td>{{ row.urltw }}</td><td>{{ row.idusuario_creac }}</td><td>{{ row.fec_creac }}</td></tr>{% empty %}
+	<td>{{ forloop.counter }}</td><td>{{ row.organismo }}</td><td>{{ row.dependencia }}</td><td>{{ row.fechacreacdia|date:"d-m-Y" }}</td><td>{{ row.actividad }}</td><td>{{ row.totaltweets }}</td><td>{{ row.totalretweets }} </td><td>{{ row.idusuario_creac }}</td><td>{{ row.fec_creac|date:"d-m-Y" }}</td><td>{% if row.idusuario_mod %}{{ row.idusuario_mod }}{% endif %}</td><td>{{ row.fec_mod|date:"d-m-Y" }}</td><td>{% if row.idadministrador_mod %}{{ row.idadministrador_mod }}{% endif %}</td><td>{{ row.fec_modadm|date:"d-m-Y" }}</td></tr>{% empty %}
         <tr><td colspan="7"> NO ENCONTRE NINGUN REGISTRO </td></tr>   
 	{% endfor %}<br><br>
   </tbody>  
@@ -59,4 +59,3 @@ h1{font-size:138.5%;}h2{font-size:123.1%;}h3{font-size:108%;}h1,h2,h3{margin:1em
 </div>
 
 </body></html>
-

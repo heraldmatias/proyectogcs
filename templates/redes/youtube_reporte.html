@@ -32,11 +32,11 @@ h1{font-size:138.5%;}h2{font-size:123.1%;}h3{font-size:108%;}h1,h2,h3{margin:1em
 <br>
 <table style="width: 100%;" id="content">
   <thead>
-  <tr><th>Item</th><th>Organismo</th><th>Dependencia</th><th>Cuenta</th><th>Url Cuenta</th><th>Usuario</th><th>Fecha</th></tr>
+  <tr><th>Item</th><th>Organismo</th><th>Dependencia</th><th>Cuenta</th><th colspan="3">Url Cuenta</th><th>Usuario</th><th>Fecha</th></tr>
   </thead> 
   <tbody>{% for row in data %}
 	<tr>
-	<td>{{ forloop.counter }}</td><td>{{ row.organismo }}</td><td>{{ row.dependencia }}</td><td>{{ row.cuentatw }}</td><td>{{ row.urltw }}</td><td>{{ row.idusuario_creac }}</td><td>{{ row.fec_creac }}</td></tr>{% empty %}
+	<td>{{ forloop.counter }}</td><td>{{ row.organismo }}</td><td>{{ row.dependencia }}</td><td>{{ row.cuentayt }}</td><td colspan="3"><a href="{{ row.urlyt }}">{{ row.urlyt }}</a></td><td>{{ row.idusuario_creac }}</td><td>{{ row.fec_creac }}</td></tr>{% empty %}
         <tr><td colspan="7"> NO ENCONTRE NINGUN REGISTRO </td></tr>   
 	{% endfor %}<br><br>
   </tbody>  
@@ -59,4 +59,3 @@ h1{font-size:138.5%;}h2{font-size:123.1%;}h3{font-size:108%;}h1,h2,h3{margin:1em
 </div>
 
 </body></html>
-
