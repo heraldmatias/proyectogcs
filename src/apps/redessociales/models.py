@@ -246,3 +246,96 @@ class FacebookDiario(models.Model):
 
     def __unicode__(self):
         return self.actividad
+
+class Youtube(models.Model):
+    codigo = models.AutoField(verbose_name='Codigo Autogenerado', primary_key=True)
+    numyt = models.IntegerField(verbose_name='Codigo' ,unique=True, )
+    organismo = models.ForeignKey(Organismo, verbose_name='Organismo')
+    dependencia = models.IntegerField(verbose_name='Dependencia')
+    fechacreac = models.DateField(verbose_name='Fecha de creación',)
+    cuentayt = models.CharField(verbose_name='Cuenta oficial de Youtube', max_length=100,)
+    urlyt = models.URLField(verbose_name='URL cuenta Youtube(*)', max_length=150,)    
+    idusuario_creac = models.ForeignKey(Usuario, related_name='yt_creador',verbose_name='Numero del Usuario de creación',to_field='numero')
+    fec_creac = models.DateTimeField(verbose_name='Fec. Creacion', auto_now_add=True)
+    idusuario_mod = models.ForeignKey(Usuario,related_name='yt_modificador',null=True, blank=True,to_field='numero')
+    fec_mod = models.DateTimeField(verbose_name='Fec. Modificacion',null=True, blank=True,)
+    idadministrador_mod = models.ForeignKey(Usuario,related_name='yt_admin_modificador',verbose_name='Modificador Admin',to_field='numero', null=True, blank=True)
+    fec_modadm = models.DateTimeField(verbose_name='Fec. Modificacion Admin',null=True, blank=True)
+    class Meta:
+        db_table = u'youtube'
+        verbose_name = u'Cuenta Youtube'
+        verbose_name_plural = u'Cuentas Youtube'
+
+    def __unicode__(self):
+        return self.numyt	
+
+
+class YoutubeDetalle(models.Model):
+    codigo = models.AutoField(verbose_name='Codigo Autogenerado', primary_key=True)
+    numyt = models.ForeignKey(Youtube, verbose_name='Numero del twitter',to_field='numyt')
+    item = models.IntegerField(verbose_name='Item')
+    fechadetyt = models.DateField(verbose_name='Fecha',)
+    suscriptores = models.IntegerField(verbose_name='Suscriptores',default=0)
+    reproducciones = models.IntegerField(verbose_name='Reproducciones',default=0)
+    megusta = models.IntegerField(verbose_name='Me gusta',default=0)
+    nomegusta = models.IntegerField(verbose_name='No Me gusta',default=0)
+    comentarios = models.IntegerField(verbose_name='Comentarios',default=0)
+    compartidos = models.IntegerField(verbose_name='Compartidos',default=0)
+    favoritos = models.IntegerField(verbose_name='Favoritos',default=0)
+    favoritosdel = models.IntegerField(verbose_name='Fav. Eliminados',default=0)
+    auditoria = models.ForeignKey(Estado, verbose_name='Estado', blank=True, null=True)
+    class Meta:
+        db_table = u'youtubedetalle'
+        verbose_name = u'detalle del youtube'
+        verbose_name_plural = u'detalles del youtube'
+        #unique_together = ('numtw','fechadettw',)
+
+    def __unicode__(self):
+        return self.codigo
+
+class YoutubeDiario(models.Model):
+    codigo = models.AutoField(verbose_name='Codigo Autogenerado', primary_key=True)
+    numytdia = models.IntegerField(verbose_name='Codigo' ,unique=True, )
+    organismo = models.ForeignKey(Organismo, verbose_name='Organismo')
+    dependencia = models.IntegerField(verbose_name='Dependencia')
+    fechacreacdia = models.DateField(verbose_name='Fecha',)
+    actividad = models.CharField(verbose_name='Actividad', max_length=100,)
+    idusuario_creac = models.ForeignKey(Usuario, related_name='ytd_creador',verbose_name='Numero del Usuario de creación',to_field='numero')
+    fec_creac = models.DateTimeField(verbose_name='Fec. Creacion', auto_now_add=True)
+    idusuario_mod = models.ForeignKey(Usuario,related_name='ytd_modificador',null=True, blank=True,to_field='numero')
+    fec_mod = models.DateTimeField(verbose_name='Fec. Modificacion',null=True, blank=True,)
+    idadministrador_mod = models.ForeignKey(Usuario,related_name='ytd_admin_modificador',verbose_name='Modificador Admin',to_field='numero', null=True, blank=True)
+    fec_modadm = models.DateTimeField(verbose_name='Fec. Modificacion Admin',null=True, blank=True)
+    class Meta:
+        db_table = u'youtubediario'
+        verbose_name = u'Youtube Diario'
+        verbose_name_plural = u'Youtubes Diario'
+
+    def __unicode__(self):
+        return self.numyt	
+
+
+class YoutubeDiarioDetalle(models.Model):
+    codigo = models.AutoField(verbose_name='Codigo Autogenerado', primary_key=True)
+    numytdia = models.ForeignKey(YoutubeDiario, verbose_name='Numero del twitter',to_field='numytdia')
+    item = models.IntegerField(verbose_name='Item')
+    fechadetytdia = models.DateField(verbose_name='Fecha',)    
+    titulo = models.CharField(verbose_name='Titulo', max_length=100,)
+    urlytdia = models.URLField(verbose_name='URL vídeo', max_length=150,)    
+    suscriptores = models.IntegerField(verbose_name='Suscriptores',default=0)
+    reproducciones = models.IntegerField(verbose_name='Reproducciones',default=0)
+    megusta = models.IntegerField(verbose_name='Me gusta',default=0)
+    nomegusta = models.IntegerField(verbose_name='No Me gusta',default=0)
+    comentarios = models.IntegerField(verbose_name='Comentarios',default=0)
+    compartidos = models.IntegerField(verbose_name='Compartidos',default=0)
+    favoritos = models.IntegerField(verbose_name='Favoritos',default=0)
+    favoritosdel = models.IntegerField(verbose_name='Fav. Eliminados',default=0)
+    auditoria = models.ForeignKey(Estado, verbose_name='Estado', blank=True, null=True)
+    class Meta:
+        db_table = u'youtubediariodetalle'
+        verbose_name = u'detalle del youtube diario'
+        verbose_name_plural = u'detalles del youtube diario'
+        #unique_together = ('numtw','fechadettw',)
+
+    def __unicode__(self):
+        return self.codigo

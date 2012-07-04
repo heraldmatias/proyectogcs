@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render_to_response, redirect
-from forms import InformacionForm, TwitterForm, TwitterDetalleForm, FacebookForm, FacebookDetalleForm,FacebookDiarioForm, TwitterDiarioForm,InformacionConsultaForm, InformacionTable, DetalleTwitterTable, TwitterConsultaForm, TwitterTable,TwitterDiarioConsultaForm, TwitterDiarioTable, FacebookDetalleTable, FacebookConsultaForm, FacebookTable, FacebookDiarioTable, FacebookDiarioConsultaForm
+from forms import InformacionForm, TwitterForm, TwitterDetalleForm, FacebookForm, FacebookDetalleForm,FacebookDiarioForm, TwitterDiarioForm,InformacionConsultaForm, InformacionTable, DetalleTwitterTable, TwitterConsultaForm, TwitterTable,TwitterDiarioConsultaForm, TwitterDiarioTable, FacebookDetalleTable, FacebookConsultaForm, FacebookTable, FacebookDiarioTable, FacebookDiarioConsultaForm, YoutubeForm, YoutubeConsultaForm, YoutubeTable, YoutubeDetalleForm, YoutubeDetalleTable, YoutubeDiarioForm, YoutubeDiarioConsultaForm, YoutubeDiarioTable, YoutubeDiarioDetalleForm, YoutubeDiarioDetalleTable
 from django.template import RequestContext
 from usuario.models import Usuario, Estado
 from django.contrib.auth.decorators import login_required
-from models import Informacion, Twitter, TwitterDetalle, Facebook, FacebookDetalle, TwitterDiario, FacebookDiario
+from models import Informacion, Twitter, TwitterDetalle, Facebook, FacebookDetalle, TwitterDiario, FacebookDiario, Youtube, YoutubeDetalle, YoutubeDiario, YoutubeDiarioDetalle
 from datetime import datetime
 from django_tables2.config import RequestConfig
 from django.shortcuts import get_object_or_404
@@ -496,4 +496,289 @@ def facebookdiario_print(request):
     html = render_to_string('redes/facebookdiario_reporte.html',{'data': query,'pagesize':'A4','usuario':request.user.get_profile()},context_instance=RequestContext(request))
     filename= "facebookdiario_%s.pdf" % datetime.today().strftime("%Y%m%d")        
     return imprimirToPDF(html,filename)
+
+@login_required(login_url='/')
+def youtube(request): 
+    mensaje = ''
+    if request.method == 'POST':  
+        num = Youtube.objects.values("numyt").order_by("-numyt",)[:1]
+	num = 1 if len(num)==0 else int(num[0]["numyt"])+1
+        profile = request.user.get_profile()
+        obj = Youtube(numyt=num,idusuario_creac=profile,organismo=profile.organismo,dependencia=profile.dependencia)
+        frm = YoutubeForm(request.POST, instance=obj,error_class=DivErrorList) # A form bound to the POST data
+        if frm.is_valid():
+            frm.save() #cfechas csuscrip crepro cmegusta cnomegusta ccomen ccompar cfavo cfavodel    
+            fechas = request.POST.getlist('cfechas')
+            suscriptores = request.POST.getlist('csuscrip')
+            reproducciones = request.POST.getlist('crepro')
+            megusta = request.POST.getlist('cmegusta')
+            nomegusta = request.POST.getlist('cnomegusta')
+            comentarios = request.POST.getlist('ccomen')
+            compartidos = request.POST.getlist('ccompar')
+            favoritos = request.POST.getlist('cfavo')
+            favoritosdel = request.POST.getlist('cfavodel')
+	    for co in range(len(fechas)):
+                fecha = fechas[co]                
+                fecha = datetime.strptime(fecha,"%d/%m/%Y")
+                det = YoutubeDetalle(numyt=obj,item=co+1,fechadetyt = fecha,suscriptores=suscriptores[co],reproducciones =reproducciones[co], megusta = megusta[co],nomegusta=nomegusta[co],comentarios=comentarios[co],compartidos=compartidos[co],favoritos=favoritos[co],favoritosdel=favoritosdel[co],)
+                det.save() 
+            mensaje = 'Registro grabado satisfactoriamente'
+            frm = YoutubeForm()
+    else:        
+        frm = YoutubeForm()
+    frm_detalle = YoutubeDetalleForm()
+    tabla = YoutubeDetalleTable([])
+    return render_to_response('redes/youtube.html', {'formulario': frm,'frm_detalle':frm_detalle,'opcion':'add','tabla':tabla,'mensaje':mensaje}, context_instance=RequestContext(request),)
+
+@login_required(login_url='/')
+def youtube_edit(request, codigo): 
+    mensaje = ''
+    if request.method == 'POST':  
+        obj = get_object_or_404(Youtube,pk=codigo)
+        profile = request.user.get_profile()
+        if profile.nivel.codigo == 1:
+            obj.fec_mod = datetime.now()
+            obj.idusuario_mod = profile
+        else:
+            obj.idadministrador_mod = profile
+            obj.fec_modadm = datetime.now()      
+        frm = YoutubeForm(request.POST, instance=obj,error_class=DivErrorList)  
+        if frm.is_valid():
+            frm.save()
+            fechas = request.POST.getlist('cfechas')
+            suscriptores = request.POST.getlist('csuscrip')
+            reproducciones = request.POST.getlist('crepro')
+            megusta = request.POST.getlist('cmegusta')
+            nomegusta = request.POST.getlist('cnomegusta')
+            comentarios = request.POST.getlist('ccomen')
+            compartidos = request.POST.getlist('ccompar')
+            favoritos = request.POST.getlist('cfavo')
+            favoritosdel = request.POST.getlist('cfavodel')
+	    #TWITTER_DETALLE_save
+            query = YoutubeDetalle.objects.filter(numyt=obj)
+            for co in range(len(fechas)):
+                fecha = datetime.strptime(fechas[co],"%d/%m/%Y")
+                try:
+                    row = YoutubeDetalle.objects.get(numyt=obj,item=co+1)
+                    row.fechadetyt = fecha
+                    row.suscriptores = suscriptores[co]
+                    row.reproducciones = reproducciones[co]
+                    row.megusta = megusta[co]
+                    row.nomegusta = nomegusta[co]
+                    row.comentarios = comentarios[co]
+                    row.compartidos = compartidos[co]
+                    row.favoritos = favoritos[co]
+                    row.favoritosdel = favoritosdel[co]
+                    row.save()
+                except YoutubeDetalle.DoesNotExist:
+                    YoutubeDetalle(numyt=obj,item=co+1,fechadetyt = fecha,suscriptores=suscriptores[co],reproducciones =reproducciones[co], megusta = megusta[co],nomegusta=nomegusta[co],comentarios=comentarios[co],compartidos=compartidos[co],favoritos=favoritos[co],favoritosdel=favoritosdel[co],).save()
+            resto= len(fechas)
+            while resto < len(query):
+                row = YoutubeDetalle.objects.get(numyt=obj,item=resto+1)
+                row.delete()
+                resto = resto + 1
+            return redirect(reverse('ogcs-redes-youtube-query')+'?m=edit') 
+    else: 
+        obj = get_object_or_404(Youtube,pk=codigo)
+        obj.fechacreac = obj.fechacreac.strftime("%d/%m/%Y")       
+        frm = YoutubeForm(instance = obj)
+    detalle = YoutubeDetalle.objects.filter(numyt=obj)#.order_by('-fechadettw')
+    for row in detalle:
+        row.fechadetyt = row.fechadetyt.strftime("%d/%m/%Y")
+    tabla = YoutubeDetalleTable(detalle)
+    frm_detalle = YoutubeDetalleForm()
+    return render_to_response('redes/youtube.html', {'formulario': frm,'frm_detalle':frm_detalle,'opcion':'edit','codigo':codigo,'tabla':tabla}, context_instance=RequestContext(request),)
+
+@login_required()
+def youtube_consulta(request):
+    filtro = []
+    mensaje = request.GET['m'] if 'm' in request.GET else None
+    dependencia= None
+    #filtros
+    if 'organismo' in request.GET:
+        if request.GET['organismo']:
+            filtro.append(u'organismo_id=%s'%request.GET['organismo'])   
+    if 'dependencia' in request.GET:
+        if request.GET['dependencia']:
+            filtro.append(u'dependencia=%s'%request.GET['dependencia'])
+            dependencia = request.GET['dependencia']
+    formulario = TwitterConsultaForm(request.GET)
+    query = Youtube.objects.extra(where=filtro, select={'dependencia':"case organismo_id when 1 then (select ministerio from ministerio where nummin=dependencia) when 2 then (select odp from odp where numodp=dependencia) when 3 then (select gobernacion from gobernacion where numgob=dependencia) end"})
+    tabla = YoutubeTable(query)
+    RequestConfig(request).configure(tabla)
+    tabla.paginate(page=request.GET.get('page', 1), per_page=6)
+    return render_to_response('redes/youtube_consulta.html',{'formulario':formulario,'tabla':tabla,'dependencia':dependencia,'mensaje':mensaje},context_instance=RequestContext(request))
+
+@login_required()
+def youtube_print(request):
+    filtro = []
+    if 'organismo' in request.GET:
+        if request.GET['organismo']:
+            filtro.append(u'organismo_id=%s'%request.GET['organismo'])   
+    if 'dependencia' in request.GET:
+        if request.GET['dependencia']:
+            filtro.append(u'dependencia=%s'%request.GET['dependencia'])    
+    query = Youtube.objects.extra(where=filtro, select={'dependencia':"case organismo_id when 1 then (select ministerio from ministerio where nummin=dependencia) when 2 then (select odp from odp where numodp=dependencia) when 3 then (select gobernacion from gobernacion where numgob=dependencia) end",})
+    html = render_to_string('redes/youtube_reporte.html',{'data': query,'pagesize':'A4','usuario':request.user.get_profile()},context_instance=RequestContext(request))
+    filename= "youtube_%s.pdf" % datetime.today().strftime("%Y%m%d")        
+    return imprimirToPDF(html,filename)
+
+@login_required()
+def youtubediario(request): 
+    mensaje = ''
+    if request.method == 'POST':  
+        num = YoutubeDiario.objects.values("numytdia").order_by("-numytdia",)[:1]
+	num = 1 if len(num)==0 else int(num[0]["numytdia"])+1
+        profile = request.user.get_profile()
+        obj = YoutubeDiario(numytdia=num,idusuario_creac=profile,organismo=profile.organismo,dependencia=profile.dependencia)
+        frm = YoutubeDiarioForm(request.POST, instance=obj,error_class=DivErrorList) # A form bound to the POST data
+        if frm.is_valid():
+            frm.save() #cfechas csuscrip crepro cmegusta cnomegusta ccomen ccompar cfavo cfavodel    
+            fechas = request.POST.getlist('cfechas')
+            titulo = request.POST.getlist('ctitulo')
+            urlytdia = request.POST.getlist('curl')
+            suscriptores = request.POST.getlist('csuscrip')
+            reproducciones = request.POST.getlist('crepro')
+            megusta = request.POST.getlist('cmegusta')
+            nomegusta = request.POST.getlist('cnomegusta')
+            comentarios = request.POST.getlist('ccomen')
+            compartidos = request.POST.getlist('ccompar')
+            favoritos = request.POST.getlist('cfavo')
+            favoritosdel = request.POST.getlist('cfavodel')
+	    for co in range(len(fechas)):
+                fecha = fechas[co]                
+                fecha = datetime.strptime(fecha,"%d/%m/%Y")
+                det = YoutubeDiarioDetalle(numytdia=obj,item=co+1,fechadetytdia = fecha,titulo=titulo[co],urlytdia=urlytdia[co],suscriptores=suscriptores[co],reproducciones =reproducciones[co], megusta = megusta[co],nomegusta=nomegusta[co],comentarios=comentarios[co],compartidos=compartidos[co],favoritos=favoritos[co],favoritosdel=favoritosdel[co],)
+                det.save() 
+            mensaje = 'Registro grabado satisfactoriamente'
+            frm = YoutubeDiarioForm()
+    else:        
+        frm = YoutubeDiarioForm()
+    frm_detalle = YoutubeDiarioDetalleForm()
+    tabla = YoutubeDiarioDetalleTable([])
+    return render_to_response('redes/youtubediario.html', {'formulario': frm,'frm_detalle':frm_detalle,'opcion':'add','tabla':tabla,'mensaje':mensaje}, context_instance=RequestContext(request),)
+
+@login_required()
+def youtubediario_edit(request, codigo): 
+    mensaje = ''
+    if request.method == 'POST':  
+        obj = get_object_or_404(YoutubeDiario,pk=codigo)
+        profile = request.user.get_profile()
+        if profile.nivel.codigo == 1:
+            obj.fec_mod = datetime.now()
+            obj.idusuario_mod = profile
+        else:
+            obj.idadministrador_mod = profile
+            obj.fec_modadm = datetime.now()      
+        frm = YoutubeDiarioForm(request.POST, instance=obj,error_class=DivErrorList)  
+        if frm.is_valid():
+            frm.save()
+            fechas = request.POST.getlist('cfechas')
+            titulo = request.POST.getlist('ctitulo')
+            urlytdia = request.POST.getlist('curl')
+            suscriptores = request.POST.getlist('csuscrip')
+            reproducciones = request.POST.getlist('crepro')
+            megusta = request.POST.getlist('cmegusta')
+            nomegusta = request.POST.getlist('cnomegusta')
+            comentarios = request.POST.getlist('ccomen')
+            compartidos = request.POST.getlist('ccompar')
+            favoritos = request.POST.getlist('cfavo')
+            favoritosdel = request.POST.getlist('cfavodel')
+	    #TWITTER_DETALLE_save
+            query = YoutubeDiarioDetalle.objects.filter(numytdia=obj)
+            for co in range(len(fechas)):
+                fecha = datetime.strptime(fechas[co],"%d/%m/%Y")
+                try:
+                    row = YoutubeDiarioDetalle.objects.get(numytdia=obj,item=co+1)
+                    row.fechadetytdia = fecha
+                    row.titulo = titulo[co]
+                    row.urlytdia = urlytdia[co] 
+                    row.suscriptores = suscriptores[co]
+                    row.reproducciones = reproducciones[co]
+                    row.megusta = megusta[co]
+                    row.nomegusta = nomegusta[co]
+                    row.comentarios = comentarios[co]
+                    row.compartidos = compartidos[co]
+                    row.favoritos = favoritos[co]
+                    row.favoritosdel = favoritosdel[co]
+                    row.save()
+                except YoutubeDiarioDetalle.DoesNotExist:
+                    YoutubeDiarioDetalle(numytdia=obj,item=co+1,fechadetytdia = fecha,titulo=titulo[co],urlytdia=urlytdia[co],suscriptores=suscriptores[co],reproducciones =reproducciones[co], megusta = megusta[co],nomegusta=nomegusta[co],comentarios=comentarios[co],compartidos=compartidos[co],favoritos=favoritos[co],favoritosdel=favoritosdel[co],).save()
+            resto= len(fechas)
+            while resto < len(query):
+                row = YoutubeDiarioDetalle.objects.get(numytdia=obj,item=resto+1)
+                row.delete()
+                resto = resto + 1
+            return redirect(reverse('ogcs-redes-youtube-diario-query')+'?m=edit') 
+    else: 
+        obj = get_object_or_404(YoutubeDiario,pk=codigo)
+        obj.fechacreacdia = obj.fechacreacdia.strftime("%d/%m/%Y")       
+        frm = YoutubeDiarioForm(instance = obj)
+    detalle = YoutubeDiarioDetalle.objects.filter(numytdia=obj)#.order_by('-fechadettw')
+    for row in detalle:
+        row.fechadetytdia = row.fechadetytdia.strftime("%d/%m/%Y")
+    tabla = YoutubeDiarioDetalleTable(detalle)
+    frm_detalle = YoutubeDiarioDetalleForm()
+    return render_to_response('redes/youtubediario.html', {'formulario': frm,'frm_detalle':frm_detalle,'opcion':'edit','codigo':codigo,'tabla':tabla}, context_instance=RequestContext(request),)
+
+@login_required()
+def youtubediario_consulta(request):
+    filtro = []
+    mensaje = request.GET['m'] if 'm' in request.GET else None
+    dependencia= None
+    #filtros
+    if 'organismo' in request.GET:
+        if request.GET['organismo']:
+            filtro.append(u'organismo_id=%s'%request.GET['organismo'])   
+    if 'dependencia' in request.GET:
+        if request.GET['dependencia']:
+            filtro.append(u'dependencia=%s'%request.GET['dependencia'])
+            dependencia = request.GET['dependencia']
+    if 'fechaini' in request.GET and 'fechafin' in request.GET:
+        if request.GET['fechaini'] and request.GET['fechafin']:
+            fini = datetime.strptime(request.GET['fechaini'],"%d/%m/%Y")
+            ffin = datetime.strptime(request.GET['fechafin'],"%d/%m/%Y")
+            filtro.append(u"fechacreacdia between '%s' and '%s'"%(fini,ffin))
+        elif 'fechaini' in request.GET:
+            if request.GET['fechaini']:
+                fini = datetime.strptime(request.GET['fechaini'],"%d/%m/%Y")            
+                filtro.append(u"fechacreacdia>='%s'"%fini)
+            elif 'fechafin' in request.GET:
+                if request.GET['fechafin']:
+                    ffin = datetime.strptime(request.GET['fechafin'],"%d/%m/%Y")            
+                    filtro.append(u"fechacreacdia<='%s'"%ffin)
+    formulario = YoutubeDiarioConsultaForm(request.GET)
+    query = YoutubeDiario.objects.extra(where=filtro, select={'dependencia':"case organismo_id when 1 then (select ministerio from ministerio where nummin=dependencia) when 2 then (select odp from odp where numodp=dependencia) when 3 then (select gobernacion from gobernacion where numgob=dependencia) end"})
+    tabla = YoutubeDiarioTable(query)
+    RequestConfig(request).configure(tabla)
+    tabla.paginate(page=request.GET.get('page', 1), per_page=6)
+    return render_to_response('redes/youtubediario_consulta.html',{'formulario':formulario,'tabla':tabla,'dependencia':dependencia,'mensaje':mensaje},context_instance=RequestContext(request))
+
+@login_required()
+def youtubediario_print(request):
+    filtro = []
+    if 'organismo' in request.GET:
+        if request.GET['organismo']:
+            filtro.append(u'organismo_id=%s'%request.GET['organismo'])   
+    if 'dependencia' in request.GET:
+        if request.GET['dependencia']:
+            filtro.append(u'dependencia=%s'%request.GET['dependencia'])  
+    if 'fechaini' in request.GET and 'fechafin' in request.GET:
+        if request.GET['fechaini'] and request.GET['fechafin']:
+            fini = datetime.strptime(request.GET['fechaini'],"%d/%m/%Y")
+            ffin = datetime.strptime(request.GET['fechafin'],"%d/%m/%Y")
+            filtro.append(u"fechacreacdia between '%s' and '%s'"%(fini,ffin))
+        elif 'fechaini' in request.GET:
+            if request.GET['fechaini']:
+                fini = datetime.strptime(request.GET['fechaini'],"%d/%m/%Y")            
+                filtro.append(u"fechacreacdia>='%s'"%fini)
+            elif 'fechafin' in request.GET:
+                if request.GET['fechafin']:
+                    ffin = datetime.strptime(request.GET['fechafin'],"%d/%m/%Y")            
+                    filtro.append(u"fechacreacdia<='%s'"%ffin)  
+    query = YoutubeDiario.objects.extra(where=filtro, select={'dependencia':"case organismo_id when 1 then (select ministerio from ministerio where nummin=dependencia) when 2 then (select odp from odp where numodp=dependencia) when 3 then (select gobernacion from gobernacion where numgob=dependencia) end",})
+    html = render_to_string('redes/youtubediario_reporte.html',{'data': query,'pagesize':'A4','usuario':request.user.get_profile()},context_instance=RequestContext(request))
+    filename= "youtubediario_%s.pdf" % datetime.today().strftime("%Y%m%d")        
+    return imprimirToPDF(html,filename)
+
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django import forms
-from models import Informacion, Twitter, TwitterDetalle, TwitterDiario, Facebook, FacebookDetalle, FacebookDiario
+from models import Informacion, Twitter, TwitterDetalle, TwitterDiario, Facebook, FacebookDetalle, FacebookDiario, Youtube,YoutubeDetalle,YoutubeDiario, YoutubeDiarioDetalle
 import django_tables2 as tables 
 from django.utils.safestring import mark_safe
 from usuario.models import Organismo
@@ -272,4 +272,164 @@ class FacebookDiarioTable(tables.Table):
 
     class Meta:
         attrs = {"class": "table table-bordered table-condensed table-striped"}
+        orderable = False
+##########################################################################################################
+          ######################################YOUTUBE#####################################
+##########################################################################################################
+class YoutubeForm(forms.ModelForm):
+    class Meta:
+        model = Youtube
+        exclude = ('dependencia','organismo','numyt','idusuario_creac','fec_creac','idusuario_mod','fec_mod','idadministrador_mod','fec_modadm')
+        
+
+class YoutubeConsultaForm(forms.ModelForm):
+    class Meta:
+        model = Youtube
+        fields = ('organismo','dependencia',)
+        widgets = {
+            'dependencia': forms.Select(),
+            'organismo': forms.Select(attrs={'onChange':'dependencias();',}),
+        }
+
+class YoutubeTable(tables.Table):
+    item = tables.Column()
+    organismo = tables.Column(orderable=True)
+    dependencia = tables.Column(orderable=True)
+    idusuario_creac = tables.Column(verbose_name='Creador',orderable=True)
+    fec_creac = tables.Column(verbose_name='Fec. Creación',orderable=True)
+    idusuario_mod = tables.Column(verbose_name='Modificador',orderable=True)
+    fec_mod = tables.Column(verbose_name='Fec. Modificador',orderable=True)
+    modificar = tables.TemplateColumn('<a href={% url ogcs-redes-youtube-edit record.codigo %}>Modificar</a>')#MODIFICAR
+    def render_item(self):
+        value = getattr(self, '_counter', 1)
+        self._counter = value + 1
+        return '%d' % value
+
+    class Meta:
+        attrs = {"class": "table table-bordered table-condensed table-striped"}
+        orderable = False
+
+class YoutubeDetalleForm(forms.ModelForm):
+    class Meta:
+        model = YoutubeDetalle
+        exclude = ('numyt','item','auditoria',)        
+        widgets = {
+            'fechadetyt': forms.TextInput(attrs={'style':'width:65px;','readonly':'readonly'}),
+            'suscriptores': forms.TextInput(attrs={'style':'width:25%'}),
+            'reproducciones': forms.TextInput(attrs={'style':'width:25%'}),
+            'megusta': forms.TextInput(attrs={'style':'width:25%'}),
+            'nomegusta': forms.TextInput(attrs={'style':'width:25%'}),
+            'comentarios': forms.TextInput(attrs={'style':'width:25%'}),
+            'compartidos': forms.TextInput(attrs={'style':'width:25%'}),
+            'favoritos': forms.TextInput(attrs={'style':'width:25%'}),
+            'favoritosdel': forms.TextInput(attrs={'style':'width:25%'}), 
+        }
+
+class YoutubeDetalleTable(tables.Table):
+    item = tables.Column()    
+    fechadetyt = tables.TemplateColumn('<input type="hidden" name="cfechas" value="{{ record.fechadetyt }}">{{ record.fechadetyt }}')
+    suscriptores = tables.TemplateColumn('<input type="hidden" name="csuscrip" value="{{ record.suscriptores }}">{{ record.suscriptores }}')
+    reproducciones = tables.TemplateColumn('<input type="hidden" name="crepro" value="{{ record.reproducciones }}">{{ record.reproducciones }}')
+    megusta = tables.TemplateColumn('<input type="hidden" name="cmegusta" value="{{ record.megusta }}">{{ record.megusta }}')
+    nomegusta = tables.TemplateColumn('<input type="hidden" name="cnomegusta" value="{{ record.nomegusta }}">{{ record.nomegusta }}')
+    comentarios = tables.TemplateColumn('<input type="hidden" name="ccomen" value="{{ record.comentarios }}">{{ record.comentarios }}')
+    compartidos = tables.TemplateColumn('<input type="hidden" name="ccompar" value="{{ record.compartidos }}">{{ record.compartidos }}')
+    favoritos = tables.TemplateColumn('<input type="hidden" name="cfavo" value="{{ record.favoritos }}">{{ record.favoritos }}')
+    favoritosdel = tables.TemplateColumn('<input type="hidden" name="cfavodel" value="{{ record.favoritosdel }}">{{ record.favoritosdel }}')
+    eliminar = tables.Column()
+    def render_item(self):
+        value = getattr(self, '_counter', 1)
+        self._counter = value + 1
+        return '%d' % value
+
+    def render_eliminar(self):
+        value = getattr(self, '_co', 1) 
+        self._co = value + 1       
+        return mark_safe("<a href='javascript: removedetalle(%s)'><div id='delete'></div></a>"%str(value))
+
+    class Meta:
+        attrs = {"class": "table table-bordered table-condensed table-striped",'id':'tbldetalle'}
+        orderable = False
+
+class YoutubeDiarioForm(forms.ModelForm):
+    class Meta:
+        model = YoutubeDiario
+        exclude = ('organismo','dependencia','numytdia','idusuario_creac','fec_creac','idusuario_mod','fec_mod','idadministrador_mod','fec_modadm')
+        widgets = {
+            'fechacreacdia': forms.TextInput(attrs={'readonly':'readonly','style':'width:100px'}),
+            'actividad': forms.Textarea(attrs={'style':'width:100%','rows':'2'}),            
+        }
+class YoutubeDiarioConsultaForm(forms.Form):
+    organismo = forms.ModelChoiceField(queryset=Organismo.objects.all(),widget=forms.Select(attrs={'onChange':'dependencias(1);','style':'width:130px',}))
+    dependencia = forms.ChoiceField(choices=[],widget=forms.Select(attrs={'style':'width:100%',}))
+    fechaini = forms.CharField(widget=forms.TextInput(attrs={'style':'width:90px','readonly':'readonly'}),label="Fecha Inicial",)#initial=datetime.today().strftime("%d/%m/%Y"))
+    fechafin = forms.CharField(widget=forms.TextInput(attrs={'style':'width:90px','readonly':'readonly'}),label="Fecha Final",)#initial=datetime.today().strftime("%d/%m/%Y"))
+       
+       
+class YoutubeDiarioTable(tables.Table):
+    item = tables.Column()
+    organismo = tables.Column(orderable=True)
+    dependencia = tables.Column(orderable=True)
+    fechacreacdia = tables.Column(orderable=True)
+    actividad = tables.TemplateColumn('{{ record.actividad|truncatewords:5 }}',orderable=True)
+    totalreproducciones = tables.Column(orderable=True)
+    totalsuscriptores = tables.Column(orderable=True)
+    idusuario_creac = tables.Column(verbose_name='Creador',orderable=True)
+    fec_creac = tables.Column(verbose_name='Fec. Creación',orderable=True)
+    idusuario_mod = tables.Column(verbose_name='Modificador',orderable=True)
+    fec_mod = tables.Column(verbose_name='Fec. Modificador',orderable=True)
+    modificar = tables.TemplateColumn('<a href={% url ogcs-redes-youtube-diario-edit record.codigo %}>Modificar</a>')
+    def render_item(self):
+        value = getattr(self, '_counter', 1)
+        self._counter = value + 1
+        return '%d' % value
+
+    class Meta:
+        attrs = {"class": "table table-bordered table-condensed table-striped"}
+        orderable = False
+
+class YoutubeDiarioDetalleForm(forms.ModelForm):
+    class Meta:
+        model = YoutubeDiarioDetalle
+        exclude = ('numytdia','item','auditoria',)        
+        widgets = {
+            'fechadetytdia': forms.TextInput(attrs={'style':'width:65px;','readonly':'readonly'}),
+            'titulo': forms.TextInput(attrs={'style':'width:100%'}),
+            'urlytdia': forms.TextInput(attrs={'style':'width:100%'}),
+            'suscriptores': forms.TextInput(attrs={'style':'width:25%'}),
+            'reproducciones': forms.TextInput(attrs={'style':'width:25%'}),
+            'megusta': forms.TextInput(attrs={'style':'width:25%'}),
+            'nomegusta': forms.TextInput(attrs={'style':'width:25%'}),
+            'comentarios': forms.TextInput(attrs={'style':'width:25%'}),
+            'compartidos': forms.TextInput(attrs={'style':'width:25%'}),
+            'favoritos': forms.TextInput(attrs={'style':'width:25%'}),
+            'favoritosdel': forms.TextInput(attrs={'style':'width:25%'}), 
+        }
+
+class YoutubeDiarioDetalleTable(tables.Table):
+    item = tables.Column()    
+    fechadetytdia = tables.TemplateColumn('<input type="hidden" name="cfechas" value="{{ record.fechadetytdia }}">{{ record.fechadetytdia }}')   
+    titulo = tables.TemplateColumn('<input type="hidden" name="ctitulo" value="{{ record.titulo|truncatewords:3 }}">{{ record.titulo }}')
+    urlytdia = tables.TemplateColumn('<input type="hidden" name="curl" value="{{ record.urlytdia }}">{{ record.urlytdia }}')
+    suscriptores = tables.TemplateColumn('<input type="hidden" name="csuscrip" value="{{ record.suscriptores }}">{{ record.suscriptores }}')
+    reproducciones = tables.TemplateColumn('<input type="hidden" name="crepro" value="{{ record.reproducciones }}">{{ record.reproducciones }}')
+    megusta = tables.TemplateColumn('<input type="hidden" name="cmegusta" value="{{ record.megusta }}">{{ record.megusta }}')
+    nomegusta = tables.TemplateColumn('<input type="hidden" name="cnomegusta" value="{{ record.nomegusta }}">{{ record.nomegusta }}')
+    comentarios = tables.TemplateColumn('<input type="hidden" name="ccomen" value="{{ record.comentarios }}">{{ record.comentarios }}')
+    compartidos = tables.TemplateColumn('<input type="hidden" name="ccompar" value="{{ record.compartidos }}">{{ record.compartidos }}')
+    favoritos = tables.TemplateColumn('<input type="hidden" name="cfavo" value="{{ record.favoritos }}">{{ record.favoritos }}')
+    favoritosdel = tables.TemplateColumn('<input type="hidden" name="cfavodel" value="{{ record.favoritosdel }}">{{ record.favoritosdel }}')
+    eliminar = tables.Column()
+    def render_item(self):
+        value = getattr(self, '_counter', 1)
+        self._counter = value + 1
+        return '%d' % value
+
+    def render_eliminar(self):
+        value = getattr(self, '_co', 1) 
+        self._co = value + 1       
+        return mark_safe("<a href='javascript: removedetalle(%s)'><div id='delete'></div></a>"%str(value))
+
+    class Meta:
+        attrs = {"class": "table table-bordered table-condensed table-striped",'id':'tbldetalle'}
         orderable = False
