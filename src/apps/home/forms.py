@@ -8,8 +8,8 @@ from django.contrib.sites.models import get_current_site
 from django.utils.http import int_to_base36
 
 class LoginForm(forms.Form):
-    usuario = forms.CharField(max_length=45, label='E-mail:', widget=forms.TextInput(attrs={'placeholder':'Ingrese su usuario','style':'height:15px;color:#141313'}),)
-    clave = forms.CharField(max_length=40, label='Contraseña:', widget=forms.PasswordInput(attrs={'placeholder':'Ingrese su contraseña','style':'height:15px;color:#141313'}),)
+    usuario = forms.CharField(max_length=45, label='E-mail:', widget=forms.TextInput(attrs={'placeholder':'Ingrese su usuario','style':'height:15px;color:#141313','class':'span7'}),)
+    clave = forms.CharField(max_length=40, label='Contraseña:', widget=forms.PasswordInput(attrs={'placeholder':'Ingrese su contraseña','style':'height:15px;color:#141313','class':'span7'}),)
 
 
 class PasswordResetFormHtml(PasswordResetForm):
