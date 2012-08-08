@@ -1,28 +1,6 @@
-body{
-	background-color: #EEEEEE;
-    color: #000000;
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-size: 10px;
-    font-style: normal;
-    font-variant: normal;
-    font-weight: normal;
-    line-height: normal;
-    text-decoration: none;
-    text-transform: none;
-}
-
-
-#contenedor{
-	background-color: #FFFFFF;
-	margin:16px auto;
-	width:960px;
-	min-height:200px;
-	height:auto;
-}
 
 #cabecera{
 	float:inherit
-	
 }
 
 #cabecera_izq{
@@ -37,12 +15,44 @@ body{
 	margin:15px 16px;
 	min-width:300px
 }
+#cabecera_izq2{
+	float:left;        
+	margin:25px 16px;
+	width:300px;
+        position:relative;
+}
+#cabecera_der2{
+	float:right;  
+        margin-top:15px;
+	width:auto;
+        position:relative;
+	z-index:1;
+}
+#contenedor2{
+        min-height:760px;
+	height:auto;	
+        background-color: #EEEEEE;
+	margin:-16px auto;
+	width:960px;	
+}
 
-#menu{
-	background: url(../images/cabecera.png) repeat-x 0 0;
-	margin:3px 0 0 -24px;
-	height:54px;
-	width:984px
+#contenido2{ 
+        width:94%;
+        min-height:580px;
+	height:auto; 
+	margin:-45px 0 0 30px;
+ 	padding:0 0 40px 0;
+ 	float:left;
+ 	background:#FFF;
+ 	position:relative;	
+}
+
+#contenedor{
+	background-color: #FFFFFF;
+	margin:16px auto;
+	width:960px;
+	min-height:200px;
+	height:auto;
 }
 
 #contenido{
@@ -53,6 +63,85 @@ body{
 	position:relative
 	
 }
+
+#contenido_user{ 
+        width:96%;
+        height:270px;
+	margin:20px 0 0 20px;
+ 	padding:0 0 40px 0;
+ 	float:left;
+ 	background:#EEE;
+ 	position:relative;	
+}
+
+#personal{ 
+        width:170px;
+        height:80px;
+	margin:-60px 0 0 20px;
+ 	padding:0 0 40px 0;
+ 	float:left;
+ 	background:#FFF;
+ 	position:relative;
+	z-index:1;	
+}
+#personal2{ 
+        width:170px;
+        height:80px;
+	margin:-60px 0 0 20px;
+ 	padding:0 0 40px 0;
+ 	float:right;
+ 	background:#FFF;
+ 	position:relative;
+	z-index:1;	
+}
+#portada{
+        width:100%;
+        height:230px;
+}
+
+#personal_img{
+        width:150px;
+        height:100px;
+        margin:10px 0 0 10px;
+}
+#ministerio{         
+        width:170px;
+        height:80px;
+	margin:-60px 0 0 20px;
+	padding:0 0 40px 0;
+ 	float:right;
+ 	position:relative;
+	z-index:1;
+        text-align:right;	
+}
+
+.ministerio_texto{
+        color: #D2014D;
+        font-family: Verdana,Arial,Helvetica,sans-serif;
+        font-size: 10px;
+        font-weight: bold;
+        font-style:italic;	
+}
+
+.ministerio{
+	color: #D2014D;
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+    font-size: 10px;
+    font-weight: bold;
+}
+#sesion{
+color:#E12B40;
+font-family:"Times New Roman",Times,serif;
+
+}
+
+#menu{
+	background: url(../images/cabecera.png) repeat-x 0 0;
+	margin:3px 0 0 -24px;
+	height:54px;
+	width:984px
+}
+
 
 #contenido_izq{
 	float:left;
@@ -150,12 +239,6 @@ body{
 
 }
 
-.ministerio{
-	color: #D2014D;
-    font-family: Verdana,Arial,Helvetica,sans-serif;
-    font-size: 10px;
-    font-weight: bold;
-}
 
 .fecha {
     color: #453D3D;
