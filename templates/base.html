@@ -22,6 +22,18 @@
 		display: none;
 	}
 table tr td{padding-left:10px;}
+body{
+	background-color: #EEE;
+    color: #000000;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 10px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    line-height: normal;
+    text-decoration: none;
+    text-transform: none;
+}
 </style>
   <meta content="text/html; charset=UTF-8" http-equiv="content-type">
   {% endblock %}
@@ -32,12 +44,12 @@ table tr td{padding-left:10px;}
   <div id="contenedor" class="corners_5">
     <div id="cabecera">
     	<div id="cabecera_izq">
-    		<a href="{% url ogcs-index %}"><img src="{{ STATIC_URL  }}images/logo_pirs.jpg"></a>
+    		<a href="{% url ogcs-index %}"><img height="71" width="342" src="{{ STATIC_URL  }}images/logo_pirs.png"></a>
     	</div>
         {% if login %}
-       <div id="cabecera_der">          
-          <img src="{{ STATIC_URL  }}images/logo_redes.png" ></img>
-       </div> 
+        <div id="cabecera_der">
+        	<img height="60" width="207" src="{{ STATIC_URL  }}images/logopcm.png" />
+        </div>
     	{% else %}
         {% cache 5 cabecera request.user.username %}
         {% with USUARIO=request.user.get_profile %}
@@ -58,9 +70,7 @@ table tr td{padding-left:10px;}
        {% endcache %}
        {% endif %}</div>
     <div class="clear"></div>   
-    {% if not login %}       
     {% include 'include/header.html' %}
-{% endif %} 
     
 {% if not login %} <div id="contenido"> {% endif %}
   {% block content %}
